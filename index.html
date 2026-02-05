@@ -19,8 +19,10 @@
         .logo-container{margin-bottom:1.5rem;min-height:180px}
         .logo-image{max-width:100%;height:auto;max-height:200px}
         .tagline{font-size:clamp(1rem,3vw,1.5rem);color:var(--color-text-dim);margin-bottom:2rem;min-height:1.6em}
-        .intro-text{margin-bottom:3rem;min-height:120px}
-        .story-text{font-size:1.2rem;line-height:1.8;max-width:700px;margin:0 auto;min-height:120px}
+        .intro-text{margin-bottom:3rem;min-height:180px;overflow:hidden}
+        .story-text{font-size:1.2rem;line-height:1.8;max-width:700px;margin:0 auto;min-height:180px}
+        .story-line{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;display:block;margin-bottom:0.5em}
+        .story-line.visible{opacity:1;transform:translateY(0)}
         .cta-buttons{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;min-height:60px}
     </style>
     

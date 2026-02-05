@@ -123,28 +123,40 @@ function createGalaxyParticle(container, centerX, centerY, index, total) {
 }
 
 /* ============================================
-   Typewriter Effect for Intro Text
+   Line-by-Line Text Reveal
    ============================================ */
 function initTypewriter() {
     const storyText = document.querySelector('.story-text');
-    const text = "In the vast expanse of imagination, countless worlds await discovery. Each star holds a story, each planet a fable. Here, creators weave civilizations from dreams and forge mythologies from wonder. Your universe is waiting to be born.";
+    const lines = [
+        "In the vast expanse of imagination, countless worlds await discovery.",
+        "Each star holds a story, each planet a fable.",
+        "Here, creators weave civilizations from dreams and forge mythologies from wonder.",
+        "Your universe is waiting to be born."
+    ];
     
-    let index = 0;
-    const speed = 30;
+    // Create line elements with text already in place (reserves space)
+    lines.forEach((line, index) => {
+        const lineEl = document.createElement('span');
+        lineEl.className = 'story-line';
+        lineEl.textContent = line;
+        storyText.appendChild(lineEl);
+    });
     
-    function type() {
-        if (index < text.length) {
-            storyText.textContent += text.charAt(index);
-            index++;
-            setTimeout(type, speed);
+    // Reveal lines one by one with scroll-up animation
+    const lineElements = storyText.querySelectorAll('.story-line');
+    let currentLine = 0;
+    const delayBetweenLines = 800;
+    
+    function revealNextLine() {
+        if (currentLine < lineElements.length) {
+            lineElements[currentLine].classList.add('visible');
+            currentLine++;
+            setTimeout(revealNextLine, delayBetweenLines);
         }
     }
     
-    // Start typing after a delay
-    setTimeout(() => {
-        storyText.style.opacity = 1;
-        type();
-    }, 800);
+    // Start reveal after initial delay
+    setTimeout(revealNextLine, 600);
 }
 
 /* ============================================
