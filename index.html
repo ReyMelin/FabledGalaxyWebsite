@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <meta name="description" content="Fabled Galaxy is a collaborative world-building platform where you can create planets, civilizations, and mythologies in a shared galaxy of user-created fables.">
+    <title>Fabled Galaxy | Create Your World</title>
+    
+    <!-- Critical CSS inlined for faster initial render -->
+    <style>
+        :root{--color-bg-dark:#0a0a0f;--color-text:#e8e6f0;--color-text-dim:#a8a5b5;--font-display:'Cinzel',Georgia,serif;--font-body:'Quicksand',system-ui,sans-serif}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{background-color:var(--color-bg-dark);color:var(--color-text);font-family:var(--font-body);line-height:1.6}
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0f 100%)}
+        .landing{min-height:100vh}
+        .hero{min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:2rem;position:relative}
+        .hero-content{max-width:900px;z-index:1;min-height:500px}
+        .logo-container{margin-bottom:1.5rem;min-height:180px}
+        .logo-image{max-width:100%;height:auto;max-height:200px}
+        .tagline{font-size:clamp(1rem,3vw,1.5rem);color:var(--color-text-dim);margin-bottom:2rem;min-height:1.6em}
+        .intro-text{margin-bottom:3rem;min-height:120px}
+        .story-text{font-size:1.2rem;line-height:1.8;max-width:700px;margin:0 auto;min-height:120px}
+        .cta-buttons{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;min-height:60px}
+    </style>
+    
+    <!-- Preload main stylesheet -->
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Load Google Fonts with swap for reduced CLS -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap"></noscript>
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Main Content -->
+    <main class="landing">
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="hero-content">
+                <div class="logo-container">
+                    <picture>
+                        <source srcset="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
+                        <img src="Imgs/fabled galaxy header.avif" alt="Fabled Galaxy" class="logo-image" width="546" height="180" fetchpriority="high" decoding="async">
+                    </picture>
+                </div>
+                
+                <p class="tagline">A collaborative world-building universe</p>
+                
+                <div class="intro-text" id="intro-text">
+                    <p class="story-text"></p>
+                </div>
+
+                <div class="cta-buttons">
+                    <a href="#create" class="btn btn-primary">
+                        <span class="btn-icon">✦</span>
+                        Create Your Fable
+                    </a>
+                    <a href="#explore" class="btn btn-secondary">
+                        <span class="btn-icon">🌌</span>
+                        Explore the Galaxy
+                    </a>
+                </div>
+            </div>
+
+            <div class="scroll-indicator">
+                <span>Discover More</span>
+                <div class="scroll-arrow"></div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section class="about" id="about">
+            <div class="section-content">
+                <h2 class="section-title">What is Fabled Galaxy?</h2>
+                
+                <div class="feature-grid">
+                    <div class="feature-card">
+                        <div class="feature-icon">🌍</div>
+                        <h3>Create Planets</h3>
+                        <p>Design your own world from the ground up — landscapes, climates, and wonders.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3>Define Civilizations</h3>
+                        <p>Shape the people, cultures, and societies that call your planet home.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">⚙️</div>
+                        <h3>Build Technology</h3>
+                        <p>Describe the tools, machines, and innovations of your world.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">✨</div>
+                        <h3>Craft Magic Systems</h3>
+                        <p>Create unique magical rules that define your universe.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">📜</div>
+                        <h3>Write Mythology</h3>
+                        <p>Weave myths, legends, and histories that give your world depth.</p>
+                    </div>
+                    
+                    <div class="feature-card">
+                        <div class="feature-icon">🤝</div>
+                        <h3>Collaborate</h3>
+                        <p>Optionally invite others to co-create within your universe.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Galaxy Preview Section -->
+        <section class="galaxy-preview" id="explore">
+            <div class="section-content">
+                <h2 class="section-title">The Galaxy Awaits</h2>
+                <p class="section-subtitle">Every star is a story. Every planet, a fable waiting to be discovered.</p>
+                
+                <div class="galaxy-map-container">
+                    <picture>
+                        <source srcset="Imgs/galaxy-map-optimized.webp" type="image/webp">
+                        <img src="Imgs/New Crystal Galaxy.avif" alt="Galaxy Map" class="galaxy-map-image" width="522" height="522" decoding="async">
+                    </picture>
+                    <div class="galaxy-overlay">
+                        <div class="planet-node" style="top: 30%; left: 25%;" data-name="Luminos Prime" data-type="Crystal World"></div>
+                        <div class="planet-node" style="top: 45%; left: 55%;" data-name="Verdant Deep" data-type="Ocean World"></div>
+                        <div class="planet-node" style="top: 60%; left: 35%;" data-name="Ashfall" data-type="Volcanic World"></div>
+                        <div class="planet-node" style="top: 25%; left: 70%;" data-name="Whisperwind" data-type="Sky World"></div>
+                        <div class="planet-node" style="top: 70%; left: 65%;" data-name="Shadowmere" data-type="Dark World"></div>
+                    </div>
+                </div>
+                
+                <a href="#" class="btn btn-primary btn-large">
+                    <span class="btn-icon">🔭</span>
+                    Enter the Galaxy Gallery
+                </a>
+            </div>
+        </section>
+
+        <!-- Create Section -->
+        <section class="create-section" id="create">
+            <div class="section-content">
+                <h2 class="section-title">Begin Your Fable</h2>
+                <p class="section-subtitle">Every great universe started with a single idea. What's yours?</p>
+                
+                <div class="create-preview">
+                    <div class="create-step">
+                        <div class="step-number">1</div>
+                        <h3>Name Your World</h3>
+                        <p>Give your planet an identity</p>
+                    </div>
+                    <div class="create-step">
+                        <div class="step-number">2</div>
+                        <h3>Describe Your Vision</h3>
+                        <p>Paint a picture of your world</p>
+                    </div>
+                    <div class="create-step">
+                        <div class="step-number">3</div>
+                        <h3>Define Your People</h3>
+                        <p>Create civilizations and cultures</p>
+                    </div>
+                    <div class="create-step">
+                        <div class="step-number">4</div>
+                        <h3>Share Your Fable</h3>
+                        <p>Add your world to the galaxy</p>
+                    </div>
+                </div>
+
+                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeW7KJhETavwPlNQanVPkuMtrSpMHvam4s9j6KTrtxuEfecyw/viewform" target="_blank" class="btn btn-primary btn-large">
+                    <span class="btn-icon">🚀</span>
+                    Start Creating
+                </a>
+            </div>
+        </section>
+
+        <!-- Community Section -->
+        <section class="community">
+            <div class="section-content">
+                <h2 class="section-title">Join the Community</h2>
+                <p class="section-subtitle">Connect with fellow world-builders on Discord</p>
+                
+                <div class="community-features">
+                    <div class="community-item">
+                        <span class="community-icon">💬</span>
+                        <span>Share your creations</span>
+                    </div>
+                    <div class="community-item">
+                        <span class="community-icon">🎨</span>
+                        <span>Get feedback on your worlds</span>
+                    </div>
+                    <div class="community-item">
+                        <span class="community-icon">🎲</span>
+                        <span>Participate in storytelling events</span>
+                    </div>
+                </div>
+                
+                <a href="https://discord.gg/tEtQJDPQ" target="_blank" class="btn btn-discord">
+                    <svg class="discord-icon" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M20.317 4.37a19.791 19.791 0 0 0-4.885-1.515.074.074 0 0 0-.079.037c-.21.375-.444.864-.608 1.25a18.27 18.27 0 0 0-5.487 0 12.64 12.64 0 0 0-.617-1.25.077.077 0 0 0-.079-.037A19.736 19.736 0 0 0 3.677 4.37a.07.07 0 0 0-.032.027C.533 9.046-.32 13.58.099 18.057a.082.082 0 0 0 .031.057 19.9 19.9 0 0 0 5.993 3.03.078.078 0 0 0 .084-.028 14.09 14.09 0 0 0 1.226-1.994.076.076 0 0 0-.041-.106 13.107 13.107 0 0 1-1.872-.892.077.077 0 0 1-.008-.128 10.2 10.2 0 0 0 .372-.292.074.074 0 0 1 .077-.01c3.928 1.793 8.18 1.793 12.062 0a.074.074 0 0 1 .078.01c.12.098.246.198.373.292a.077.077 0 0 1-.006.127 12.299 12.299 0 0 1-1.873.892.077.077 0 0 0-.041.107c.36.698.772 1.362 1.225 1.993a.076.076 0 0 0 .084.028 19.839 19.839 0 0 0 6.002-3.03.077.077 0 0 0 .032-.054c.5-5.177-.838-9.674-3.549-13.66a.061.061 0 0 0-.031-.03zM8.02 15.33c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.956-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.956 2.418-2.157 2.418zm7.975 0c-1.183 0-2.157-1.085-2.157-2.419 0-1.333.955-2.419 2.157-2.419 1.21 0 2.176 1.096 2.157 2.42 0 1.333-.946 2.418-2.157 2.418z"/>
+                    </svg>
+                    Join Discord
+                </a>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-tagline">Create a planet. Build a civilization. Add to the galaxy.</p>
+                <p class="footer-copyright">© 2026 Fabled Galaxy. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Planet Tooltip -->
+    <div class="planet-tooltip" id="planet-tooltip" role="tooltip">
+        <div class="tooltip-name"></div>
+        <p class="tooltip-type"></p>
+        <span class="tooltip-hint">Click to explore</span>
+    </div>
+
+    <script src="script.js" defer></script>
+</body>
+</html>
