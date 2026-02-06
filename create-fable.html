@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="description" content="Create your own planet in the Fabled Galaxy. Build civilizations, magic systems, and mythologies in our collaborative world-building universe.">
+    <title>Create Your Fable | Fabled Galaxy</title>
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="form-nav">
+        <a href="index.html" class="nav-back">
+            <span class="nav-arrow">←</span>
+            <span>Back to Galaxy</span>
+        </a>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="form-page">
+        <!-- Header Section -->
+        <header class="form-header">
+            <div class="form-header-content">
+                <picture>
+                    <source srcset="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
+                    <img src="Imgs/fabled galaxy header.avif" alt="Fabled Galaxy" class="form-logo" width="300" height="99">
+                </picture>
+                <h1 class="form-title">Create Your Fable</h1>
+                <p class="form-subtitle">Every great universe began with a single spark of imagination. What worlds will you bring to life?</p>
+            </div>
+        </header>
+
+        <!-- Progress Indicator -->
+        <div class="wizard-progress">
+            <div class="progress-bar">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <div class="progress-steps">
+                <div class="progress-step active" data-step="1">
+                    <span class="step-icon">🌍</span>
+                    <span class="step-label">Planet</span>
+                </div>
+                <div class="progress-step" data-step="2">
+                    <span class="step-icon">👥</span>
+                    <span class="step-label">People</span>
+                </div>
+                <div class="progress-step" data-step="3">
+                    <span class="step-icon">⚙️</span>
+                    <span class="step-label">Technology</span>
+                </div>
+                <div class="progress-step" data-step="4">
+                    <span class="step-icon">✨</span>
+                    <span class="step-label">Magic</span>
+                </div>
+                <div class="progress-step" data-step="5">
+                    <span class="step-icon">📜</span>
+                    <span class="step-label">Legends</span>
+                </div>
+                <div class="progress-step" data-step="6">
+                    <span class="step-icon">🎨</span>
+                    <span class="step-label">Visuals</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Form Container -->
+        <section class="form-container">
+            <form id="fable-form" class="fable-form">
+                
+                <!-- Step 1: Planet Basics -->
+                <div class="form-step active" data-step="1">
+                    <div class="step-header">
+                        <span class="step-emoji">🌍</span>
+                        <h2>Name Your World</h2>
+                        <p class="step-prompt">What does your planet look like? Give it an identity that captures its essence.</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planet-name">Planet Name <span class="required">*</span></label>
+                        <input type="text" id="planet-name" name="planetName" required 
+                               placeholder="e.g., Luminos Prime, Verdant Deep, Ashfall...">
+                        <span class="input-hint">Choose a name that evokes the spirit of your world</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planet-type">Planet Type</label>
+                        <select id="planet-type" name="planetType">
+                            <option value="">Select a type...</option>
+                            <option value="terrestrial">🌍 Terrestrial World</option>
+                            <option value="ocean">🌊 Ocean World</option>
+                            <option value="desert">🏜️ Desert World</option>
+                            <option value="ice">❄️ Ice World</option>
+                            <option value="volcanic">🌋 Volcanic World</option>
+                            <option value="forest">🌲 Forest World</option>
+                            <option value="sky">☁️ Sky World</option>
+                            <option value="crystal">💎 Crystal World</option>
+                            <option value="dark">🌑 Dark World</option>
+                            <option value="arcane">🔮 Arcane World</option>
+                            <option value="other">✦ Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planet-description">Planet Description <span class="required">*</span></label>
+                        <textarea id="planet-description" name="planetDescription" required rows="5"
+                                  placeholder="Describe the landscapes, atmosphere, and unique features of your world. What makes it special? What would a traveler first notice upon arrival?"></textarea>
+                        <span class="char-count"><span id="desc-count">0</span> / 2000</span>
+                    </div>
+                </div>
+                
+                <!-- Step 2: Civilization -->
+                <div class="form-step" data-step="2">
+                    <div class="step-header">
+                        <span class="step-emoji">👥</span>
+                        <h2>Define Your People</h2>
+                        <p class="step-prompt">Who lives there? What kind of civilization exists?</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="inhabitants">Inhabitants</label>
+                        <textarea id="inhabitants" name="inhabitants" rows="4"
+                                  placeholder="Describe the beings who call this world home. Are they human? Alien? Spirit beings? What do they look like?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="civilization">Civilization & Culture</label>
+                        <textarea id="civilization" name="civilization" rows="5"
+                                  placeholder="Describe their society, government, traditions, and way of life. What do they value? How do they organize themselves?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="factions">Notable Factions or Groups</label>
+                        <textarea id="factions" name="factions" rows="3"
+                                  placeholder="Are there different nations, tribes, guilds, or organizations? Any conflicts between them?"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Technology -->
+                <div class="form-step" data-step="3">
+                    <div class="step-header">
+                        <span class="step-emoji">⚙️</span>
+                        <h2>Build Your Technology</h2>
+                        <p class="step-prompt">What level of technology exists? How advanced is your world?</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="tech-level">Technology Level</label>
+                        <select id="tech-level" name="techLevel">
+                            <option value="">Select a level...</option>
+                            <option value="primitive">🪨 Primitive / Stone Age</option>
+                            <option value="ancient">🏛️ Ancient / Classical</option>
+                            <option value="medieval">⚔️ Medieval</option>
+                            <option value="renaissance">🎨 Renaissance</option>
+                            <option value="industrial">🏭 Industrial</option>
+                            <option value="modern">🏙️ Modern</option>
+                            <option value="futuristic">🚀 Futuristic</option>
+                            <option value="post-apocalyptic">💀 Post-Apocalyptic</option>
+                            <option value="magitech">🔮⚙️ Magitech (Magic + Technology)</option>
+                            <option value="other">✦ Other / Mixed</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="technology">Technology Description</label>
+                        <textarea id="technology" name="technology" rows="5"
+                                  placeholder="Describe the tools, machines, weapons, transportation, and innovations of your world. What powers them? Are there unique inventions?"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Magic -->
+                <div class="form-step" data-step="4">
+                    <div class="step-header">
+                        <span class="step-emoji">✨</span>
+                        <h2>Craft Your Magic</h2>
+                        <p class="step-prompt">How does magic work? What are its rules and limitations?</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="magic-exists">Does Magic Exist?</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="magicExists" value="yes">
+                                <span class="radio-custom"></span>
+                                <span>Yes, magic is a fundamental force</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="magicExists" value="rare">
+                                <span class="radio-custom"></span>
+                                <span>Rare or hidden, known to few</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="magicExists" value="no">
+                                <span class="radio-custom"></span>
+                                <span>No magic, purely mundane world</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="magicExists" value="ambiguous">
+                                <span class="radio-custom"></span>
+                                <span>Ambiguous — could be magic or could be explained</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="magic-system">Magic System</label>
+                        <textarea id="magic-system" name="magicSystem" rows="5"
+                                  placeholder="Describe how magic works. What are its sources? Who can use it? What are its costs and limitations? Are there different types or schools of magic?"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Step 5: Myths & Legends -->
+                <div class="form-step" data-step="5">
+                    <div class="step-header">
+                        <span class="step-emoji">📜</span>
+                        <h2>Shape Your Legends</h2>
+                        <p class="step-prompt">What myths and legends shape this world? Every civilization has its stories.</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="creation-myth">Creation Myth / Origin Story</label>
+                        <textarea id="creation-myth" name="creationMyth" rows="4"
+                                  placeholder="How was this world created according to its inhabitants? What do they believe about their origins?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="legends">Legends & Heroes</label>
+                        <textarea id="legends" name="legends" rows="4"
+                                  placeholder="Who are the legendary figures, heroes, or villains of this world? What great deeds or catastrophes are remembered?"></textarea>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="history">Key Historical Events</label>
+                        <textarea id="history" name="history" rows="4"
+                                  placeholder="What major events shaped this world? Wars, discoveries, cataclysms, golden ages?"></textarea>
+                    </div>
+                </div>
+                
+                <!-- Step 6: Visuals & Finalize -->
+                <div class="form-step" data-step="6">
+                    <div class="step-header">
+                        <span class="step-emoji">🎨</span>
+                        <h2>Bring It to Life</h2>
+                        <p class="step-prompt">Add visuals and final touches to complete your fable.</p>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="planet-art">Planet Art / Visuals</label>
+                        <div class="file-upload-area" id="upload-area">
+                            <input type="file" id="planet-art" name="planetArt" accept="image/*" class="file-input">
+                            <div class="upload-content">
+                                <span class="upload-icon">🖼️</span>
+                                <span class="upload-text">Drag & drop an image or click to browse</span>
+                                <span class="upload-hint">PNG, JPG, AVIF, WEBP up to 10MB</span>
+                            </div>
+                            <div class="upload-preview" id="upload-preview"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="creator-name">Creator Name <span class="required">*</span></label>
+                        <input type="text" id="creator-name" name="creatorName" required
+                               placeholder="Your name or alias">
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="creator-email">Email (Optional)</label>
+                        <input type="email" id="creator-email" name="creatorEmail"
+                               placeholder="For updates about your world">
+                        <span class="input-hint">We'll never share your email with anyone</span>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="collaboration">Collaboration Settings</label>
+                        <div class="radio-group">
+                            <label class="radio-option">
+                                <input type="radio" name="collaboration" value="locked" checked>
+                                <span class="radio-custom"></span>
+                                <span>🔒 Locked — Only I can edit this world</span>
+                            </label>
+                            <label class="radio-option">
+                                <input type="radio" name="collaboration" value="open">
+                                <span class="radio-custom"></span>
+                                <span>🔓 Open — Others can contribute to this world</span>
+                            </label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group checkbox-group">
+                        <label class="checkbox-option">
+                            <input type="checkbox" name="agreeTerms" required>
+                            <span class="checkbox-custom"></span>
+                            <span>I agree to the community guidelines and understand my world will be publicly visible in the Galaxy Gallery</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <!-- Navigation Buttons -->
+                <div class="form-navigation">
+                    <button type="button" class="btn btn-secondary btn-nav" id="prev-btn" disabled>
+                        <span>← Previous</span>
+                    </button>
+                    <button type="button" class="btn btn-primary btn-nav" id="next-btn">
+                        <span>Next →</span>
+                    </button>
+                    <button type="submit" class="btn btn-primary btn-nav btn-submit" id="submit-btn" style="display: none;">
+                        <span class="btn-icon">🚀</span>
+                        <span>Launch Your Fable</span>
+                    </button>
+                </div>
+            </form>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-tagline">Create a planet. Build a civilization. Add to the galaxy.</p>
+                <p class="footer-copyright">© 2026 Fabled Galaxy. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="script.js" defer></script>
+    <script src="form.js" defer></script>
+</body>
+</html>

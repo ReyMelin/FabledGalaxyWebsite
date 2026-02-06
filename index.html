@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <meta name="description" content="Fabled Galaxy is a collaborative world-building platform where you can create planets, civilizations, and mythologies in a shared galaxy of user-created fables.">
     <title>Fabled Galaxy | Create Your World</title>
     
@@ -64,11 +66,11 @@
                 </div>
 
                 <div class="cta-buttons">
-                    <a href="#create" class="btn btn-primary">
+                    <a href="create-fable.html" class="btn btn-primary">
                         <span class="btn-icon">✦</span>
                         Create Your Fable
                     </a>
-                    <a href="#explore" class="btn btn-secondary">
+                    <a href="gallery.html" class="btn btn-secondary">
                         <span class="btn-icon">🌌</span>
                         Explore the Galaxy
                     </a>
@@ -137,16 +139,12 @@
                         <source srcset="Imgs/galaxy-map-optimized.webp" type="image/webp">
                         <img src="Imgs/New Crystal Galaxy.avif" alt="Galaxy Map" class="galaxy-map-image" width="522" height="522" decoding="async">
                     </picture>
-                    <div class="galaxy-overlay">
-                        <div class="planet-node" style="top: 30%; left: 25%;" data-name="Luminos Prime" data-type="Crystal World"></div>
-                        <div class="planet-node" style="top: 45%; left: 55%;" data-name="Verdant Deep" data-type="Ocean World"></div>
-                        <div class="planet-node" style="top: 60%; left: 35%;" data-name="Ashfall" data-type="Volcanic World"></div>
-                        <div class="planet-node" style="top: 25%; left: 70%;" data-name="Whisperwind" data-type="Sky World"></div>
-                        <div class="planet-node" style="top: 70%; left: 65%;" data-name="Shadowmere" data-type="Dark World"></div>
+                    <div class="galaxy-overlay" id="home-galaxy-overlay">
+                        <!-- Planets will be dynamically populated from saved data -->
                     </div>
                 </div>
                 
-                <a href="#" class="btn btn-primary btn-large">
+                <a href="gallery.html" class="btn btn-primary btn-large">
                     <span class="btn-icon">🔭</span>
                     Enter the Galaxy Gallery
                 </a>
@@ -182,7 +180,7 @@
                     </div>
                 </div>
 
-                <a href="https://docs.google.com/forms/d/e/1FAIpQLSeW7KJhETavwPlNQanVPkuMtrSpMHvam4s9j6KTrtxuEfecyw/viewform" target="_blank" class="btn btn-primary btn-large">
+                <a href="create-fable.html" class="btn btn-primary btn-large">
                     <span class="btn-icon">🚀</span>
                     Start Creating
                 </a>
@@ -231,10 +229,12 @@
     <!-- Planet Tooltip -->
     <div class="planet-tooltip" id="planet-tooltip" role="tooltip">
         <div class="tooltip-name"></div>
+        <p class="tooltip-creator"></p>
         <p class="tooltip-type"></p>
         <span class="tooltip-hint">Click to explore</span>
     </div>
 
+    <script src="data.js"></script>
     <script src="script.js" defer></script>
 </body>
 </html>

@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="description" content="Explore this world in the Fabled Galaxy - a collaborative world-building universe.">
+    <title>Planet | Fabled Galaxy</title>
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="planet-nav">
+        <a href="gallery.html" class="nav-back">
+            <span class="nav-arrow">←</span>
+            <span>Back to Galaxy</span>
+        </a>
+        <div class="nav-actions">
+            <button class="btn btn-secondary btn-small" id="share-btn" title="Share this planet">
+                📤 Share
+            </button>
+            <button class="btn btn-secondary btn-small mod-only" id="delete-btn" title="Delete planet" style="display: none;">
+                🗑️ Delete
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="planet-page">
+        <!-- Loading State -->
+        <div class="planet-loading" id="loading">
+            <div class="loading-spinner"></div>
+            <p>Traveling to planet...</p>
+        </div>
+
+        <!-- Not Found State -->
+        <div class="planet-not-found" id="not-found" style="display: none;">
+            <span class="not-found-icon">🌑</span>
+            <h2>Planet Not Found</h2>
+            <p>This world may have been lost to the void, or the coordinates are incorrect.</p>
+            <a href="gallery.html" class="btn btn-primary">
+                <span class="btn-icon">🌌</span>
+                Return to Galaxy
+            </a>
+        </div>
+
+        <!-- Planet Content -->
+        <article class="planet-content" id="planet-content" style="display: none;">
+            <!-- Hero Section -->
+            <header class="planet-hero">
+                <div class="planet-image-container" id="planet-image">
+                    <!-- Image or fallback will be inserted here -->
+                </div>
+                <div class="planet-hero-info">
+                    <div class="planet-type-badge" id="planet-type-badge">
+                        <!-- Type badge inserted here -->
+                    </div>
+                    <h1 class="planet-name" id="planet-name">Planet Name</h1>
+                    <p class="planet-creator">Created by <span id="creator-name">Creator</span></p>
+                    <div class="planet-meta">
+                        <span class="meta-item" id="collab-status">🔒 Locked</span>
+                        <span class="meta-item" id="created-date">Created: Date</span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Description -->
+            <section class="planet-section">
+                <h2><span class="section-icon">🌍</span> About This World</h2>
+                <div class="section-content">
+                    <p id="planet-description">Description goes here...</p>
+                </div>
+            </section>
+
+            <!-- Civilization -->
+            <section class="planet-section" id="section-civilization" style="display: none;">
+                <h2><span class="section-icon">👥</span> People & Civilization</h2>
+                <div class="section-content">
+                    <div class="lore-block" id="block-inhabitants" style="display: none;">
+                        <h3>Inhabitants</h3>
+                        <p id="planet-inhabitants"></p>
+                    </div>
+                    <div class="lore-block" id="block-civilization" style="display: none;">
+                        <h3>Civilization & Culture</h3>
+                        <p id="planet-civilization"></p>
+                    </div>
+                    <div class="lore-block" id="block-factions" style="display: none;">
+                        <h3>Factions & Groups</h3>
+                        <p id="planet-factions"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Technology -->
+            <section class="planet-section" id="section-technology" style="display: none;">
+                <h2><span class="section-icon">⚙️</span> Technology</h2>
+                <div class="section-content">
+                    <div class="tech-level" id="tech-level-badge" style="display: none;">
+                        <!-- Tech level badge -->
+                    </div>
+                    <p id="planet-technology"></p>
+                </div>
+            </section>
+
+            <!-- Magic -->
+            <section class="planet-section" id="section-magic" style="display: none;">
+                <h2><span class="section-icon">✨</span> Magic System</h2>
+                <div class="section-content">
+                    <div class="magic-status" id="magic-status">
+                        <!-- Magic status -->
+                    </div>
+                    <p id="planet-magic"></p>
+                </div>
+            </section>
+
+            <!-- Lore -->
+            <section class="planet-section" id="section-lore" style="display: none;">
+                <h2><span class="section-icon">📜</span> Myths & History</h2>
+                <div class="section-content">
+                    <div class="lore-block" id="block-creation" style="display: none;">
+                        <h3>Creation Myth</h3>
+                        <p id="planet-creation"></p>
+                    </div>
+                    <div class="lore-block" id="block-legends" style="display: none;">
+                        <h3>Legends & Heroes</h3>
+                        <p id="planet-legends"></p>
+                    </div>
+                    <div class="lore-block" id="block-history" style="display: none;">
+                        <h3>Historical Events</h3>
+                        <p id="planet-history"></p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Actions -->
+            <section class="planet-actions">
+                <a href="gallery.html" class="btn btn-secondary">
+                    <span class="btn-icon">🌌</span>
+                    Explore More Worlds
+                </a>
+                <a href="create-fable.html" class="btn btn-primary">
+                    <span class="btn-icon">✦</span>
+                    Create Your Own
+                </a>
+            </section>
+        </article>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-tagline">Create a planet. Build a civilization. Add to the galaxy.</p>
+                <p class="footer-copyright">© 2026 Fabled Galaxy. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="script.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Get planet ID from URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const planetId = urlParams.get('id');
+            
+            // Elements
+            const loading = document.getElementById('loading');
+            const notFound = document.getElementById('not-found');
+            const content = document.getElementById('planet-content');
+            const deleteBtn = document.getElementById('delete-btn');
+            const shareBtn = document.getElementById('share-btn');
+            
+            if (!planetId) {
+                showNotFound();
+                return;
+            }
+            
+            // Load planet data
+            setTimeout(() => {
+                const planet = FabledGalaxyData.getPlanet(planetId);
+                
+                if (!planet) {
+                    showNotFound();
+                    return;
+                }
+                
+                displayPlanet(planet);
+            }, 500); // Brief loading delay for effect
+            
+            function showNotFound() {
+                loading.style.display = 'none';
+                notFound.style.display = 'flex';
+            }
+            
+            function displayPlanet(planet) {
+                loading.style.display = 'none';
+                content.style.display = 'block';
+                
+                // Update page title
+                document.title = `${planet.name} | Fabled Galaxy`;
+                
+                // Type info
+                const typeInfo = FabledGalaxyData.getPlanetTypeInfo(planet.type);
+                
+                // Hero section
+                const imageContainer = document.getElementById('planet-image');
+                if (planet.imageData) {
+                    imageContainer.innerHTML = `<img src="${planet.imageData}" alt="${planet.name}">`;
+                } else {
+                    imageContainer.innerHTML = `<div class="planet-image-fallback" style="background-color: ${planet.color}20;"><span>${typeInfo.emoji}</span></div>`;
+                }
+                
+                document.getElementById('planet-type-badge').innerHTML = `${typeInfo.emoji} ${typeInfo.label}`;
+                document.getElementById('planet-name').textContent = planet.name;
+                document.getElementById('creator-name').textContent = planet.creatorName;
+                document.getElementById('collab-status').textContent = planet.collaboration === 'open' ? '🔓 Open for Collaboration' : '🔒 Locked';
+                document.getElementById('created-date').textContent = `Created: ${new Date(planet.createdAt).toLocaleDateString()}`;
+                
+                // Description
+                document.getElementById('planet-description').textContent = planet.description || 'No description provided.';
+                
+                // Civilization section
+                let hasCivilization = false;
+                if (planet.inhabitants) {
+                    document.getElementById('block-inhabitants').style.display = 'block';
+                    document.getElementById('planet-inhabitants').textContent = planet.inhabitants;
+                    hasCivilization = true;
+                }
+                if (planet.civilization) {
+                    document.getElementById('block-civilization').style.display = 'block';
+                    document.getElementById('planet-civilization').textContent = planet.civilization;
+                    hasCivilization = true;
+                }
+                if (planet.factions) {
+                    document.getElementById('block-factions').style.display = 'block';
+                    document.getElementById('planet-factions').textContent = planet.factions;
+                    hasCivilization = true;
+                }
+                if (hasCivilization) {
+                    document.getElementById('section-civilization').style.display = 'block';
+                }
+                
+                // Technology section
+                if (planet.technology || planet.techLevel) {
+                    document.getElementById('section-technology').style.display = 'block';
+                    if (planet.techLevel) {
+                        const techLabels = {
+                            'primitive': '🪨 Primitive / Stone Age',
+                            'ancient': '🏛️ Ancient / Classical',
+                            'medieval': '⚔️ Medieval',
+                            'renaissance': '🎨 Renaissance',
+                            'industrial': '🏭 Industrial',
+                            'modern': '🏙️ Modern',
+                            'futuristic': '🚀 Futuristic',
+                            'post-apocalyptic': '💀 Post-Apocalyptic',
+                            'magitech': '🔮⚙️ Magitech'
+                        };
+                        const techBadge = document.getElementById('tech-level-badge');
+                        techBadge.textContent = techLabels[planet.techLevel] || planet.techLevel;
+                        techBadge.style.display = 'inline-block';
+                    }
+                    document.getElementById('planet-technology').textContent = planet.technology || '';
+                }
+                
+                // Magic section
+                if (planet.magicSystem || planet.magicExists) {
+                    document.getElementById('section-magic').style.display = 'block';
+                    const magicLabels = {
+                        'yes': '✨ Magic is a fundamental force',
+                        'rare': '🌟 Magic is rare, known to few',
+                        'no': '❌ No magic exists',
+                        'ambiguous': '❓ Ambiguous - could be magic or explained'
+                    };
+                    document.getElementById('magic-status').textContent = magicLabels[planet.magicExists] || '';
+                    document.getElementById('planet-magic').textContent = planet.magicSystem || '';
+                }
+                
+                // Lore section
+                let hasLore = false;
+                if (planet.creationMyth) {
+                    document.getElementById('block-creation').style.display = 'block';
+                    document.getElementById('planet-creation').textContent = planet.creationMyth;
+                    hasLore = true;
+                }
+                if (planet.legends) {
+                    document.getElementById('block-legends').style.display = 'block';
+                    document.getElementById('planet-legends').textContent = planet.legends;
+                    hasLore = true;
+                }
+                if (planet.history) {
+                    document.getElementById('block-history').style.display = 'block';
+                    document.getElementById('planet-history').textContent = planet.history;
+                    hasLore = true;
+                }
+                if (hasLore) {
+                    document.getElementById('section-lore').style.display = 'block';
+                }
+                
+                // Moderator actions
+                if (FabledGalaxyData.isModerator()) {
+                    deleteBtn.style.display = 'inline-flex';
+                    deleteBtn.addEventListener('click', () => {
+                        if (confirm(`Are you sure you want to delete "${planet.name}"? This cannot be undone.`)) {
+                            FabledGalaxyData.deletePlanet(planet.id);
+                            window.location.href = 'gallery.html';
+                        }
+                    });
+                }
+                
+                // Share button
+                shareBtn.addEventListener('click', () => {
+                    const url = window.location.href;
+                    if (navigator.share) {
+                        navigator.share({
+                            title: `${planet.name} | Fabled Galaxy`,
+                            text: `Explore ${planet.name} - ${truncateText(planet.description, 100)}`,
+                            url: url
+                        });
+                    } else if (navigator.clipboard) {
+                        navigator.clipboard.writeText(url).then(() => {
+                            shareBtn.innerHTML = '✓ Copied!';
+                            setTimeout(() => {
+                                shareBtn.innerHTML = '📤 Share';
+                            }, 2000);
+                        });
+                    }
+                });
+            }
+            
+            function truncateText(text, maxLength) {
+                if (!text) return '';
+                if (text.length <= maxLength) return text;
+                return text.substring(0, maxLength).trim() + '...';
+            }
+        });
+    </script>
+</body>
+</html>

@@ -163,18 +163,53 @@ function initTypewriter() {
    Planet Node Interactions
    ============================================ */
 function initPlanetNodes() {
-    const planetNodes = document.querySelectorAll('.planet-node');
+    const galaxyOverlay = document.getElementById('home-galaxy-overlay');
     const tooltip = document.getElementById('planet-tooltip');
+    
+    if (!galaxyOverlay || !tooltip) return;
+    
     const tooltipName = tooltip.querySelector('.tooltip-name');
+    const tooltipCreator = tooltip.querySelector('.tooltip-creator');
     const tooltipType = tooltip.querySelector('.tooltip-type');
+    
+    // Load planets from data service
+    const planets = typeof FabledGalaxyData !== 'undefined' ? FabledGalaxyData.getPlanets() : [];
+    
+    // Clear existing nodes and populate with saved planets
+    galaxyOverlay.innerHTML = '';
+    
+    planets.forEach(planet => {
+        const typeInfo = typeof FabledGalaxyData !== 'undefined' 
+            ? FabledGalaxyData.getPlanetTypeInfo(planet.type) 
+            : { emoji: '🌍', label: 'World' };
+        
+        const node = document.createElement('div');
+        node.className = 'planet-node';
+        node.style.top = `${planet.position.y}%`;
+        node.style.left = `${planet.position.x}%`;
+        node.style.setProperty('--planet-color', planet.color || '#ffd700');
+        node.dataset.id = planet.id;
+        node.dataset.name = planet.name;
+        node.dataset.creator = planet.creatorName;
+        node.dataset.type = typeInfo.label;
+        node.dataset.emoji = typeInfo.emoji;
+        
+        galaxyOverlay.appendChild(node);
+    });
+    
+    // Setup interactions for all planet nodes
+    const planetNodes = document.querySelectorAll('.planet-node');
     
     planetNodes.forEach(node => {
         node.addEventListener('mouseenter', (e) => {
             const name = node.dataset.name;
+            const creator = node.dataset.creator;
             const type = node.dataset.type;
+            const emoji = node.dataset.emoji || '';
             
             tooltipName.textContent = name;
-            tooltipType.textContent = type;
+            if (tooltipCreator) tooltipCreator.textContent = `by ${creator}`;
+            tooltipType.textContent = `${emoji} ${type}`;
             
             tooltip.classList.add('visible');
             updateTooltipPosition(e);
@@ -189,9 +224,11 @@ function initPlanetNodes() {
         });
         
         node.addEventListener('click', () => {
-            // Future: Navigate to planet page
-            const name = node.dataset.name;
-            showNotification(`${name} - Coming Soon!`);
+            // Navigate to planet page
+            const planetId = node.dataset.id;
+            if (planetId) {
+                window.location.href = `planet.html?id=${planetId}`;
+            }
         });
     });
     

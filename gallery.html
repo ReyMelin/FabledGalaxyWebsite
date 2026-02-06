@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="description" content="Explore the Fabled Galaxy - discover user-created planets, civilizations, and mythologies in our collaborative world-building universe.">
+    <title>Galaxy Gallery | Fabled Galaxy</title>
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="gallery-nav">
+        <a href="index.html" class="nav-logo">
+            <img src="Imgs/fabled galaxy header.avif" alt="Fabled Galaxy" height="40">
+        </a>
+        <div class="nav-links">
+            <a href="create-fable.html" class="btn btn-primary btn-small">
+                <span class="btn-icon">✦</span>
+                Create
+            </a>
+            <button class="btn btn-secondary btn-small" id="mod-btn" title="Moderator Login">
+                🔐
+            </button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="gallery-page">
+        <!-- Header -->
+        <header class="gallery-header">
+            <h1 class="gallery-title">Galaxy Gallery</h1>
+            <p class="gallery-subtitle">Every star is a story. Click any planet to explore its fable.</p>
+            
+            <!-- Filters -->
+            <div class="gallery-filters">
+                <div class="filter-group">
+                    <label for="filter-type">Planet Type:</label>
+                    <select id="filter-type">
+                        <option value="all">All Types</option>
+                        <option value="terrestrial">🌍 Terrestrial</option>
+                        <option value="ocean">🌊 Ocean</option>
+                        <option value="desert">🏜️ Desert</option>
+                        <option value="ice">❄️ Ice</option>
+                        <option value="volcanic">🌋 Volcanic</option>
+                        <option value="forest">🌲 Forest</option>
+                        <option value="sky">☁️ Sky</option>
+                        <option value="crystal">💎 Crystal</option>
+                        <option value="dark">🌑 Dark</option>
+                        <option value="arcane">🔮 Arcane</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="filter-collab">Collaboration:</label>
+                    <select id="filter-collab">
+                        <option value="all">All</option>
+                        <option value="open">🔓 Open</option>
+                        <option value="locked">🔒 Locked</option>
+                    </select>
+                </div>
+                <div class="filter-group search-group">
+                    <input type="text" id="filter-search" placeholder="Search planets...">
+                </div>
+            </div>
+        </header>
+
+        <!-- Galaxy Map View -->
+        <section class="galaxy-view">
+            <div class="galaxy-map" id="galaxy-map">
+                <img src="Imgs/New Crystal Galaxy.avif" alt="Galaxy Background" class="galaxy-bg">
+                <div class="planets-container" id="planets-container">
+                    <!-- Planets will be dynamically inserted here -->
+                </div>
+            </div>
+            
+            <!-- Planet Tooltip -->
+            <div class="planet-tooltip" id="planet-tooltip">
+                <div class="tooltip-header">
+                    <span class="tooltip-type-icon"></span>
+                    <span class="tooltip-name"></span>
+                </div>
+                <p class="tooltip-creator"></p>
+                <p class="tooltip-type"></p>
+                <p class="tooltip-description"></p>
+                <div class="tooltip-footer">
+                    <span class="tooltip-collab"></span>
+                    <span class="tooltip-hint">Click to explore →</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- List View Toggle -->
+        <section class="view-toggle">
+            <button class="toggle-btn active" data-view="map">
+                <span>🗺️</span> Map View
+            </button>
+            <button class="toggle-btn" data-view="list">
+                <span>📋</span> List View
+            </button>
+        </section>
+
+        <!-- List View (Hidden by default) -->
+        <section class="galaxy-list" id="galaxy-list" style="display: none;">
+            <div class="planet-grid" id="planet-grid">
+                <!-- Planet cards will be dynamically inserted here -->
+            </div>
+        </section>
+
+        <!-- Stats -->
+        <section class="galaxy-stats">
+            <div class="stat-item">
+                <span class="stat-number" id="total-planets">0</span>
+                <span class="stat-label">Planets</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="total-creators">0</span>
+                <span class="stat-label">Creators</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" id="open-worlds">0</span>
+                <span class="stat-label">Open Worlds</span>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="footer-content">
+                <p class="footer-tagline">Create a planet. Build a civilization. Add to the galaxy.</p>
+                <p class="footer-copyright">© 2026 Fabled Galaxy. All rights reserved.</p>
+            </div>
+        </footer>
+    </main>
+
+    <!-- Moderator Modal -->
+    <div class="modal-overlay" id="mod-modal" style="display: none;">
+        <div class="modal-content">
+            <button class="modal-close" id="modal-close">×</button>
+            <h2>🔐 Moderator Access</h2>
+            <div id="mod-login-form">
+                <p>Enter moderator password to access admin features.</p>
+                <input type="password" id="mod-password" placeholder="Password">
+                <button class="btn btn-primary" id="mod-login-btn">Login</button>
+                <p class="mod-error" id="mod-error" style="display: none;">Invalid password</p>
+            </div>
+            <div id="mod-panel" style="display: none;">
+                <p class="mod-status">✅ Logged in as Moderator</p>
+                <div class="mod-actions">
+                    <button class="btn btn-secondary" id="export-btn">
+                        📥 Export All Data
+                    </button>
+                    <label class="btn btn-secondary">
+                        📤 Import Data
+                        <input type="file" id="import-file" accept=".json" style="display: none;">
+                    </label>
+                    <button class="btn btn-secondary" id="mod-logout-btn">
+                        🚪 Logout
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="data.js"></script>
+    <script src="script.js" defer></script>
+    <script src="gallery.js" defer></script>
+</body>
+</html>
