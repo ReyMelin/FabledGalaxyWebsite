@@ -55,6 +55,9 @@
             <button class="btn btn-secondary btn-small mod-only" id="delete-btn" title="Delete planet" style="display: none;">
                 🗑️ Delete
             </button>
+            <div id="auth-container" class="auth-container">
+                <!-- Auth UI will be injected here -->
+            </div>
         </div>
     </nav>
 
@@ -266,6 +269,7 @@
     </main>
 
     <script src="data.js"></script>
+    <script type="module" src="supabaseClient.js"></script>
     <script src="script.js" defer></script>
     <script>
         document.addEventListener('DOMContentLoaded', () => {

@@ -54,6 +54,17 @@
     <main class="landing">
         <!-- Hero Section -->
         <section class="hero">
+            <!-- Navigation -->
+            <nav class="site-nav site-nav-inline">
+                <div class="nav-links">
+                    <a href="gallery.html">Gallery</a>
+                    <a href="create-fable.html">Create</a>
+                </div>
+                <div id="auth-container" class="auth-container">
+                    <!-- Auth UI will be injected here -->
+                </div>
+            </nav>
+
             <div class="hero-content">
                 <div class="logo-container">
                     <picture>
@@ -238,6 +249,7 @@
     </div>
 
     <script src="data.js"></script>
+    <script type="module" src="supabaseClient.js"></script>
     <script src="script.js" defer></script>
 </body>
 </html>

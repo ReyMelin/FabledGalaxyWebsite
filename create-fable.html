@@ -50,6 +50,9 @@
             <span class="nav-arrow">←</span>
             <span>Back to Galaxy</span>
         </a>
+        <div id="auth-container" class="auth-container">
+            <!-- Auth UI will be injected here -->
+        </div>
     </nav>
 
     <!-- Main Content -->
@@ -305,19 +308,6 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="planet-art">Planet Art / Visuals</label>
-                        <div class="file-upload-area" id="upload-area">
-                            <input type="file" id="planet-art" name="planetArt" accept="image/*" class="file-input">
-                            <div class="upload-content">
-                                <span class="upload-icon">🖼️</span>
-                                <span class="upload-text">Drag & drop an image or click to browse</span>
-                                <span class="upload-hint">PNG, JPG, AVIF, WEBP up to 10MB</span>
-                            </div>
-                            <div class="upload-preview" id="upload-preview"></div>
-                        </div>
-                    </div>
-                    
-                    <div class="form-group">
                         <label for="creator-name">Creator Name <span class="required">*</span></label>
                         <input type="text" id="creator-name" name="creatorName" required
                                placeholder="Your name or alias">
@@ -381,6 +371,7 @@
     </main>
 
     <script src="data.js"></script>
+    <script type="module" src="supabaseClient.js"></script>
     <script src="script.js" defer></script>
     <script src="form.js" defer></script>
 </body>
