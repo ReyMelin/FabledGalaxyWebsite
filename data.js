@@ -85,6 +85,10 @@ const FabledGalaxyData = (function() {
             
             // Visuals
             imageData: planetData.imageData || null,
+            planetImage: planetData.planetImage || null,
+            
+            // Contributions from collaborators
+            contributions: planetData.contributions || [],
             
             // Galaxy position (random if not specified)
             position: planetData.position || {
@@ -100,6 +104,37 @@ const FabledGalaxyData = (function() {
         localStorage.setItem(STORAGE_KEY, JSON.stringify(planets));
         
         return planet;
+    }
+
+    /**
+     * Add a contribution to an open planet
+     */
+    function addContribution(planetId, contribution) {
+        const planet = getPlanet(planetId);
+        
+        if (!planet) {
+            console.error('Planet not found');
+            return null;
+        }
+        
+        if (planet.collaboration !== 'open') {
+            console.error('This planet is not open for collaboration');
+            return null;
+        }
+        
+        const newContribution = {
+            id: 'contrib_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+            section: contribution.section, // 'civilization', 'technology', 'magic', 'lore'
+            field: contribution.field,     // specific field like 'inhabitants', 'legends', etc.
+            content: contribution.content,
+            contributorName: contribution.contributorName || 'Anonymous Traveler',
+            createdAt: new Date().toISOString()
+        };
+        
+        const contributions = planet.contributions || [];
+        contributions.push(newContribution);
+        
+        return updatePlanet(planetId, { contributions });
     }
 
     /**
@@ -252,7 +287,8 @@ const FabledGalaxyData = (function() {
                 creatorName: 'StarWeaver',
                 collaboration: 'open',
                 position: { x: 25, y: 30 },
-                color: '#00d9ff'
+                color: '#00d9ff',
+                planetImage: 'Imgs/New Crystal Galaxy.avif'
             },
             {
                 name: 'Verdant Deep',
@@ -268,7 +304,8 @@ const FabledGalaxyData = (function() {
                 creatorName: 'DeepDreamer',
                 collaboration: 'locked',
                 position: { x: 55, y: 45 },
-                color: '#4ade80'
+                color: '#4ade80',
+                planetImage: 'Imgs/eyeship rotated.avif'
             },
             {
                 name: 'Ashfall',
@@ -285,7 +322,8 @@ const FabledGalaxyData = (function() {
                 creatorName: 'CinderScribe',
                 collaboration: 'open',
                 position: { x: 35, y: 60 },
-                color: '#f97316'
+                color: '#f97316',
+                planetImage: 'Imgs/fractalFingersfULL.avif'
             },
             {
                 name: 'Whisperwind',
@@ -301,7 +339,8 @@ const FabledGalaxyData = (function() {
                 creatorName: 'CloudChaser',
                 collaboration: 'locked',
                 position: { x: 70, y: 25 },
-                color: '#a855f7'
+                color: '#a855f7',
+                planetImage: 'Imgs/spacescapeship.avif'
             },
             {
                 name: 'Shadowmere',
@@ -318,7 +357,27 @@ const FabledGalaxyData = (function() {
                 creatorName: 'NightWriter',
                 collaboration: 'open',
                 position: { x: 65, y: 65 },
-                color: '#7c5bf5'
+                color: '#7c5bf5',
+                planetImage: 'Imgs/yogg.avif'
+            },
+            {
+                name: 'Florantine',
+                type: 'forest',
+                description: 'A lush world where forests of pink-blossomed trees cover entire continents, their roots intertwined in a planet-spanning network of life.',
+                inhabitants: 'The Bloomkin - small humanoids who photosynthesize and communicate through pollen clouds.',
+                civilization: 'Arboreal communities living in harmony with the Great Grove, where the oldest tree is said to be conscious.',
+                factions: 'The Petal Guard protects endangered species. The Root Speakers commune with the forest network.',
+                techLevel: 'ancient',
+                technology: 'Bio-organic architecture, seed-based messaging systems, living tools that grow to fit their purpose.',
+                magicExists: 'yes',
+                magicSystem: 'Bloom-weaving: Drawing power from flowers to heal, grow, and transform organic matter.',
+                creationMyth: 'The First Seed fell from a dying star and took root in cosmic dust, growing the world from its branches.',
+                legends: 'The Eternal Bloom - a flower that grants immortality but only blooms once every thousand years.',
+                creatorName: 'PetalScribe',
+                collaboration: 'open',
+                position: { x: 45, y: 35 },
+                color: '#ff6b9d',
+                planetImage: 'Imgs/Pink Poppy Flowers.avif'
             }
         ];
     }
@@ -331,6 +390,7 @@ const FabledGalaxyData = (function() {
         savePlanet,
         updatePlanet,
         deletePlanet,
+        addContribution,
         loginModerator,
         logoutModerator,
         isModerator,

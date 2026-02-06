@@ -42,17 +42,20 @@ body {
     overflow-x: hidden;
 }
 
-/* Font loading optimization to reduce CLS */
-@font-face {
-    font-family: 'Cinzel';
-    font-display: swap;
-    size-adjust: 105%;
+/* Image optimization defaults */
+img {
+    max-width: 100%;
+    height: auto;
+    display: block;
 }
 
-@font-face {
-    font-family: 'Quicksand';
-    font-display: swap;
-    size-adjust: 100%;
+img[loading="lazy"] {
+    content-visibility: auto;
+}
+
+/* Prevent layout shift with aspect-ratio placeholders */
+img[width][height] {
+    aspect-ratio: attr(width) / attr(height);
 }
 
 /* Starfield Background */
@@ -139,9 +142,11 @@ body {
     max-width: 100%;
     height: auto;
     max-height: 200px;
+    margin: 0 auto;
     border-radius: 12px;
     filter: drop-shadow(0 0 30px rgba(124, 91, 245, 0.4));
     animation: logoGlow 4s ease-in-out infinite;
+    object-fit: contain;
 }
 
 @keyframes logoGlow {
@@ -390,17 +395,21 @@ section {
 
 .galaxy-map-container {
     position: relative;
-    max-width: 900px;
+    width: min(100%, 70vh, 900px);
     margin: 0 auto 3rem;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 0 60px rgba(124, 91, 245, 0.3);
+    aspect-ratio: 1;
 }
 
 .galaxy-map-image {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
-    height: auto;
-    display: block;
+    height: 100%;
+    object-fit: cover;
 }
 
 .galaxy-overlay {
@@ -413,8 +422,8 @@ section {
 
 .planet-node {
     position: absolute;
-    width: 20px;
-    height: 20px;
+    width: clamp(14px, 2.5vmin, 24px);
+    height: clamp(14px, 2.5vmin, 24px);
     background: radial-gradient(circle, var(--planet-color, var(--color-gold)), rgba(255, 215, 0, 0.5));
     border-radius: 50%;
     cursor: pointer;
@@ -433,8 +442,8 @@ section {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 40px;
-    height: 40px;
+    width: clamp(24px, 4.5vmin, 48px);
+    height: clamp(24px, 4.5vmin, 48px);
     border: 2px solid var(--planet-color, rgba(255, 215, 0, 0.3));
     border-radius: 50%;
     transform: translate(-50%, -50%);
@@ -621,9 +630,11 @@ section {
 
 .form-logo {
     max-width: 300px;
+    width: 100%;
     height: auto;
-    margin-bottom: 2rem;
+    margin: 0 auto 2rem;
     filter: drop-shadow(0 0 30px rgba(124, 91, 245, 0.4));
+    object-fit: contain;
 }
 
 .form-title {
@@ -776,6 +787,47 @@ section {
 .step-prompt {
     color: var(--color-text-dim);
     font-size: 1.1rem;
+}
+
+/* Step Illustrations */
+.step-illustration {
+    display: flex;
+    justify-content: center;
+    margin: 1.5rem 0 2rem;
+    position: relative;
+}
+
+.step-illustration::before {
+    content: '';
+    position: absolute;
+    inset: -10px;
+    background: radial-gradient(ellipse at center, var(--color-primary-glow) 0%, transparent 70%);
+    opacity: 0.3;
+    border-radius: 50%;
+    z-index: -1;
+    animation: pulse 3s ease-in-out infinite;
+}
+
+.step-image {
+    max-width: 280px;
+    max-height: 200px;
+    width: 280px;
+    height: 200px;
+    object-fit: contain;
+    aspect-ratio: 280 / 200;
+    border-radius: 16px;
+    border: 2px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 
+        0 8px 32px rgba(0, 0, 0, 0.4),
+        0 0 20px rgba(124, 91, 245, 0.2);
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.step-image:hover {
+    transform: scale(1.02);
+    box-shadow: 
+        0 12px 40px rgba(0, 0, 0, 0.5),
+        0 0 30px rgba(124, 91, 245, 0.3);
 }
 
 /* Form Groups */
@@ -1006,8 +1058,12 @@ section {
 .upload-preview img {
     max-width: 200px;
     max-height: 200px;
+    width: auto;
+    height: auto;
     border-radius: 12px;
     box-shadow: 0 0 20px rgba(124, 91, 245, 0.3);
+    object-fit: contain;
+    margin: 0 auto;
 }
 
 /* Form Navigation Buttons */
@@ -1117,6 +1173,17 @@ section {
     .form-group select,
     .form-group textarea {
         padding: 0.875rem 1rem;
+    }
+    
+    .step-illustration {
+        margin: 1rem 0 1.5rem;
+    }
+    
+    .step-image {
+        max-width: 200px;
+        width: 200px;
+        height: auto;
+        aspect-ratio: 280 / 200;
     }
 }
 
@@ -1296,6 +1363,8 @@ section {
 .nav-logo img {
     height: 40px;
     width: auto;
+    max-width: 150px;
+    object-fit: contain;
 }
 
 .nav-links {
@@ -1388,20 +1457,176 @@ section {
     margin: 0 auto;
 }
 
+/* Galaxy Map Wrapper with Controls */
+.galaxy-map-wrapper {
+    position: relative;
+    max-width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
 .galaxy-map {
     position: relative;
-    width: 100%;
+    /* Square aspect ratio to match the galaxy image */
     aspect-ratio: 1;
-    max-height: 70vh;
+    /* Size constraints */
+    width: min(100%, 70vh);
+    max-width: 800px;
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 0 60px rgba(124, 91, 245, 0.3);
+    cursor: grab;
+}
+
+.galaxy-map.dragging {
+    cursor: grabbing;
+}
+
+/* Zoomable Viewport */
+.map-viewport {
+    width: 100%;
+    height: 100%;
+    transform-origin: center center;
+    transition: transform 0.2s ease-out;
+    position: relative;
 }
 
 .galaxy-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    pointer-events: none;
+}
+
+/* Zoom Controls */
+.map-controls {
+    position: absolute;
+    right: 1rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    background: rgba(10, 10, 15, 0.85);
+    padding: 0.75rem;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 20;
+}
+
+.map-control-btn {
+    width: 36px;
+    height: 36px;
+    background: rgba(124, 91, 245, 0.2);
+    border: 1px solid rgba(124, 91, 245, 0.4);
+    border-radius: 8px;
+    color: var(--color-text);
+    font-size: 1.25rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.map-control-btn:hover:not(:disabled) {
+    background: rgba(124, 91, 245, 0.4);
+    border-color: var(--color-primary);
+}
+
+.map-control-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.zoom-level {
+    text-align: center;
+    font-size: 0.85rem;
+    color: var(--color-text-dim);
+    padding: 0.25rem 0;
+}
+
+/* Mini Map */
+.mini-map {
+    position: absolute;
+    left: 1rem;
+    bottom: 1rem;
+    width: 100px;
+    height: 100px;
+    background: rgba(10, 10, 15, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    overflow: hidden;
+    z-index: 20;
+    transition: opacity 0.3s ease;
+    cursor: pointer;
+}
+
+.mini-map::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle at center, rgba(124, 91, 245, 0.3) 0%, transparent 70%);
+    pointer-events: none;
+}
+
+.mini-map-viewport {
+    position: absolute;
+    border: 2px solid var(--color-gold);
+    background: rgba(255, 215, 0, 0.1);
+    border-radius: 2px;
+    pointer-events: none;
+}
+
+/* Planet Clusters */
+.planet-cluster {
+    position: absolute;
+    width: clamp(32px, 5vmin, 48px);
+    height: clamp(32px, 5vmin, 48px);
+    background: radial-gradient(circle, var(--cluster-color, #7c5bf5), rgba(124, 91, 245, 0.4));
+    border-radius: 50%;
+    cursor: pointer;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 15;
+    box-shadow: 0 0 20px rgba(124, 91, 245, 0.5);
+    animation: clusterPulse 2s ease-in-out infinite;
+}
+
+.planet-cluster::before {
+    content: '';
+    position: absolute;
+    width: 150%;
+    height: 150%;
+    border: 2px dashed rgba(255, 255, 255, 0.3);
+    border-radius: 50%;
+    animation: clusterSpin 10s linear infinite;
+}
+
+.cluster-count {
+    font-family: var(--font-display);
+    font-size: clamp(0.75rem, 2vmin, 1rem);
+    font-weight: 600;
+    color: white;
+    text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes clusterPulse {
+    0%, 100% { box-shadow: 0 0 20px rgba(124, 91, 245, 0.5); }
+    50% { box-shadow: 0 0 35px rgba(124, 91, 245, 0.8); }
+}
+
+@keyframes clusterSpin {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
 }
 
 .planets-container {
@@ -1415,8 +1640,8 @@ section {
 /* Planet Nodes on Map */
 .planet-node {
     position: absolute;
-    width: 24px;
-    height: 24px;
+    width: clamp(16px, 3vmin, 28px);
+    height: clamp(16px, 3vmin, 28px);
     background: radial-gradient(circle, var(--planet-color, #ffd700), rgba(255, 215, 0, 0.5));
     border-radius: 50%;
     cursor: pointer;
@@ -1431,8 +1656,8 @@ section {
     position: absolute;
     top: 50%;
     left: 50%;
-    width: 40px;
-    height: 40px;
+    width: clamp(28px, 5vmin, 48px);
+    height: clamp(28px, 5vmin, 48px);
     border: 2px solid var(--planet-color, rgba(255, 215, 0, 0.3));
     border-radius: 50%;
     transform: translate(-50%, -50%);
@@ -1620,18 +1845,24 @@ section {
 }
 
 .card-image {
-    height: 160px;
+    height: 180px;
+    min-height: 180px;
+    aspect-ratio: 280 / 180;
     display: flex;
     align-items: center;
     justify-content: center;
     position: relative;
     overflow: hidden;
+    background: rgba(0, 0, 0, 0.3);
 }
 
 .card-image img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
+    max-width: 100%;
+    max-height: 100%;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    aspect-ratio: 280 / 180;
 }
 
 .card-emoji {
@@ -1907,12 +2138,22 @@ section {
     border-radius: 16px;
     overflow: hidden;
     box-shadow: 0 0 40px rgba(124, 91, 245, 0.3);
+    background: rgba(0, 0, 0, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 200px;
+    aspect-ratio: 1;
 }
 
 .planet-image-container img {
-    width: 100%;
+    max-width: 100%;
+    max-height: 400px;
+    width: auto;
     height: auto;
     display: block;
+    object-fit: contain;
+    aspect-ratio: 1;
 }
 
 .planet-image-fallback {
@@ -2029,6 +2270,128 @@ section {
     flex-wrap: wrap;
 }
 
+/* Collaboration Forms */
+.collab-form-container {
+    margin-top: 1.5rem;
+    padding: 1.25rem;
+    background: rgba(124, 91, 245, 0.08);
+    border: 1px solid rgba(124, 91, 245, 0.2);
+    border-radius: 12px;
+}
+
+.collab-form-header {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-weight: 500;
+    color: var(--color-primary-light);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+}
+
+.collab-icon {
+    font-size: 1.1rem;
+}
+
+.collab-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.collab-field-select {
+    padding: 0.625rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-text);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.collab-field-select:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.collab-input {
+    padding: 0.75rem 1rem;
+    font-family: var(--font-body);
+    font-size: 0.95rem;
+    color: var(--color-text);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+    resize: vertical;
+    min-height: 80px;
+}
+
+.collab-input:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.collab-input::placeholder {
+    color: var(--color-text-dim);
+}
+
+.collab-form-footer {
+    display: flex;
+    gap: 0.75rem;
+    align-items: center;
+}
+
+.collab-name {
+    flex: 1;
+    padding: 0.5rem 0.875rem;
+    font-family: var(--font-body);
+    font-size: 0.9rem;
+    color: var(--color-text);
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 8px;
+}
+
+.collab-name:focus {
+    outline: none;
+    border-color: var(--color-primary);
+}
+
+.collab-name::placeholder {
+    color: var(--color-text-dim);
+}
+
+/* Contributions Display */
+.contributions-list {
+    margin-top: 1rem;
+}
+
+.contribution-item {
+    padding: 0.875rem 1rem;
+    background: rgba(255, 255, 255, 0.03);
+    border-left: 3px solid var(--color-primary);
+    border-radius: 0 8px 8px 0;
+    margin-bottom: 0.75rem;
+}
+
+.contribution-item:last-child {
+    margin-bottom: 0;
+}
+
+.contribution-content {
+    color: var(--color-text);
+    font-size: 0.95rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+}
+
+.contribution-meta {
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+    font-style: italic;
+}
+
 /* Gallery & Planet Page Responsive */
 @media (max-width: 768px) {
     .gallery-nav {
@@ -2037,6 +2400,7 @@ section {
     
     .nav-logo img {
         height: 30px;
+        max-width: 100px;
     }
     
     .gallery-filters {
@@ -2058,8 +2422,26 @@ section {
     }
     
     .galaxy-map {
-        aspect-ratio: auto;
-        height: 60vh;
+        width: min(100%, 60vh);
+        max-width: none;
+    }
+    
+    .map-controls {
+        right: 0.5rem;
+        padding: 0.5rem;
+    }
+    
+    .map-control-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .mini-map {
+        width: 70px;
+        height: 70px;
+        left: 0.5rem;
+        bottom: 0.5rem;
     }
     
     .galaxy-stats {
@@ -2076,7 +2458,12 @@ section {
     
     .planet-image-container {
         max-width: 300px;
+        max-height: 300px;
         margin: 0 auto;
+    }
+    
+    .planet-image-container img {
+        max-height: 300px;
     }
     
     .planet-hero-info {
@@ -2110,5 +2497,13 @@ section {
     .toggle-btn {
         width: 100%;
         max-width: 200px;
+    }
+    
+    .collab-form-footer {
+        flex-direction: column;
+    }
+    
+    .collab-name {
+        width: 100%;
     }
 }

@@ -287,7 +287,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const reader = new FileReader();
             reader.onload = (e) => {
                 uploadPreview.innerHTML = `
-                    <img src="${e.target.result}" alt="Planet art preview">
+                    <img src="${e.target.result}" alt="Planet art preview" width="200" height="200">
                     <button type="button" class="remove-image" onclick="removeImage()">✕ Remove</button>
                 `;
                 uploadPreview.classList.add('has-image');

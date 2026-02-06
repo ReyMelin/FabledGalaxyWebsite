@@ -9,12 +9,31 @@
     <meta name="description" content="Explore this world in the Fabled Galaxy - a collaborative world-building universe.">
     <title>Planet | Fabled Galaxy</title>
     
+    <!-- Critical CSS to prevent layout shift -->
+    <style>
+        :root{--color-bg-dark:#0a0a0f;--color-text:#e8e6f0;--color-text-dim:#a8a5b5;--font-display:'Cinzel',Georgia,serif;--font-body:'Quicksand',system-ui,sans-serif}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{background-color:var(--color-bg-dark);color:var(--color-text);font-family:var(--font-body);line-height:1.6}
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0f 100%)}
+        .planet-page{min-height:100vh}
+        .planet-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;min-height:60px}
+        .planet-loading{min-height:400px;display:flex;flex-direction:column;align-items:center;justify-content:center}
+        .planet-hero{display:grid;grid-template-columns:300px 1fr;gap:2rem;min-height:300px}
+        .planet-image-container{min-height:200px;aspect-ratio:1}
+        .planet-name{font-family:var(--font-display);font-size:clamp(2rem,5vw,3rem);min-height:1.2em}
+        .planet-section{min-height:100px}
+    </style>
+    
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
 </head>
 <body>
     <!-- Starfield Background -->
@@ -93,15 +112,38 @@
                     <div class="lore-block" id="block-inhabitants" style="display: none;">
                         <h3>Inhabitants</h3>
                         <p id="planet-inhabitants"></p>
+                        <div class="contributions-list" data-field="inhabitants"></div>
                     </div>
                     <div class="lore-block" id="block-civilization" style="display: none;">
                         <h3>Civilization & Culture</h3>
                         <p id="planet-civilization"></p>
+                        <div class="contributions-list" data-field="civilization"></div>
                     </div>
                     <div class="lore-block" id="block-factions" style="display: none;">
                         <h3>Factions & Groups</h3>
                         <p id="planet-factions"></p>
+                        <div class="contributions-list" data-field="factions"></div>
                     </div>
+                </div>
+                <!-- Collaboration Form -->
+                <div class="collab-form-container" data-section="civilization" style="display: none;">
+                    <div class="collab-form-header">
+                        <span class="collab-icon">✨</span>
+                        <span>Add to the Fable</span>
+                    </div>
+                    <form class="collab-form">
+                        <select class="collab-field-select" required>
+                            <option value="">Choose what to add...</option>
+                            <option value="inhabitants">More about Inhabitants</option>
+                            <option value="civilization">Culture & Traditions</option>
+                            <option value="factions">New Faction or Group</option>
+                        </select>
+                        <textarea class="collab-input" placeholder="Share your ideas for this world's people..." rows="3" required></textarea>
+                        <div class="collab-form-footer">
+                            <input type="text" class="collab-name" placeholder="Your name (optional)">
+                            <button type="submit" class="btn btn-primary btn-small">Contribute</button>
+                        </div>
+                    </form>
                 </div>
             </section>
 
@@ -113,6 +155,22 @@
                         <!-- Tech level badge -->
                     </div>
                     <p id="planet-technology"></p>
+                    <div class="contributions-list" data-field="technology"></div>
+                </div>
+                <!-- Collaboration Form -->
+                <div class="collab-form-container" data-section="technology" style="display: none;">
+                    <div class="collab-form-header">
+                        <span class="collab-icon">✨</span>
+                        <span>Add to the Fable</span>
+                    </div>
+                    <form class="collab-form">
+                        <input type="hidden" class="collab-field-select" value="technology">
+                        <textarea class="collab-input" placeholder="Describe new inventions, tools, or technological advances..." rows="3" required></textarea>
+                        <div class="collab-form-footer">
+                            <input type="text" class="collab-name" placeholder="Your name (optional)">
+                            <button type="submit" class="btn btn-primary btn-small">Contribute</button>
+                        </div>
+                    </form>
                 </div>
             </section>
 
@@ -124,6 +182,22 @@
                         <!-- Magic status -->
                     </div>
                     <p id="planet-magic"></p>
+                    <div class="contributions-list" data-field="magicSystem"></div>
+                </div>
+                <!-- Collaboration Form -->
+                <div class="collab-form-container" data-section="magic" style="display: none;">
+                    <div class="collab-form-header">
+                        <span class="collab-icon">✨</span>
+                        <span>Add to the Fable</span>
+                    </div>
+                    <form class="collab-form">
+                        <input type="hidden" class="collab-field-select" value="magicSystem">
+                        <textarea class="collab-input" placeholder="Describe new spells, magical creatures, or arcane phenomena..." rows="3" required></textarea>
+                        <div class="collab-form-footer">
+                            <input type="text" class="collab-name" placeholder="Your name (optional)">
+                            <button type="submit" class="btn btn-primary btn-small">Contribute</button>
+                        </div>
+                    </form>
                 </div>
             </section>
 
@@ -134,15 +208,38 @@
                     <div class="lore-block" id="block-creation" style="display: none;">
                         <h3>Creation Myth</h3>
                         <p id="planet-creation"></p>
+                        <div class="contributions-list" data-field="creationMyth"></div>
                     </div>
                     <div class="lore-block" id="block-legends" style="display: none;">
                         <h3>Legends & Heroes</h3>
                         <p id="planet-legends"></p>
+                        <div class="contributions-list" data-field="legends"></div>
                     </div>
                     <div class="lore-block" id="block-history" style="display: none;">
                         <h3>Historical Events</h3>
                         <p id="planet-history"></p>
+                        <div class="contributions-list" data-field="history"></div>
                     </div>
+                </div>
+                <!-- Collaboration Form -->
+                <div class="collab-form-container" data-section="lore" style="display: none;">
+                    <div class="collab-form-header">
+                        <span class="collab-icon">✨</span>
+                        <span>Add to the Fable</span>
+                    </div>
+                    <form class="collab-form">
+                        <select class="collab-field-select" required>
+                            <option value="">Choose what to add...</option>
+                            <option value="creationMyth">Creation Myth addition</option>
+                            <option value="legends">New Legend or Hero</option>
+                            <option value="history">Historical Event</option>
+                        </select>
+                        <textarea class="collab-input" placeholder="Share myths, legends, or historical events..." rows="3" required></textarea>
+                        <div class="collab-form-footer">
+                            <input type="text" class="collab-name" placeholder="Your name (optional)">
+                            <button type="submit" class="btn btn-primary btn-small">Contribute</button>
+                        </div>
+                    </form>
                 </div>
             </section>
 
@@ -218,7 +315,9 @@
                 // Hero section
                 const imageContainer = document.getElementById('planet-image');
                 if (planet.imageData) {
-                    imageContainer.innerHTML = `<img src="${planet.imageData}" alt="${planet.name}">`;
+                    imageContainer.innerHTML = `<img src="${planet.imageData}" alt="${planet.name}" width="300" height="300" loading="eager" decoding="async">`;
+                } else if (planet.planetImage) {
+                    imageContainer.innerHTML = `<img src="${planet.planetImage}" alt="${planet.name}" width="300" height="300" loading="eager" decoding="async">`;
                 } else {
                     imageContainer.innerHTML = `<div class="planet-image-fallback" style="background-color: ${planet.color}20;"><span>${typeInfo.emoji}</span></div>`;
                 }
@@ -309,6 +408,14 @@
                     document.getElementById('section-lore').style.display = 'block';
                 }
                 
+                // For open planets, show all sections so collaborators can add content
+                if (planet.collaboration === 'open') {
+                    document.getElementById('section-civilization').style.display = 'block';
+                    document.getElementById('section-technology').style.display = 'block';
+                    document.getElementById('section-magic').style.display = 'block';
+                    document.getElementById('section-lore').style.display = 'block';
+                }
+                
                 // Moderator actions
                 if (FabledGalaxyData.isModerator()) {
                     deleteBtn.style.display = 'inline-flex';
@@ -338,6 +445,108 @@
                         });
                     }
                 });
+                
+                // Collaboration features
+                if (planet.collaboration === 'open') {
+                    setupCollaboration(planet);
+                }
+                
+                // Display existing contributions
+                displayContributions(planet);
+            }
+            
+            function setupCollaboration(planet) {
+                // Show all collaboration forms
+                document.querySelectorAll('.collab-form-container').forEach(container => {
+                    container.style.display = 'block';
+                    
+                    const form = container.querySelector('.collab-form');
+                    const section = container.dataset.section;
+                    
+                    form.addEventListener('submit', (e) => {
+                        e.preventDefault();
+                        
+                        const fieldSelect = form.querySelector('.collab-field-select');
+                        const field = fieldSelect.value || fieldSelect.getAttribute('value');
+                        const content = form.querySelector('.collab-input').value.trim();
+                        const name = form.querySelector('.collab-name').value.trim() || 'Anonymous Traveler';
+                        
+                        if (!field || !content) {
+                            alert('Please fill in all required fields');
+                            return;
+                        }
+                        
+                        const result = FabledGalaxyData.addContribution(planet.id, {
+                            section,
+                            field,
+                            content,
+                            contributorName: name
+                        });
+                        
+                        if (result) {
+                            // Show success feedback
+                            const btn = form.querySelector('button[type="submit"]');
+                            const originalText = btn.innerHTML;
+                            btn.innerHTML = '✓ Added!';
+                            btn.disabled = true;
+                            
+                            // Clear form
+                            form.querySelector('.collab-input').value = '';
+                            form.querySelector('.collab-name').value = '';
+                            if (fieldSelect.tagName === 'SELECT') {
+                                fieldSelect.selectedIndex = 0;
+                            }
+                            
+                            // Refresh contributions display
+                            displayContributions(result);
+                            
+                            // Reset button
+                            setTimeout(() => {
+                                btn.innerHTML = originalText;
+                                btn.disabled = false;
+                            }, 2000);
+                        } else {
+                            alert('Could not add contribution. Please try again.');
+                        }
+                    });
+                });
+            }
+            
+            function displayContributions(planet) {
+                const contributions = planet.contributions || [];
+                
+                // Group contributions by field
+                const byField = {};
+                contributions.forEach(c => {
+                    if (!byField[c.field]) byField[c.field] = [];
+                    byField[c.field].push(c);
+                });
+                
+                // Render contributions in their respective containers
+                document.querySelectorAll('.contributions-list').forEach(container => {
+                    const field = container.dataset.field;
+                    const fieldContribs = byField[field] || [];
+                    
+                    if (fieldContribs.length === 0) {
+                        container.innerHTML = '';
+                        return;
+                    }
+                    
+                    container.innerHTML = fieldContribs.map(c => `
+                        <div class="contribution-item">
+                            <p class="contribution-content">${escapeHtml(c.content)}</p>
+                            <span class="contribution-meta">
+                                — ${escapeHtml(c.contributorName)}, ${new Date(c.createdAt).toLocaleDateString()}
+                            </span>
+                        </div>
+                    `).join('');
+                });
+            }
+            
+            function escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
             
             function truncateText(text, maxLength) {

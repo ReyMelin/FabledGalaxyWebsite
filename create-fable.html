@@ -9,12 +9,33 @@
     <meta name="description" content="Create your own planet in the Fabled Galaxy. Build civilizations, magic systems, and mythologies in our collaborative world-building universe.">
     <title>Create Your Fable | Fabled Galaxy</title>
     
+    <!-- Critical CSS to prevent layout shift -->
+    <style>
+        :root{--color-bg-dark:#0a0a0f;--color-text:#e8e6f0;--color-text-dim:#a8a5b5;--font-display:'Cinzel',Georgia,serif;--font-body:'Quicksand',system-ui,sans-serif}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{background-color:var(--color-bg-dark);color:var(--color-text);font-family:var(--font-body);line-height:1.6}
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0f 100%)}
+        .form-page{min-height:100vh;padding-top:4rem}
+        .form-header{padding:4rem 2rem 2rem;text-align:center;min-height:280px}
+        .form-logo{max-width:300px;height:99px}
+        .form-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);min-height:1.2em}
+        .wizard-progress{min-height:80px}
+        .form-container{min-height:500px}
+        .step-illustration{min-height:220px;display:flex;align-items:center;justify-content:center}
+        .step-image{max-width:280px;max-height:200px;width:280px;height:200px}
+    </style>
+    
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>>
+    
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
+    <link rel="preload" as="image" href="Imgs/CelsetialRings.png">
 </head>
 <body>
     <!-- Starfield Background -->
@@ -90,6 +111,10 @@
                         <p class="step-prompt">What does your planet look like? Give it an identity that captures its essence.</p>
                     </div>
                     
+                    <div class="step-illustration">
+                        <img src="Imgs/CelsetialRings.png" alt="Celestial rings around a planet" class="step-image" width="280" height="200" decoding="async">
+                    </div>
+                    
                     <div class="form-group">
                         <label for="planet-name">Planet Name <span class="required">*</span></label>
                         <input type="text" id="planet-name" name="planetName" required 
@@ -131,6 +156,10 @@
                         <p class="step-prompt">Who lives there? What kind of civilization exists?</p>
                     </div>
                     
+                    <div class="step-illustration">
+                        <img src="Imgs/portrate004 copy.avif" alt="Portrait of an otherworldly being" class="step-image" width="280" height="200" loading="lazy" decoding="async">
+                    </div>
+                    
                     <div class="form-group">
                         <label for="inhabitants">Inhabitants</label>
                         <textarea id="inhabitants" name="inhabitants" rows="4"
@@ -156,6 +185,10 @@
                         <span class="step-emoji">⚙️</span>
                         <h2>Build Your Technology</h2>
                         <p class="step-prompt">What level of technology exists? How advanced is your world?</p>
+                    </div>
+                    
+                    <div class="step-illustration">
+                        <img src="Imgs/spacescapeship.avif" alt="Spacecraft traveling through nebulous clouds" class="step-image" width="280" height="200" loading="lazy" decoding="async">
                     </div>
                     
                     <div class="form-group">
@@ -188,6 +221,10 @@
                         <span class="step-emoji">✨</span>
                         <h2>Craft Your Magic</h2>
                         <p class="step-prompt">How does magic work? What are its rules and limitations?</p>
+                    </div>
+                    
+                    <div class="step-illustration">
+                        <img src="Imgs/fractalFingersfULL.avif" alt="Ethereal fractal patterns pulsing with arcane energy" class="step-image" width="280" height="200" loading="lazy" decoding="async">
                     </div>
                     
                     <div class="form-group">
@@ -231,6 +268,10 @@
                         <p class="step-prompt">What myths and legends shape this world? Every civilization has its stories.</p>
                     </div>
                     
+                    <div class="step-illustration">
+                        <img src="Imgs/Bigguy.avif" alt="A towering mythological figure" class="step-image" width="280" height="200" loading="lazy" decoding="async">
+                    </div>
+                    
                     <div class="form-group">
                         <label for="creation-myth">Creation Myth / Origin Story</label>
                         <textarea id="creation-myth" name="creationMyth" rows="4"
@@ -256,6 +297,10 @@
                         <span class="step-emoji">🎨</span>
                         <h2>Bring It to Life</h2>
                         <p class="step-prompt">Add visuals and final touches to complete your fable.</p>
+                    </div>
+                    
+                    <div class="step-illustration">
+                        <img src="Imgs/Pink Poppy Flowers (1).avif" alt="Beautiful alien flora" class="step-image" width="280" height="200" loading="lazy" decoding="async">
                     </div>
                     
                     <div class="form-group">

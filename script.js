@@ -127,6 +127,8 @@ function createGalaxyParticle(container, centerX, centerY, index, total) {
    ============================================ */
 function initTypewriter() {
     const storyText = document.querySelector('.story-text');
+    if (!storyText) return; // Not on homepage
+    
     const lines = [
         "In the vast expanse of imagination, countless worlds await discovery.",
         "Each star holds a story, each planet a fable.",

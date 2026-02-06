@@ -1,0 +1,147 @@
+{
+  "images": [
+    {
+      "id": "header",
+      "filename": "fabled galaxy header.avif",
+      "optimized": "fabled-galaxy-header-optimized.webp",
+      "description": "The main Fabled Galaxy logo header with cosmic starfield background and elegant typography",
+      "theme": ["branding", "header"],
+      "usage": "Site header and navigation"
+    },
+    {
+      "id": "galaxy-map",
+      "filename": "galaxy-map-optimized.webp",
+      "description": "Stylized galaxy map background for navigation and exploration sections",
+      "theme": ["space", "navigation"],
+      "usage": "Galaxy overlay backgrounds"
+    },
+    {
+      "id": "crystal-galaxy",
+      "filename": "New Crystal Galaxy.avif",
+      "description": "A mesmerizing crystalline galaxy formation with prismatic light refracting through cosmic structures. Ethereal blues and purples dominate this otherworldly scene.",
+      "theme": ["crystal", "magic", "arcane", "space"],
+      "usage": "Crystal worlds, magic sections, arcane themes"
+    },
+    {
+      "id": "celestial-rings",
+      "filename": "CelsetialRings.png",
+      "description": "Majestic planetary rings illuminated by starlight, creating halos of cosmic dust and ice particles orbiting in perfect harmony",
+      "theme": ["space", "planet", "celestial"],
+      "usage": "Planet creation forms, space backgrounds"
+    },
+    {
+      "id": "spacescapeship",
+      "filename": "spacescapeship.avif",
+      "description": "A sleek spacecraft navigating through nebulous star clouds, with engine trails creating ribbons of light against the cosmic backdrop",
+      "theme": ["technology", "space", "sky", "futuristic"],
+      "usage": "Technology sections, space exploration, sky worlds"
+    },
+    {
+      "id": "eyeship",
+      "filename": "eyeship rotated.avif",
+      "description": "An enigmatic bio-organic vessel or creature with eye-like features, blending mechanical and living design elements in an unsettling harmony",
+      "theme": ["creature", "mysterious", "ocean", "dark", "alien"],
+      "usage": "Ocean worlds, dark worlds, mysterious creatures"
+    },
+    {
+      "id": "fractal-fingers",
+      "filename": "fractalFingersfULL.avif",
+      "description": "Abstract fractal patterns resembling ethereal fingers reaching through dimensions, with recursive geometric patterns that seem to pulse with arcane energy",
+      "theme": ["magic", "arcane", "abstract", "mystical"],
+      "usage": "Magic system sections, arcane worlds, mystical themes"
+    },
+    {
+      "id": "bigguy",
+      "filename": "Bigguy.avif",
+      "description": "A towering figure of immense presence, their silhouette commanding attention against swirling cosmic energies. Could be a guardian, deity, or ancient being.",
+      "theme": ["character", "legends", "mythology", "guardian"],
+      "usage": "Legends sections, mythological beings, character profiles"
+    },
+    {
+      "id": "candlestick-jack",
+      "filename": "Candlestick Jackv.avif",
+      "description": "A mysterious figure surrounded by flickering candlelight, their features partially obscured in dancing shadows. Exudes an air of secrets and hidden knowledge.",
+      "theme": ["character", "dark", "mysterious", "civilization"],
+      "usage": "Dark worlds, mysterious characters, civilization leaders"
+    },
+    {
+      "id": "manic-pixie",
+      "filename": "Manic PixieColor1.avif",
+      "description": "A vibrant, colorful character portrait bursting with energy and whimsy. Wild hair and expressive features suggest a free spirit connected to chaotic magic.",
+      "theme": ["character", "magic", "whimsical", "forest", "fae"],
+      "usage": "Forest worlds, fae creatures, magic users"
+    },
+    {
+      "id": "portrait",
+      "filename": "portrate004 copy.avif",
+      "description": "An evocative portrait study capturing the essence of an otherworldly being. Features suggest both wisdom and otherworldly origins.",
+      "theme": ["character", "portrait", "civilization", "people"],
+      "usage": "Civilization sections, character references, inhabitants"
+    },
+    {
+      "id": "yogg",
+      "filename": "yogg.avif",
+      "description": "A cosmic horror entity with tentacles and multiple eyes, existing between dimensions. Ancient and unfathomable, it represents the unknown terrors of the universe.",
+      "theme": ["creature", "horror", "legends", "dark", "cosmic"],
+      "usage": "Dark worlds, legendary creatures, cosmic horror themes"
+    },
+    {
+      "id": "hmm",
+      "filename": "hmm.avif",
+      "description": "An enigmatic image that defies easy categorization, inviting contemplation and interpretation. Perfect for mysteries and the unexplained.",
+      "theme": ["mysterious", "abstract", "ambiguous"],
+      "usage": "Mysterious elements, undefined magic, ambiguous content"
+    },
+    {
+      "id": "postcard",
+      "filename": "postcard1.avif",
+      "description": "A scenic landscape vista capturing a moment of alien beauty. Rolling terrain under unusual skies suggests worlds waiting to be explored.",
+      "theme": ["landscape", "terrestrial", "scenic", "exploration"],
+      "usage": "Planet landscapes, terrestrial worlds, scenic sections"
+    },
+    {
+      "id": "poppy-1",
+      "filename": "Pink Poppy Flowers.avif",
+      "description": "Delicate pink poppies swaying in an ethereal breeze, their petals catching light like fragments of dawn. Life flourishing in gentle abundance.",
+      "theme": ["nature", "forest", "life", "floral", "terrestrial"],
+      "usage": "Forest worlds, nature themes, life and growth"
+    },
+    {
+      "id": "poppy-2",
+      "filename": "Pink Poppy Flowers (1).avif",
+      "description": "A field of pink poppies stretching toward distant horizons, creating rivers of color through alien meadows.",
+      "theme": ["nature", "forest", "life", "floral", "terrestrial"],
+      "usage": "Forest worlds, nature sections, peaceful themes"
+    },
+    {
+      "id": "poppy-3",
+      "filename": "Pink Poppy Flowers (2).avif",
+      "description": "Close-up detail of poppy blooms revealing intricate patterns and textures, the mathematics of nature expressed in organic form.",
+      "theme": ["nature", "forest", "detail", "floral"],
+      "usage": "Detail sections, nature close-ups, organic designs"
+    },
+    {
+      "id": "poppy-4",
+      "filename": "Pink Poppy Flowers (3).avif",
+      "description": "Poppies at golden hour, their pink petals glowing with inner warmth as day transforms to twilight.",
+      "theme": ["nature", "forest", "twilight", "floral"],
+      "usage": "Transition sections, twilight themes, warm imagery"
+    }
+  ],
+  "themeMapping": {
+    "planet": ["celestial-rings", "postcard", "crystal-galaxy"],
+    "people": ["portrait", "manic-pixie", "candlestick-jack", "bigguy"],
+    "technology": ["spacescapeship", "celestial-rings"],
+    "magic": ["fractal-fingers", "crystal-galaxy", "manic-pixie"],
+    "legends": ["bigguy", "yogg", "candlestick-jack"],
+    "visuals": ["postcard", "poppy-1", "crystal-galaxy"],
+    "crystal": ["crystal-galaxy"],
+    "ocean": ["eyeship"],
+    "volcanic": ["fractal-fingers"],
+    "sky": ["spacescapeship", "celestial-rings"],
+    "dark": ["candlestick-jack", "yogg", "hmm"],
+    "forest": ["poppy-1", "poppy-2", "poppy-3", "poppy-4", "manic-pixie"],
+    "terrestrial": ["postcard", "poppy-1"],
+    "arcane": ["fractal-fingers", "crystal-galaxy", "yogg"]
+  }
+}

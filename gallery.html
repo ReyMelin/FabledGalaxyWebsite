@@ -9,12 +9,37 @@
     <meta name="description" content="Explore the Fabled Galaxy - discover user-created planets, civilizations, and mythologies in our collaborative world-building universe.">
     <title>Galaxy Gallery | Fabled Galaxy</title>
     
+    <!-- Critical CSS to prevent layout shift -->
+    <style>
+        :root{--color-bg-dark:#0a0a0f;--color-text:#e8e6f0;--color-text-dim:#a8a5b5;--color-gold:#ffd700;--font-display:'Cinzel',Georgia,serif;--font-body:'Quicksand',system-ui,sans-serif}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{background-color:var(--color-bg-dark);color:var(--color-text);font-family:var(--font-body);line-height:1.6}
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0f 100%)}
+        .gallery-page{min-height:100vh}
+        .gallery-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;min-height:60px}
+        .nav-logo img{height:40px;width:121px}
+        .gallery-header{padding:6rem 2rem 2rem;text-align:center;min-height:200px}
+        .gallery-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);min-height:1.2em}
+        .galaxy-map-wrapper{position:relative}
+        .galaxy-map{position:relative;aspect-ratio:1;max-height:70vh;overflow:hidden;cursor:grab}
+        .map-viewport{width:100%;height:100%;transform-origin:center center;transition:transform 0.2s ease-out;position:relative}
+        .map-controls{position:absolute;right:1rem;top:50%;transform:translateY(-50%);z-index:20}
+        .mini-map{position:absolute;left:1rem;bottom:1rem;width:100px;height:100px;z-index:20}
+        .planet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
+        .planet-card{min-height:280px}
+        .card-image{height:180px;min-height:180px}
+    </style>
+    
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
 </head>
 <body>
     <!-- Starfield Background -->
@@ -26,7 +51,10 @@
     <!-- Navigation -->
     <nav class="gallery-nav">
         <a href="index.html" class="nav-logo">
-            <img src="Imgs/fabled galaxy header.avif" alt="Fabled Galaxy" height="40">
+            <picture>
+                <source srcset="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
+                <img src="Imgs/fabled galaxy header.avif" alt="Fabled Galaxy" height="40" width="121" decoding="async">
+            </picture>
         </a>
         <div class="nav-links">
             <a href="create-fable.html" class="btn btn-primary btn-small">
@@ -80,10 +108,30 @@
 
         <!-- Galaxy Map View -->
         <section class="galaxy-view">
-            <div class="galaxy-map" id="galaxy-map">
-                <img src="Imgs/New Crystal Galaxy.avif" alt="Galaxy Background" class="galaxy-bg">
-                <div class="planets-container" id="planets-container">
-                    <!-- Planets will be dynamically inserted here -->
+            <div class="galaxy-map-wrapper">
+                <div class="galaxy-map" id="galaxy-map">
+                    <div class="map-viewport" id="map-viewport">
+                        <picture>
+                            <source srcset="Imgs/galaxy-map-optimized.webp" type="image/webp">
+                            <img src="Imgs/New Crystal Galaxy.avif" alt="Galaxy Background" class="galaxy-bg" width="522" height="522" loading="lazy" decoding="async">
+                        </picture>
+                        <div class="planets-container" id="planets-container">
+                            <!-- Planets will be dynamically inserted here -->
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Zoom Controls -->
+                <div class="map-controls">
+                    <button class="map-control-btn" id="zoom-in" title="Zoom In">+</button>
+                    <span class="zoom-level" id="zoom-level">1x</span>
+                    <button class="map-control-btn" id="zoom-out" title="Zoom Out">−</button>
+                    <button class="map-control-btn" id="zoom-reset" title="Reset View">⟲</button>
+                </div>
+                
+                <!-- Mini Map -->
+                <div class="mini-map" id="mini-map">
+                    <div class="mini-map-viewport" id="mini-viewport"></div>
                 </div>
             </div>
             
