@@ -816,10 +816,8 @@ section {
     object-fit: contain;
     aspect-ratio: 280 / 200;
     border-radius: 16px;
-    border: 2px solid rgba(255, 255, 255, 0.1);
-    box-shadow: 
-        0 8px 32px rgba(0, 0, 0, 0.4),
-        0 0 20px rgba(124, 91, 245, 0.2);
+    border: none;
+    box-shadow: none;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -1853,7 +1851,7 @@ section {
     justify-content: center;
     position: relative;
     overflow: hidden;
-    background: rgba(0, 0, 0, 0.3);
+    background: none;
 }
 
 .card-image img {
