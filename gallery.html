@@ -90,6 +90,7 @@
                         <option value="crystal">💎 Crystal</option>
                         <option value="dark">🌑 Dark</option>
                         <option value="arcane">🔮 Arcane</option>
+                        <option value="city">🏙️ City</option>
                     </select>
                 </div>
                 <div class="filter-group">
@@ -206,6 +207,15 @@
             </div>
             <div id="mod-panel" style="display: none;">
                 <p class="mod-status">✅ Logged in as Moderator</p>
+                
+                <!-- Pending Review Section -->
+                <div class="mod-review-section">
+                    <h3>📋 Pending Review <span id="pending-count" class="pending-badge">0</span></h3>
+                    <div id="pending-planets" class="pending-list">
+                        <!-- Pending planets will be rendered here -->
+                    </div>
+                </div>
+                
                 <div class="mod-actions">
                     <button class="btn btn-secondary" id="export-btn">
                         📥 Export All Data

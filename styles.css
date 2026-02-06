@@ -1973,8 +1973,10 @@ section {
     border: 1px solid rgba(124, 91, 245, 0.3);
     border-radius: 20px;
     padding: 2rem;
-    max-width: 400px;
+    max-width: 500px;
     width: 90%;
+    max-height: 85vh;
+    overflow-y: auto;
     position: relative;
     box-shadow: 0 0 60px rgba(124, 91, 245, 0.3);
 }
@@ -2030,6 +2032,107 @@ section {
 
 .mod-actions .btn {
     justify-content: center;
+}
+
+/* Pending Review Section */
+.mod-review-section {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.mod-review-section h3 {
+    font-size: 1rem;
+    color: var(--color-text);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.pending-badge {
+    background: var(--color-accent);
+    color: white;
+    padding: 0.15rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.pending-list {
+    max-height: 300px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.pending-item {
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    padding: 0.75rem;
+}
+
+.pending-item-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 0.5rem;
+}
+
+.pending-item-name {
+    font-family: var(--font-display);
+    font-size: 1rem;
+    color: var(--color-text);
+}
+
+.pending-item-type {
+    font-size: 0.8rem;
+    color: var(--color-text-dim);
+}
+
+.pending-item-meta {
+    font-size: 0.75rem;
+    color: var(--color-text-dim);
+    margin-bottom: 0.5rem;
+}
+
+.pending-item-actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.pending-item-actions .btn {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.8rem;
+}
+
+.btn-approve {
+    background: rgba(74, 222, 128, 0.2);
+    border: 1px solid rgba(74, 222, 128, 0.4);
+    color: #4ade80;
+}
+
+.btn-approve:hover {
+    background: rgba(74, 222, 128, 0.3);
+}
+
+.btn-reject {
+    background: rgba(255, 107, 157, 0.2);
+    border: 1px solid rgba(255, 107, 157, 0.4);
+    color: var(--color-accent);
+}
+
+.btn-reject:hover {
+    background: rgba(255, 107, 157, 0.3);
+}
+
+.pending-empty {
+    color: var(--color-text-dim);
+    font-size: 0.9rem;
+    text-align: center;
+    padding: 1rem;
 }
 
 /* ============================================

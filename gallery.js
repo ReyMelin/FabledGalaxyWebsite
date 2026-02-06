@@ -779,6 +779,7 @@ document.addEventListener('DOMContentLoaded', () => {
             modPanel.style.display = 'block';
             modBtn.classList.add('active');
             modBtn.innerHTML = '🔓';
+            renderPendingPlanets();
         } else {
             modLoginForm.style.display = 'block';
             modPanel.style.display = 'none';
@@ -786,6 +787,81 @@ document.addEventListener('DOMContentLoaded', () => {
             modBtn.innerHTML = '🔐';
         }
     }
+
+    /**
+     * Render pending planets for moderator review
+     */
+    function renderPendingPlanets() {
+        const pendingContainer = document.getElementById('pending-planets');
+        const pendingCount = document.getElementById('pending-count');
+        
+        if (!pendingContainer) return;
+        
+        const pendingPlanets = FabledGalaxyData.getPendingPlanets();
+        pendingCount.textContent = pendingPlanets.length;
+        
+        if (pendingPlanets.length === 0) {
+            pendingContainer.innerHTML = '<p class="pending-empty">No planets pending review</p>';
+            return;
+        }
+        
+        pendingContainer.innerHTML = pendingPlanets.map(planet => {
+            const typeInfo = FabledGalaxyData.getPlanetTypeInfo(planet.type);
+            const createdDate = new Date(planet.createdAt).toLocaleDateString();
+            
+            return `
+                <div class="pending-item" data-id="${planet.id}">
+                    <div class="pending-item-header">
+                        <span class="pending-item-name">${planet.name}</span>
+                        <span class="pending-item-type">${typeInfo.emoji} ${typeInfo.label}</span>
+                    </div>
+                    <div class="pending-item-meta">
+                        By ${planet.creatorName || 'Anonymous'} • ${createdDate}
+                    </div>
+                    <div class="pending-item-actions">
+                        <button class="btn btn-approve" onclick="window.approvePlanetFromMod('${planet.id}', '${planet.name.replace(/'/g, "\\'")}')">
+                            ✓ Approve
+                        </button>
+                        <button class="btn btn-reject" onclick="window.rejectPlanetFromMod('${planet.id}', '${planet.name.replace(/'/g, "\\'")}')">
+                            ✗ Reject
+                        </button>
+                        <a href="planet.html?id=${planet.id}" class="btn btn-secondary" target="_blank">
+                            👁 View
+                        </a>
+                    </div>
+                </div>
+            `;
+        }).join('');
+    }
+
+    /**
+     * Approve a planet (moderator only)
+     */
+    function approvePlanet(id, name) {
+        if (!FabledGalaxyData.isModerator()) return;
+        
+        if (confirm(`Approve "${name}" to be visible in the galaxy?`)) {
+            FabledGalaxyData.approvePlanet(id);
+            renderPendingPlanets();
+            loadPlanets();
+        }
+    }
+
+    /**
+     * Reject a planet (moderator only)
+     */
+    function rejectPlanet(id, name) {
+        if (!FabledGalaxyData.isModerator()) return;
+        
+        if (confirm(`Reject "${name}"? It will be hidden from the galaxy.`)) {
+            FabledGalaxyData.rejectPlanet(id);
+            renderPendingPlanets();
+        }
+    }
+
+    // Expose for inline onclick
+    window.approvePlanetFromMod = approvePlanet;
+    window.rejectPlanetFromMod = rejectPlanet;
 
     /**
      * Delete a planet (moderator only)

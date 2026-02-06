@@ -307,14 +307,15 @@ document.addEventListener('DOMContentLoaded', () => {
         
         formContainer.innerHTML = `
             <div class="success-message">
-                <div class="success-icon">🌟</div>
-                <h2>${planetName} Has Been Created!</h2>
-                <p>Your world has been added to the galaxy. Travelers from across the universe can now discover your creation.</p>
+                <div class="success-icon">📋</div>
+                <h2>${planetName} Has Been Submitted!</h2>
+                <p>Your world has been submitted for review. Once approved by a moderator, it will appear in the galaxy for all travelers to discover.</p>
+                <p style="color: var(--color-text-dim); font-size: 0.9rem; margin-top: 0.5rem;">Review typically takes 1-2 days.</p>
                 <div class="success-actions">
                     ${planet ? `
                     <a href="planet.html?id=${planetId}" class="btn btn-primary">
                         <span class="btn-icon">🔭</span>
-                        View Your Planet
+                        Preview Your Planet
                     </a>
                     ` : ''}
                     <a href="gallery.html" class="btn btn-secondary">

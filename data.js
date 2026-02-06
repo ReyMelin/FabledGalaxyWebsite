@@ -24,9 +24,9 @@ const FabledGalaxyData = (function() {
     }
 
     /**
-     * Get all planets
+     * Get all planets (internal use)
      */
-    function getPlanets() {
+    function getAllPlanetsRaw() {
         try {
             const data = localStorage.getItem(STORAGE_KEY);
             return data ? JSON.parse(data) : [];
@@ -37,10 +37,34 @@ const FabledGalaxyData = (function() {
     }
 
     /**
-     * Get a single planet by ID
+     * Get approved planets (for public display)
+     */
+    function getPlanets() {
+        const planets = getAllPlanetsRaw();
+        // Moderators see all approved planets, regular users see only approved
+        return planets.filter(p => p.status === 'approved');
+    }
+
+    /**
+     * Get all planets regardless of status (moderator use)
+     */
+    function getAllPlanets() {
+        return getAllPlanetsRaw();
+    }
+
+    /**
+     * Get pending planets (moderator use)
+     */
+    function getPendingPlanets() {
+        const planets = getAllPlanetsRaw();
+        return planets.filter(p => p.status === 'pending');
+    }
+
+    /**
+     * Get a single planet by ID (can find any status for direct viewing)
      */
     function getPlanet(id) {
-        const planets = getPlanets();
+        const planets = getAllPlanetsRaw();
         return planets.find(p => p.id === id);
     }
 
@@ -48,7 +72,7 @@ const FabledGalaxyData = (function() {
      * Save a new planet
      */
     function savePlanet(planetData) {
-        const planets = getPlanets();
+        const planets = getAllPlanetsRaw();
         
         const planet = {
             id: planetData.id || generateId(),
@@ -97,7 +121,10 @@ const FabledGalaxyData = (function() {
             },
             
             // Display
-            color: planetData.color || getRandomPlanetColor()
+            color: planetData.color || getRandomPlanetColor(),
+            
+            // Moderation status: pending, approved, rejected
+            status: planetData.status || 'pending'
         };
         
         planets.push(planet);
@@ -191,6 +218,45 @@ const FabledGalaxyData = (function() {
     }
 
     /**
+     * Approve a pending planet (moderator only)
+     */
+    function approvePlanet(id) {
+        if (!isModerator()) {
+            console.error('Unauthorized: Only moderators can approve planets');
+            return false;
+        }
+        return updatePlanetStatus(id, 'approved');
+    }
+
+    /**
+     * Reject a pending planet (moderator only)
+     */
+    function rejectPlanet(id) {
+        if (!isModerator()) {
+            console.error('Unauthorized: Only moderators can reject planets');
+            return false;
+        }
+        return updatePlanetStatus(id, 'rejected');
+    }
+
+    /**
+     * Update planet status (internal)
+     */
+    function updatePlanetStatus(id, status) {
+        const planets = getAllPlanetsRaw();
+        const index = planets.findIndex(p => p.id === id);
+        
+        if (index === -1) return null;
+        
+        planets[index].status = status;
+        planets[index].updatedAt = new Date().toISOString();
+        planets[index].moderatedAt = new Date().toISOString();
+        
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(planets));
+        return planets[index];
+    }
+
+    /**
      * Export all data as JSON
      */
     function exportData() {
@@ -262,6 +328,7 @@ const FabledGalaxyData = (function() {
             'crystal': { emoji: '💎', label: 'Crystal World' },
             'dark': { emoji: '🌑', label: 'Dark World' },
             'arcane': { emoji: '🔮', label: 'Arcane World' },
+            'city': { emoji: '🏙️', label: 'City World' },
             'other': { emoji: '✦', label: 'Unique World' },
             'unknown': { emoji: '❓', label: 'Unknown World' }
         };
@@ -288,7 +355,8 @@ const FabledGalaxyData = (function() {
                 collaboration: 'open',
                 position: { x: 25, y: 30 },
                 color: '#00d9ff',
-                planetImage: 'Imgs/New Crystal Galaxy.avif'
+                planetImage: 'Imgs/New Crystal Galaxy.avif',
+                status: 'approved'
             },
             {
                 name: 'Verdant Deep',
@@ -305,7 +373,8 @@ const FabledGalaxyData = (function() {
                 collaboration: 'locked',
                 position: { x: 55, y: 45 },
                 color: '#4ade80',
-                planetImage: 'Imgs/eyeship rotated.avif'
+                planetImage: 'Imgs/eyeship rotated.avif',
+                status: 'approved'
             },
             {
                 name: 'Ashfall',
@@ -323,7 +392,8 @@ const FabledGalaxyData = (function() {
                 collaboration: 'open',
                 position: { x: 35, y: 60 },
                 color: '#f97316',
-                planetImage: 'Imgs/fractalFingersfULL.avif'
+                planetImage: 'Imgs/fractalFingersfULL.avif',
+                status: 'approved'
             },
             {
                 name: 'Whisperwind',
@@ -340,7 +410,8 @@ const FabledGalaxyData = (function() {
                 collaboration: 'locked',
                 position: { x: 70, y: 25 },
                 color: '#a855f7',
-                planetImage: 'Imgs/spacescapeship.avif'
+                planetImage: 'Imgs/spacescapeship.avif',
+                status: 'approved'
             },
             {
                 name: 'Shadowmere',
@@ -358,7 +429,8 @@ const FabledGalaxyData = (function() {
                 collaboration: 'open',
                 position: { x: 65, y: 65 },
                 color: '#7c5bf5',
-                planetImage: 'Imgs/yogg.avif'
+                planetImage: 'Imgs/yogg.avif',
+                status: 'approved'
             },
             {
                 name: 'Florantine',
@@ -377,7 +449,8 @@ const FabledGalaxyData = (function() {
                 collaboration: 'open',
                 position: { x: 45, y: 35 },
                 color: '#ff6b9d',
-                planetImage: 'Imgs/Pink Poppy Flowers.avif'
+                planetImage: 'Imgs/Pink Poppy Flowers.avif',
+                status: 'approved'
             }
         ];
     }
@@ -386,6 +459,8 @@ const FabledGalaxyData = (function() {
     return {
         init,
         getPlanets,
+        getAllPlanets,
+        getPendingPlanets,
         getPlanet,
         savePlanet,
         updatePlanet,
@@ -394,6 +469,8 @@ const FabledGalaxyData = (function() {
         loginModerator,
         logoutModerator,
         isModerator,
+        approvePlanet,
+        rejectPlanet,
         exportData,
         importData,
         getPlanetTypeInfo
