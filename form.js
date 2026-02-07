@@ -65,15 +65,92 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     /**
-     * Save planet to data service and show success
+     * Save planet to Supabase and show success
      */
-    function savePlanetAndShowSuccess(data) {
-        // Save to data service
-        const planet = FabledGalaxyData.savePlanet(data);
-        console.log('Planet saved:', planet);
-        
-        // Show success message with link to view
-        showSuccessMessage(planet);
+    async function savePlanetAndShowSuccess(data) {
+        // Check if user is logged in
+        const user = await window.getCurrentUser();
+        if (!user) {
+            showLoginRequiredMessage();
+            return;
+        }
+
+        // Map form fields to Supabase schema
+        const payload = {
+            planet_name: data.planetName,
+            creator_name: data.creatorName,
+            planet_type: data.planetType,
+            description: data.planetDescription,
+            locked: false,
+            fields: {
+                inhabitants: data.inhabitants || '',
+                civilization: data.civilization || '',
+                factions: data.factions || '',
+                techLevel: data.techLevel || '',
+                technology: data.technology || '',
+                magicExists: data.magicExists || '',
+                magicSystem: data.magicSystem || '',
+                creationMyth: data.creationMyth || '',
+                legends: data.legends || '',
+                history: data.history || '',
+                imageData: data.imageData || null
+            }
+        };
+
+        try {
+            await window.submitWorld(payload);
+            console.log('World submitted to Supabase as pending');
+            showSuccessMessage({ name: data.planetName });
+        } catch (error) {
+            console.error('Error submitting world:', error);
+            showErrorMessage(error.message);
+        }
+    }
+
+    /**
+     * Show login required message
+     */
+    function showLoginRequiredMessage() {
+        const formContainer = document.querySelector('.form-container');
+        formContainer.innerHTML = `
+            <div class="success-message" style="border-color: rgba(255, 107, 157, 0.3); box-shadow: 0 0 60px rgba(255, 107, 157, 0.2);">
+                <div class="success-icon">🔐</div>
+                <h2>Login Required</h2>
+                <p>You need to login with Discord to submit your world for review.</p>
+                <div class="success-actions">
+                    <button onclick="window.loginWithDiscord()" class="btn btn-primary">
+                        <span class="btn-icon">🎮</span>
+                        Login with Discord
+                    </button>
+                    <a href="create-fable.html" class="btn btn-secondary">
+                        <span class="btn-icon">←</span>
+                        Back to Form
+                    </a>
+                </div>
+            </div>
+        `;
+        formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+
+    /**
+     * Show error message
+     */
+    function showErrorMessage(message) {
+        const formContainer = document.querySelector('.form-container');
+        formContainer.innerHTML = `
+            <div class="success-message" style="border-color: rgba(255, 107, 157, 0.3); box-shadow: 0 0 60px rgba(255, 107, 157, 0.2);">
+                <div class="success-icon">⚠️</div>
+                <h2>Submission Failed</h2>
+                <p>${message || 'Something went wrong. Please try again.'}</p>
+                <div class="success-actions">
+                    <a href="create-fable.html" class="btn btn-primary">
+                        <span class="btn-icon">↻</span>
+                        Try Again
+                    </a>
+                </div>
+            </div>
+        `;
+        formContainer.scrollIntoView({ behavior: 'smooth', block: 'center' });
     }
 
     /**
@@ -303,22 +380,15 @@ document.addEventListener('DOMContentLoaded', () => {
     function showSuccessMessage(planet) {
         const formContainer = document.querySelector('.form-container');
         const planetName = planet ? planet.name : 'Your world';
-        const planetId = planet ? planet.id : '';
         
         formContainer.innerHTML = `
             <div class="success-message">
-                <div class="success-icon">📋</div>
+                <div class="success-icon">✅</div>
                 <h2>${planetName} Has Been Submitted!</h2>
                 <p>Your world has been submitted for review. Once approved by a moderator, it will appear in the galaxy for all travelers to discover.</p>
                 <p style="color: var(--color-text-dim); font-size: 0.9rem; margin-top: 0.5rem;">Review typically takes 1-2 days.</p>
                 <div class="success-actions">
-                    ${planet ? `
-                    <a href="planet.html?id=${planetId}" class="btn btn-primary">
-                        <span class="btn-icon">🔭</span>
-                        Preview Your Planet
-                    </a>
-                    ` : ''}
-                    <a href="gallery.html" class="btn btn-secondary">
+                    <a href="gallery.html" class="btn btn-primary">
                         <span class="btn-icon">🌌</span>
                         Explore Galaxy
                     </a>

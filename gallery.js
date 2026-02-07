@@ -75,9 +75,35 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Load and display planets
+     * Load and display planets from Supabase (with localStorage fallback)
      */
-    function loadPlanets() {
+    async function loadPlanets() {
+        try {
+            // Try loading from Supabase first
+            if (window.loadApprovedWorlds) {
+                const worlds = await window.loadApprovedWorlds();
+                if (worlds && worlds.length > 0) {
+                    // Map Supabase fields to expected format
+                    allPlanets = worlds.map(w => ({
+                        id: w.id,
+                        name: w.planet_name,
+                        creator: w.creator_name,
+                        type: w.planet_type,
+                        description: w.description,
+                        locked: w.locked,
+                        createdAt: w.created_at,
+                        ...(w.fields || {})
+                    }));
+                    renderPlanets(allPlanets);
+                    updateStats(allPlanets);
+                    return;
+                }
+            }
+        } catch (error) {
+            console.warn('Failed to load from Supabase, falling back to localStorage:', error);
+        }
+        
+        // Fallback to localStorage
         allPlanets = FabledGalaxyData.getPlanets();
         renderPlanets(allPlanets);
         updateStats(allPlanets);
