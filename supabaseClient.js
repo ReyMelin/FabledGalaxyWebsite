@@ -18,11 +18,13 @@ window.submitWorld = async function(payload) {
     created_by: user ? user.id : null,
     creator_email: payload.creator_email || (user ? user.email : null),
     planet_name: payload.planet_name,
-    creator_name: payload.creator_name,
     planet_type: payload.planet_type,
     description: payload.description,
+    quadrant: payload.quadrant || null,
+    weather: payload.weather || null,
+    art_url: null,
     locked: !!payload.locked,
-    fields: payload.fields,
+    fields: { ...(payload.fields || {}), creator_name: payload.creator_name || null },
     status: "pending"
   });
 
