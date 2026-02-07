@@ -366,20 +366,6 @@ function showNotification(message) {
 }
 
 /* ============================================
-   Parallax Effect on Mouse Move (starfield only)
-   ============================================ */
-document.addEventListener('mousemove', (e) => {
-    const mouseX = e.clientX / window.innerWidth - 0.5;
-    const mouseY = e.clientY / window.innerHeight - 0.5;
-    
-    // Subtle parallax on starfield only (not hero content to prevent CLS)
-    const starfield = document.getElementById('starfield');
-    if (starfield) {
-        starfield.style.transform = `translate(${mouseX * 20}px, ${mouseY * 20}px)`;
-    }
-});
-
-/* ============================================
    Button Ripple Effect
    ============================================ */
 document.querySelectorAll('.btn').forEach(button => {
