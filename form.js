@@ -68,10 +68,10 @@ document.addEventListener('DOMContentLoaded', () => {
      * Save planet to Supabase and show success
      */
     async function savePlanetAndShowSuccess(data) {
-        // Check if user is logged in
-        const user = await window.getCurrentUser();
-        if (!user) {
-            showLoginRequiredMessage();
+        // Validate email is provided (required for non-logged-in users)
+        const user = window.getCurrentUser ? await window.getCurrentUser() : null;
+        if (!user && !data.creatorEmail) {
+            showEmailRequiredMessage();
             return;
         }
 
@@ -79,6 +79,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const payload = {
             planet_name: data.planetName,
             creator_name: data.creatorName,
+            creator_email: data.creatorEmail || '',
             planet_type: data.planetType,
             description: data.planetDescription,
             locked: false,
@@ -108,21 +109,17 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Show login required message
+     * Show email required message
      */
-    function showLoginRequiredMessage() {
+    function showEmailRequiredMessage() {
         const formContainer = document.querySelector('.form-container');
         formContainer.innerHTML = `
             <div class="success-message" style="border-color: rgba(255, 107, 157, 0.3); box-shadow: 0 0 60px rgba(255, 107, 157, 0.2);">
-                <div class="success-icon">🔐</div>
-                <h2>Login Required</h2>
-                <p>You need to login with Discord to submit your world for review.</p>
+                <div class="success-icon">📧</div>
+                <h2>Email Required</h2>
+                <p>Please provide your email address so we can notify you when your world is approved.</p>
                 <div class="success-actions">
-                    <button onclick="window.loginWithDiscord()" class="btn btn-primary">
-                        <span class="btn-icon">🎮</span>
-                        Login with Discord
-                    </button>
-                    <a href="create-fable.html" class="btn btn-secondary">
+                    <a href="create-fable.html" class="btn btn-primary">
                         <span class="btn-icon">←</span>
                         Back to Form
                     </a>

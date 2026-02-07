@@ -6,11 +6,17 @@ const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBh
 window.sb = createClient("https://uyhooadpxmausptmtsdm.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5aG9vYWRweG1hdXNwdG10c2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzODYyNjIsImV4cCI6MjA4NTk2MjI2Mn0.JNxXmQrFIB4QOem3LoScmWJXg-wNUipgDzhWwusns9s");
 
 window.submitWorld = async function(payload) {
+  // Check if user is logged in (optional - email can be used instead)
   const { data: { user } } = await window.sb.auth.getUser();
-  if (!user) throw new Error("Login with Discord first.");
+
+  // Require either a logged-in user OR an email address
+  if (!user && !payload.creator_email) {
+    throw new Error("Please provide an email address for your submission.");
+  }
 
   const res = await window.sb.from("worlds").insert({
-    created_by: user.id,
+    created_by: user ? user.id : null,
+    creator_email: payload.creator_email || (user ? user.email : null),
     planet_name: payload.planet_name,
     creator_name: payload.creator_name,
     planet_type: payload.planet_type,
