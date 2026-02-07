@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="robots" content="index, follow">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
+    <link rel="icon" type="image/x-icon" href="android-chrome-192x192.png">
     <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
     <meta name="description" content="Fabled Galaxy is a collaborative world-building platform where you can create planets, civilizations, and mythologies in a shared galaxy of user-created fables.">
     <title>Fabled Galaxy | Create Your World</title>
@@ -26,19 +26,21 @@
         .story-line{opacity:0;transform:translateY(20px);transition:opacity 0.6s ease,transform 0.6s ease;display:block;margin-bottom:0.5em}
         .story-line.visible{opacity:1;transform:translateY(0)}
         .cta-buttons{display:flex;gap:1.5rem;justify-content:center;flex-wrap:wrap;min-height:60px}
+        .site-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;display:flex;justify-content:space-between;align-items:center}
+        .site-nav-inline{position:absolute;background:transparent}
+        .nav-links{display:flex;gap:2rem}
+        .nav-links a{color:var(--color-text-dim);text-decoration:none;font-size:1rem}
     </style>
     
-    <!-- Preload main stylesheet -->
-    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="styles.css">
     
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     
-    <!-- Load Google Fonts with swap for reduced CLS -->
-    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap"></noscript>
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     
     <!-- Preload critical images -->
     <link rel="preload" as="image" href="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
@@ -57,8 +59,10 @@
             <!-- Navigation -->
             <nav class="site-nav site-nav-inline">
                 <div class="nav-links">
+                    <a href="index.html" class="active">Home</a>
                     <a href="gallery.html">Gallery</a>
                     <a href="create-fable.html">Create</a>
+                    <a href="about.html">About</a>
                 </div>
                 <div id="auth-container" class="auth-container">
                     <!-- Auth UI will be injected here -->

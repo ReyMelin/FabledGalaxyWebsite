@@ -23,6 +23,9 @@
         .form-container{min-height:500px}
         .step-illustration{min-height:220px;display:flex;align-items:center;justify-content:center}
         .step-image{max-width:280px;max-height:200px;width:280px;height:200px}
+        .site-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;background:linear-gradient(180deg,rgba(10,10,15,0.95),transparent);display:flex;justify-content:space-between;align-items:center}
+        .nav-links{display:flex;gap:2rem}
+        .nav-links a{color:var(--color-text-dim);text-decoration:none;font-size:1rem}
     </style>
     
     <!-- Preconnect to Google Fonts -->
@@ -30,8 +33,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles.css"></noscript>>
+    <link rel="stylesheet" href="styles.css">
     
     <!-- Preload critical images -->
     <link rel="preload" as="image" href="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
@@ -45,11 +47,13 @@
     <div class="particles" id="particles"></div>
 
     <!-- Navigation -->
-    <nav class="form-nav">
-        <a href="index.html" class="nav-back">
-            <span class="nav-arrow">←</span>
-            <span>Back to Galaxy</span>
-        </a>
+    <nav class="site-nav">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="create-fable.html" class="active">Create</a>
+            <a href="about.html">About</a>
+        </div>
         <div id="auth-container" class="auth-container">
             <!-- Auth UI will be injected here -->
         </div>
@@ -120,7 +124,7 @@
                     
                     <div class="form-group">
                         <label for="planet-name">Planet Name <span class="required">*</span></label>
-                        <input type="text" id="planet-name" name="planetName" required 
+                        <input type="text" id="planet-name" name="planetName" required maxlength="100"
                                placeholder="e.g., Luminos Prime, Verdant Deep, Ashfall...">
                         <span class="input-hint">Choose a name that evokes the spirit of your world</span>
                     </div>
@@ -146,7 +150,7 @@
                     
                     <div class="form-group">
                         <label for="planet-description">Planet Description <span class="required">*</span></label>
-                        <textarea id="planet-description" name="planetDescription" required rows="5"
+                        <textarea id="planet-description" name="planetDescription" required rows="5" maxlength="2000"
                                   placeholder="Describe the landscapes, atmosphere, and unique features of your world. What makes it special? What would a traveler first notice upon arrival?"></textarea>
                         <span class="char-count"><span id="desc-count">0</span> / 2000</span>
                     </div>
@@ -232,29 +236,31 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="magic-exists">Does Magic Exist?</label>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" name="magicExists" value="yes">
-                                <span class="radio-custom"></span>
-                                <span>Yes, magic is a fundamental force</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="magicExists" value="rare">
-                                <span class="radio-custom"></span>
-                                <span>Rare or hidden, known to few</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="magicExists" value="no">
-                                <span class="radio-custom"></span>
-                                <span>No magic, purely mundane world</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="magicExists" value="ambiguous">
-                                <span class="radio-custom"></span>
-                                <span>Ambiguous — could be magic or could be explained</span>
-                            </label>
-                        </div>
+                        <fieldset class="radio-fieldset">
+                            <legend>Does Magic Exist?</legend>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="magicExists" value="yes">
+                                    <span class="radio-custom"></span>
+                                    <span>Yes, magic is a fundamental force</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="magicExists" value="rare">
+                                    <span class="radio-custom"></span>
+                                    <span>Rare or hidden, known to few</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="magicExists" value="no">
+                                    <span class="radio-custom"></span>
+                                    <span>No magic, purely mundane world</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="magicExists" value="ambiguous">
+                                    <span class="radio-custom"></span>
+                                    <span>Ambiguous — could be magic or could be explained</span>
+                                </label>
+                            </div>
+                        </fieldset>
                     </div>
                     
                     <div class="form-group">
@@ -309,7 +315,7 @@
                     
                     <div class="form-group">
                         <label for="creator-name">Creator Name <span class="required">*</span></label>
-                        <input type="text" id="creator-name" name="creatorName" required
+                        <input type="text" id="creator-name" name="creatorName" required maxlength="50"
                                placeholder="Your name or alias">
                     </div>
                     
@@ -321,19 +327,21 @@
                     </div>
                     
                     <div class="form-group">
-                        <label for="collaboration">Collaboration Settings</label>
-                        <div class="radio-group">
-                            <label class="radio-option">
-                                <input type="radio" name="collaboration" value="locked" checked>
-                                <span class="radio-custom"></span>
-                                <span>🔒 Locked — Only I can edit this world</span>
-                            </label>
-                            <label class="radio-option">
-                                <input type="radio" name="collaboration" value="open">
-                                <span class="radio-custom"></span>
-                                <span>🔓 Open — Others can contribute to this world</span>
-                            </label>
-                        </div>
+                        <fieldset class="radio-fieldset">
+                            <legend>Collaboration Settings</legend>
+                            <div class="radio-group">
+                                <label class="radio-option">
+                                    <input type="radio" name="collaboration" value="locked" checked>
+                                    <span class="radio-custom"></span>
+                                    <span>🔒 Locked — Only I can edit this world</span>
+                                </label>
+                                <label class="radio-option">
+                                    <input type="radio" name="collaboration" value="open">
+                                    <span class="radio-custom"></span>
+                                    <span>🔓 Open — Others can contribute to this world</span>
+                                </label>
+                            </div>
+                        </fieldset>
                     </div>
                     
                     <div class="form-group checkbox-group">

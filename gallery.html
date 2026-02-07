@@ -28,6 +28,9 @@
         .planet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
         .planet-card{min-height:280px}
         .card-image{height:180px;min-height:180px}
+        .site-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;background:linear-gradient(180deg,rgba(10,10,15,0.95),transparent);display:flex;justify-content:space-between;align-items:center}
+        .nav-links{display:flex;gap:2rem}
+        .nav-links a{color:var(--color-text-dim);text-decoration:none;font-size:1rem}
     </style>
     
     <!-- Preconnect to Google Fonts -->
@@ -35,8 +38,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="preload" href="styles.css" as="style" onload="this.onload=null;this.rel='stylesheet'">
-    <noscript><link rel="stylesheet" href="styles.css"></noscript>
+    <link rel="stylesheet" href="styles.css">
     
     <!-- Preload critical images -->
     <link rel="preload" as="image" href="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
@@ -49,24 +51,15 @@
     <div class="particles" id="particles"></div>
 
     <!-- Navigation -->
-    <nav class="gallery-nav">
-        <a href="index.html" class="nav-logo">
-            <picture>
-                <source srcset="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
-                <img src="Imgs/fabled galaxy header.avif" alt="Fabled Galaxy" height="40" width="121" decoding="async">
-            </picture>
-        </a>
+    <nav class="site-nav">
         <div class="nav-links">
-            <a href="create-fable.html" class="btn btn-primary btn-small">
-                <span class="btn-icon">✦</span>
-                Create
-            </a>
-            <button class="btn btn-secondary btn-small" id="mod-btn" title="Moderator Login">
-                🔐
-            </button>
-            <div id="auth-container" class="auth-container">
-                <!-- Auth UI will be injected here -->
-            </div>
+            <a href="index.html">Home</a>
+            <a href="gallery.html" class="active">Gallery</a>
+            <a href="create-fable.html">Create</a>
+            <a href="about.html">About</a>
+        </div>
+        <div id="auth-container" class="auth-container">
+            <!-- Auth UI will be injected here -->
         </div>
     </nav>
 
@@ -76,6 +69,9 @@
         <header class="gallery-header">
             <h1 class="gallery-title">Galaxy Gallery</h1>
             <p class="gallery-subtitle">Every star is a story. Click any planet to explore its fable.</p>
+            
+            <!-- Moderator Access -->
+            <button class="mod-access-btn" id="mod-btn" title="Moderator Login">🔐</button>
             
             <!-- Filters -->
             <div class="gallery-filters">

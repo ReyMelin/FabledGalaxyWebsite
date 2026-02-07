@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="robots" content="index, follow">
+    <link rel="icon" type="image/x-icon" href="android-chrome-192x192.png">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png">
+    <meta name="description" content="Learn about Fabled Galaxy - a collaborative world-building platform where imagination meets community.">
+    <title>About | Fabled Galaxy</title>
+    
+    <!-- Critical CSS inlined for faster initial render -->
+    <style>
+        :root{--color-bg-dark:#0a0a0f;--color-text:#e8e6f0;--color-text-dim:#a8a5b5;--font-display:'Cinzel',Georgia,serif;--font-body:'Quicksand',system-ui,sans-serif}
+        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+        body{background-color:var(--color-bg-dark);color:var(--color-text);font-family:var(--font-body);line-height:1.6}
+        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0f 100%)}
+        .about-page{min-height:100vh;padding-top:5rem}
+        .about-content{max-width:800px;margin:0 auto;padding:2rem}
+        .about-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);text-align:center;margin-bottom:2rem}
+        .site-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;background:linear-gradient(180deg,rgba(10,10,15,0.95),transparent);display:flex;justify-content:space-between;align-items:center}
+        .nav-links{display:flex;gap:2rem}
+        .nav-links a{color:var(--color-text-dim);text-decoration:none;font-size:1rem}
+    </style>
+    
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Preconnect to Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Preload critical images -->
+    <link rel="preload" as="image" href="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
+</head>
+<body>
+    <!-- Starfield Background -->
+    <div class="starfield" id="starfield"></div>
+    
+    <!-- Floating Particles -->
+    <div class="particles" id="particles"></div>
+
+    <!-- Navigation -->
+    <nav class="site-nav">
+        <div class="nav-links">
+            <a href="index.html">Home</a>
+            <a href="gallery.html">Gallery</a>
+            <a href="create-fable.html">Create</a>
+            <a href="about.html" class="active">About</a>
+        </div>
+        <div id="auth-container" class="auth-container">
+            <!-- Auth UI will be injected here -->
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="about-page">
+        <div class="about-content">
+            <h1 class="about-title">About Fabled Galaxy</h1>
+            
+            <section class="about-section">
+                <p class="about-text">
+                    <!-- Content coming soon -->
+                </p>
+            </section>
+        </div>
+    </main>
+
+    <!-- Scripts -->
+    <script src="supabaseClient.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
