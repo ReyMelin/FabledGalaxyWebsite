@@ -1,4 +1,153 @@
 /* ============================================
+   Admin Panel Styles
+   ============================================ */
+.admin-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+.admin-header {
+    text-align: center;
+    padding: 2rem 0;
+    border-bottom: 1px solid rgba(124, 58, 237, 0.3);
+    margin-bottom: 2rem;
+}
+.admin-title {
+    font-family: var(--font-display);
+    font-size: 2.5rem;
+    background: linear-gradient(135deg, #a78bfa, #7c3aed);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+}
+.admin-subtitle {
+    color: var(--color-text-dim);
+    margin-top: 0.5rem;
+}
+.pending-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+.world-card {
+    background: rgba(30, 30, 50, 0.6);
+    border: 1px solid rgba(124, 58, 237, 0.3);
+    border-radius: 12px;
+    padding: 1.5rem;
+    transition: all 0.3s ease;
+}
+.world-card:hover {
+    border-color: var(--color-accent);
+    box-shadow: 0 0 20px var(--color-accent-glow);
+}
+.world-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+.world-title {
+    font-family: var(--font-display);
+    font-size: 1.4rem;
+    color: #a78bfa;
+}
+.world-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    color: var(--color-text-dim);
+    font-size: 0.9rem;
+}
+.world-type {
+    background: rgba(124, 58, 237, 0.2);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+.world-locked {
+    background: rgba(239, 68, 68, 0.2);
+    color: #fca5a5;
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+}
+.world-description {
+    color: var(--color-text-dim);
+    margin-bottom: 1rem;
+    line-height: 1.7;
+}
+.world-fields {
+    background: rgba(0, 0, 0, 0.3);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
+.world-fields summary {
+    cursor: pointer;
+    color: var(--color-accent);
+    font-weight: 500;
+}
+.world-fields-content {
+    margin-top: 1rem;
+}
+.field-item {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+.field-item:last-child {
+    margin-bottom: 0;
+    padding-bottom: 0;
+    border-bottom: none;
+}
+.field-label {
+    font-weight: 600;
+    color: #a78bfa;
+    margin-bottom: 0.25rem;
+}
+.field-value {
+    color: var(--color-text-dim);
+    white-space: pre-wrap;
+}
+.world-actions {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+.loading {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-dim);
+}
+.empty-state {
+    text-align: center;
+    padding: 4rem 2rem;
+    color: var(--color-text-dim);
+}
+.empty-state h3 {
+    font-family: var(--font-display);
+    font-size: 1.5rem;
+    margin-bottom: 0.5rem;
+    color: var(--color-text);
+}
+.error-message {
+    background: rgba(239, 68, 68, 0.2);
+    border: 1px solid var(--color-danger);
+    border-radius: 8px;
+    padding: 1rem;
+    color: #fca5a5;
+    margin-bottom: 1rem;
+}
+/* Utility for flex gap in admin panel header */
+.world-header-flexgap {
+    display: flex;
+    gap: 0.5rem;
+}
+/* ============================================
    Fabled Galaxy - Landing Page Styles
    ============================================ */
 

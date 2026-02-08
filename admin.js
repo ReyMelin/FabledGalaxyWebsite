@@ -89,7 +89,7 @@
               <span>${formatDate(world.created_at)}</span>
             </div>
           </div>
-          <div style="display:flex; gap:0.5rem;">
+          <div class="world-header-flexgap">
             <span class="world-type">${world.planet_type || 'unknown'}</span>
             ${world.locked ? '<span class="world-locked">🔒 Locked</span>' : ''}
           </div>

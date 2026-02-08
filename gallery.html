@@ -9,29 +9,8 @@
     <meta name="description" content="Explore the Fabled Galaxy - discover user-created planets, civilizations, and mythologies in our collaborative world-building universe.">
     <title>Galaxy Gallery | Fabled Galaxy</title>
     
-    <!-- Critical CSS to prevent layout shift -->
-    <style>
-        :root{--color-bg-dark:#0a0a0f;--color-text:#e8e6f0;--color-text-dim:#a8a5b5;--color-gold:#ffd700;--font-display:'Cinzel',Georgia,serif;--font-body:'Quicksand',system-ui,sans-serif}
-        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        body{background-color:var(--color-bg-dark);color:var(--color-text);font-family:var(--font-body);line-height:1.6}
-        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0f 100%)}
-        .gallery-page{min-height:100vh}
-        .gallery-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;min-height:60px}
-        .nav-logo img{height:40px;width:121px}
-        .gallery-header{padding:6rem 2rem 2rem;text-align:center;min-height:200px}
-        .gallery-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);min-height:1.2em}
-        .galaxy-map-wrapper{position:relative}
-        .galaxy-map{position:relative;aspect-ratio:1;max-height:70vh;overflow:hidden;cursor:grab}
-        .map-viewport{width:100%;height:100%;transform-origin:center center;transition:transform 0.2s ease-out;position:relative}
-        .map-controls{position:absolute;right:1rem;top:50%;transform:translateY(-50%);z-index:20}
-        .mini-map{position:absolute;left:1rem;bottom:1rem;width:100px;height:100px;z-index:20}
-        .planet-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:1.5rem}
-        .planet-card{min-height:280px}
-        .card-image{height:180px;min-height:180px}
-        .site-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;background:linear-gradient(180deg,rgba(10,10,15,0.95),transparent);display:flex;justify-content:space-between;align-items:center}
-        .nav-links{display:flex;gap:2rem}
-        .nav-links a{color:var(--color-text-dim);text-decoration:none;font-size:1rem}
-    </style>
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="styles.css">
     
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">

@@ -9,24 +9,8 @@
     <meta name="description" content="Create your own planet in the Fabled Galaxy. Build civilizations, magic systems, and mythologies in our collaborative world-building universe.">
     <title>Create Your Fable | Fabled Galaxy</title>
     
-    <!-- Critical CSS to prevent layout shift -->
-    <style>
-        :root{--color-bg-dark:#0a0a0f;--color-text:#e8e6f0;--color-text-dim:#a8a5b5;--font-display:'Cinzel',Georgia,serif;--font-body:'Quicksand',system-ui,sans-serif}
-        *,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
-        body{background-color:var(--color-bg-dark);color:var(--color-text);font-family:var(--font-body);line-height:1.6}
-        .starfield{position:fixed;top:0;left:0;width:100%;height:100%;z-index:-2;background:radial-gradient(ellipse at center,#1a1a2e 0%,#0a0a0f 100%)}
-        .form-page{min-height:100vh;padding-top:4rem}
-        .form-header{padding:4rem 2rem 2rem;text-align:center;min-height:280px}
-        .form-logo{max-width:300px;height:99px}
-        .form-title{font-family:var(--font-display);font-size:clamp(2rem,5vw,3.5rem);min-height:1.2em}
-        .wizard-progress{min-height:80px}
-        .form-container{min-height:500px}
-        .step-illustration{min-height:220px;display:flex;align-items:center;justify-content:center}
-        .step-image{max-width:280px;max-height:200px;width:280px;height:200px}
-        .site-nav{position:fixed;top:0;left:0;right:0;padding:1rem 2rem;z-index:100;background:linear-gradient(180deg,rgba(10,10,15,0.95),transparent);display:flex;justify-content:space-between;align-items:center}
-        .nav-links{display:flex;gap:2rem}
-        .nav-links a{color:var(--color-text-dim);text-decoration:none;font-size:1rem}
-    </style>
+    <!-- Main stylesheet -->
+    <link rel="stylesheet" href="styles.css">
     
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
