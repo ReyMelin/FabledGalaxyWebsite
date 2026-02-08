@@ -290,18 +290,12 @@
         <main id="main-content">
             <div class="loading">Loading...</div>
         </main>
-    </div>
+        <!-- Scripts should be loaded at the end of body -->
         <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script src="supabaseClient.js"></script>
-        <script>
-            document.addEventListener('DOMContentLoaded', function() {
-                if (window.updateAuthUI) window.updateAuthUI();
-                // Check if Supabase client exists
-                console.log(window.sb ? "✅ sb exists" : "❌ sb missing");
-            });
-        </script>
-                
-    </script>
-
+        <script src="./supabaseClient.js"></script>
+        <script src="./admin.js" defer></script>
+    </div>
+</body>
+</html>
 </body>
 </html>
