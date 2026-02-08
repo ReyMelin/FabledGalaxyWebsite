@@ -277,4 +277,3 @@ const FabledGalaxyData = (function() {
                 getPlanetTypeInfo
             };
         })();
-        try {
