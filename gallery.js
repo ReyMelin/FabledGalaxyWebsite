@@ -132,10 +132,9 @@ document.addEventListener('DOMContentLoaded', () => {
             console.warn('Failed to load from Supabase, falling back to localStorage:', error);
         }
         
-        // Fallback to localStorage
-        allPlanets = FabledGalaxyData.getPlanets();
-        renderPlanets(allPlanets);
-        updateStats(allPlanets);
+        // Only show Supabase worlds; do not fallback to demo/sample planets
+        renderPlanets([]);
+        updateStats([]);
     }
 
     /**

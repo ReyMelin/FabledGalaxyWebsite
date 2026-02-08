@@ -305,9 +305,8 @@
                 });
             }
             
-            // Load planet data - try Supabase first, then localStorage
+            // Load planet data ONLY from Supabase
             let planet = null;
-            
             const supabaseReady = await waitForSupabase();
             if (supabaseReady && window.loadWorldById) {
                 try {
@@ -329,20 +328,13 @@
                         };
                     }
                 } catch (e) {
-                    console.warn('Supabase load failed, trying localStorage:', e);
+                    console.warn('Supabase load failed:', e);
                 }
             }
-            
-            // Fallback to localStorage
-            if (!planet) {
-                planet = FabledGalaxyData.getPlanet(planetId);
-            }
-            
             if (!planet) {
                 showNotFound();
                 return;
             }
-            
             displayPlanet(planet);
             
             function showNotFound() {

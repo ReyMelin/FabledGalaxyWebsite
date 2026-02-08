@@ -1,13 +1,13 @@
 /**
- * Fabled Galaxy - Planet Data Service
- * Manages planet storage, retrieval, and moderator functions
+* Fabled Galaxy - World Data Service
+* Manages world storage, retrieval, and moderator functions
  * 
  * For prototype: Uses LocalStorage
  * For production: Replace with API calls to your backend
  */
 
 const FabledGalaxyData = (function() {
-    const STORAGE_KEY = 'fabled_galaxy_planets';
+    const STORAGE_KEY = 'fabled_galaxy_worlds';
     const MOD_KEY = 'fabled_galaxy_moderator';
     const MOD_PASSWORD = 'galaxymod2026'; // Change this in production!
 
@@ -15,11 +15,11 @@ const FabledGalaxyData = (function() {
      * Initialize with sample data if empty
      */
     function init() {
-        const planets = getPlanets();
-        if (planets.length === 0) {
-            // Add sample planets for demo
-            const samplePlanets = getSamplePlanets();
-            samplePlanets.forEach(planet => savePlanet(planet));
+        const worlds = getWorlds();
+        if (worlds.length === 0) {
+            // Add sample worlds for demo
+            const sampleWorlds = getSampleWorlds();
+            sampleWorlds.forEach(world => saveWorld(world));
         }
     }
 
@@ -31,7 +31,7 @@ const FabledGalaxyData = (function() {
             const data = localStorage.getItem(STORAGE_KEY);
             return data ? JSON.parse(data) : [];
         } catch (e) {
-            console.error('Error reading planets:', e);
+            console.error('Error reading worlds:', e);
             return [];
         }
     }
@@ -40,41 +40,41 @@ const FabledGalaxyData = (function() {
      * Get approved planets (for public display)
      */
     function getPlanets() {
-        const planets = getAllPlanetsRaw();
-        // Moderators see all approved planets, regular users see only approved
-        return planets.filter(p => p.status === 'approved');
+        const worlds = getAllWorldsRaw();
+        // Moderators see all approved worlds, regular users see only approved
+        return worlds.filter(w => w.status === 'approved');
     }
 
     /**
      * Get all planets regardless of status (moderator use)
      */
     function getAllPlanets() {
-        return getAllPlanetsRaw();
+        return getAllWorldsRaw();
     }
 
     /**
      * Get pending planets (moderator use)
      */
     function getPendingPlanets() {
-        const planets = getAllPlanetsRaw();
-        return planets.filter(p => p.status === 'pending');
+        const worlds = getAllWorldsRaw();
+        return worlds.filter(w => w.status === 'pending');
     }
 
     /**
      * Get a single planet by ID (can find any status for direct viewing)
      */
     function getPlanet(id) {
-        const planets = getAllPlanetsRaw();
-        return planets.find(p => p.id === id);
+        const worlds = getAllWorldsRaw();
+        return worlds.find(w => w.id === id);
     }
 
     /**
      * Save a new planet
      */
     function savePlanet(planetData) {
-        const planets = getAllPlanetsRaw();
+        const worlds = getAllWorldsRaw();
         
-        const planet = {
+        const world = {
             id: planetData.id || generateId(),
             createdAt: planetData.createdAt || new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -121,31 +121,31 @@ const FabledGalaxyData = (function() {
             },
             
             // Display
-            color: planetData.color || getRandomPlanetColor(),
+            color: planetData.color || getRandomWorldColor(),
             
             // Moderation status: pending, approved, rejected
             status: planetData.status || 'pending'
         };
         
-        planets.push(planet);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(planets));
+        worlds.push(world);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(worlds));
         
-        return planet;
+        return world;
     }
 
     /**
      * Add a contribution to an open planet
      */
     function addContribution(planetId, contribution) {
-        const planet = getPlanet(planetId);
+        const world = getWorld(planetId);
         
-        if (!planet) {
-            console.error('Planet not found');
+        if (!world) {
+            console.error('World not found');
             return null;
         }
         
-        if (planet.collaboration !== 'open') {
-            console.error('This planet is not open for collaboration');
+        if (world.collaboration !== 'open') {
+            console.error('This world is not open for collaboration');
             return null;
         }
         
@@ -158,29 +158,29 @@ const FabledGalaxyData = (function() {
             createdAt: new Date().toISOString()
         };
         
-        const contributions = planet.contributions || [];
+        const contributions = world.contributions || [];
         contributions.push(newContribution);
         
-        return updatePlanet(planetId, { contributions });
+        return updateWorld(planetId, { contributions });
     }
 
     /**
      * Update an existing planet
      */
     function updatePlanet(id, updates) {
-        const planets = getPlanets();
-        const index = planets.findIndex(p => p.id === id);
+        const worlds = getWorlds();
+        const index = worlds.findIndex(w => w.id === id);
         
         if (index === -1) return null;
         
-        planets[index] = {
-            ...planets[index],
+        worlds[index] = {
+            ...worlds[index],
             ...updates,
             updatedAt: new Date().toISOString()
         };
         
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(planets));
-        return planets[index];
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(worlds));
+        return worlds[index];
     }
 
     /**
@@ -188,12 +188,12 @@ const FabledGalaxyData = (function() {
      */
     function deletePlanet(id) {
         if (!isModerator()) {
-            console.error('Unauthorized: Only moderators can delete planets');
+            console.error('Unauthorized: Only moderators can delete worlds');
             return false;
         }
         
-        const planets = getPlanets();
-        const filtered = planets.filter(p => p.id !== id);
+        const worlds = getWorlds();
+        const filtered = worlds.filter(w => w.id !== id);
         localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
         return true;
     }

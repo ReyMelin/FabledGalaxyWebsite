@@ -175,12 +175,13 @@ function initPlanetNodes() {
     const tooltipType = tooltip.querySelector('.tooltip-type');
     
     // Load planets from data service
-    const planets = typeof FabledGalaxyData !== 'undefined' ? FabledGalaxyData.getPlanets() : [];
+    // Load worlds from data service
+    const worlds = typeof FabledGalaxyData !== 'undefined' ? FabledGalaxyData.getAllPlanets() : [];
     
     // Clear existing nodes and populate with saved planets
     galaxyOverlay.innerHTML = '';
     
-    planets.forEach(planet => {
+    worlds.forEach(world => {
         const typeInfo = typeof FabledGalaxyData !== 'undefined' 
             ? FabledGalaxyData.getPlanetTypeInfo(planet.type) 
             : { emoji: '🌍', label: 'World' };
