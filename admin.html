@@ -292,8 +292,17 @@
         </main>
     </div>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="supabaseClient.js"></script>
     <script type="module">
+                // Check if Supabase client exists
+                console.log(window.sb ? "✅ sb exists" : "❌ sb missing");
+                // Check session
+                const sessionResult = await window.sb.auth.getSession();
+                // Optionally log session status (avoid logging sensitive info)
+                if (sessionResult.error) {
+                    console.warn("Session error", sessionResult.error.message);
+                }
         // Wait for supabaseClient.js to initialize
         await new Promise(resolve => {
             if (window.sb) resolve();
@@ -307,6 +316,16 @@
         const mainContent = document.getElementById('main-content');
 
         // Check if user is logged in
+
+        async function requireAdmin() {
+            const { data, error } = await window.sb.rpc('is_admin');
+            // Avoid logging sensitive info
+            if (error) throw error;
+            if (!data) throw new Error("Not an admin");
+            return true;
+        }
+
+        // Check if user is logged in and admin
         const { data: { user } } = await window.sb.auth.getUser();
         if (!user) {
             mainContent.innerHTML = `
@@ -321,31 +340,12 @@
             throw new Error("Not logged in");
         }
 
-        // Check if user is an admin
-        const { data: adminData, error: adminError } = await window.sb
-            .from("admins")
-            .select("id")
-            .eq("user_id", user.id)
-            .single();
-
-        if (adminError || !adminData) {
-            mainContent.innerHTML = `
-                <div class="login-required">
-                    <h2>Access Denied</h2>
-                    <p>You don't have admin privileges.</p>
-                    <p style="color: var(--color-text-dim); margin-top: 0.5rem; font-size: 0.9rem;">Logged in as: ${user.email || user.user_metadata?.full_name || 'Unknown'}</p>
-                    <button onclick="window.logout()" class="btn" style="margin-top: 1rem; background: var(--color-danger); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer;">
-                        Log Out
-                    </button>
-                </div>
-            `;
-            throw new Error("Not an admin");
-        }
+        await requireAdmin();
 
         async function loadPending() {
             const res = await window.sb
                 .from("worlds")
-                .select("id, planet_name, creator_name, planet_type, description, created_at, fields, locked")
+                .select("id, planet_name, planet_type, description, created_at, fields, locked, creator_email, quadrant, weather")
                 .eq("status", "pending")
                 .order("created_at", { ascending: true });
 
@@ -397,7 +397,7 @@
                         <div>
                             <h3 class="world-title">${world.planet_name}</h3>
                             <div class="world-meta">
-                                <span>by ${world.creator_name}</span>
+                                <span>by ${world.fields?.creator_name ?? ''}</span>
                                 <span>${formatDate(world.created_at)}</span>
                             </div>
                         </div>
@@ -510,5 +510,9 @@
         // Initial render
         renderPendingList();
     </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="./supabaseClient.js"></script>
+    <script src="./admin.js"></script>
 </body>
 </html>

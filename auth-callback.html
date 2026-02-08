@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Signing you in...</title>
+</head>
+<body>
+  <p>Signing you in…</p>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabaseClient.js"></script>
+  <script>
+    async function routeAfterLogin() {
+      const { data: { session } } = await window.sb.auth.getSession();
+
+      if (!session) {
+        window.location.href = "./gallery.html";
+        return;
+      }
+
+      const { data: isAdmin, error } = await window.sb.rpc("is_admin");
+      if (error) {
+        console.error("is_admin error:", error);
+        window.location.href = "./gallery.html";
+        return;
+      }
+
+      window.location.href = isAdmin ? "./admin.html" : "./gallery.html";
+    }
+
+    routeAfterLogin();
+  </script>
+</body>
+</html>
