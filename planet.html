@@ -276,7 +276,7 @@
     <script type="module" src="supabaseClient.js"></script>
     <script src="script.js" defer></script>
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', async () => {
             // Get planet ID from URL
             const urlParams = new URLSearchParams(window.location.search);
             const planetId = urlParams.get('id');
@@ -293,17 +293,57 @@
                 return;
             }
             
-            // Load planet data
-            setTimeout(() => {
-                const planet = FabledGalaxyData.getPlanet(planetId);
-                
-                if (!planet) {
-                    showNotFound();
-                    return;
+            // Wait for Supabase client to be ready
+            async function waitForSupabase(timeout = 2000) {
+                return new Promise((resolve) => {
+                    if (window.loadWorldById) { resolve(true); return; }
+                    const start = Date.now();
+                    const check = setInterval(() => {
+                        if (window.loadWorldById) { clearInterval(check); resolve(true); }
+                        else if (Date.now() - start > timeout) { clearInterval(check); resolve(false); }
+                    }, 50);
+                });
+            }
+            
+            // Load planet data - try Supabase first, then localStorage
+            let planet = null;
+            
+            const supabaseReady = await waitForSupabase();
+            if (supabaseReady && window.loadWorldById) {
+                try {
+                    const world = await window.loadWorldById(planetId);
+                    if (world) {
+                        // Map Supabase world to expected planet format
+                        const colors = ['#7c5bf5', '#00d9ff', '#ff6b9d', '#ffd700', '#4ade80', '#f97316', '#06b6d4', '#a855f7'];
+                        const hash = planetId.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+                        planet = {
+                            id: world.id,
+                            name: world.planet_name,
+                            type: world.planet_type,
+                            description: world.description,
+                            creatorName: world.creator_name || (world.fields?.creator_name) || 'Unknown',
+                            collaboration: world.locked ? 'locked' : 'open',
+                            createdAt: world.created_at,
+                            color: colors[hash % colors.length],
+                            ...(world.fields || {})
+                        };
+                    }
+                } catch (e) {
+                    console.warn('Supabase load failed, trying localStorage:', e);
                 }
-                
-                displayPlanet(planet);
-            }, 500); // Brief loading delay for effect
+            }
+            
+            // Fallback to localStorage
+            if (!planet) {
+                planet = FabledGalaxyData.getPlanet(planetId);
+            }
+            
+            if (!planet) {
+                showNotFound();
+                return;
+            }
+            
+            displayPlanet(planet);
             
             function showNotFound() {
                 loading.style.display = 'none';

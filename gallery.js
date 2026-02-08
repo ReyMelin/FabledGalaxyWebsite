@@ -75,25 +75,65 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
+     * Wait for Supabase client to be ready
+     */
+    function waitForSupabase(timeout = 3000) {
+        return new Promise((resolve) => {
+            if (window.loadApprovedWorlds) {
+                resolve(true);
+                return;
+            }
+            const start = Date.now();
+            const check = setInterval(() => {
+                if (window.loadApprovedWorlds) {
+                    clearInterval(check);
+                    resolve(true);
+                } else if (Date.now() - start > timeout) {
+                    clearInterval(check);
+                    resolve(false);
+                }
+            }, 50);
+        });
+    }
+
+    /**
      * Load and display planets from Supabase (with localStorage fallback)
      */
     async function loadPlanets() {
         try {
-            // Try loading from Supabase first
-            if (window.loadApprovedWorlds) {
+            // Wait for Supabase client to be ready
+            const supabaseReady = await waitForSupabase();
+            
+            if (supabaseReady && window.loadApprovedWorlds) {
                 const worlds = await window.loadApprovedWorlds();
                 if (worlds && worlds.length > 0) {
+                    // Color palette for planets
+                    const colors = [
+                        '#7c5bf5', '#00d9ff', '#ff6b9d', '#ffd700',
+                        '#4ade80', '#f97316', '#06b6d4', '#a855f7'
+                    ];
+                    
                     // Map Supabase fields to expected format
-                    allPlanets = worlds.map(w => ({
-                        id: w.id,
-                        name: w.planet_name,
-                        creator: w.creator_name,
-                        type: w.planet_type,
-                        description: w.description,
-                        locked: w.locked,
-                        createdAt: w.created_at,
-                        ...(w.fields || {})
-                    }));
+                    allPlanets = worlds.map((w, index) => {
+                        // Generate deterministic position based on ID
+                        const hash = w.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+                        return {
+                            id: w.id,
+                            name: w.planet_name,
+                            creatorName: w.creator_name || (w.fields?.creator_name) || 'Unknown',
+                            type: w.planet_type,
+                            description: w.description,
+                            collaboration: w.locked ? 'locked' : 'open',
+                            createdAt: w.created_at,
+                            // Generate position and color for map
+                            position: {
+                                x: 10 + (hash % 80),
+                                y: 10 + ((hash * 7) % 80)
+                            },
+                            color: colors[hash % colors.length],
+                            ...(w.fields || {})
+                        };
+                    });
                     renderPlanets(allPlanets);
                     updateStats(allPlanets);
                     return;
