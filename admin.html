@@ -291,7 +291,13 @@
             <div class="loading">Loading...</div>
         </main>
     </div>
-
+        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+        <script src="supabaseClient.js"></script>
+        <script>
+            document.addEventListener('DOMContentLoaded', function() {
+                if (window.updateAuthUI) window.updateAuthUI();
+            });
+        </script>
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script type="module" src="supabaseClient.js"></script>
     <script type="module">
