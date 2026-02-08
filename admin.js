@@ -81,15 +81,33 @@
   function renderWorldCard(world) {
     return `
       <div class="world-card" data-id="${world.id}">
-        <h3>${world.planet_name}</h3>
-        <div>by ${world.fields?.creator_name ?? ''}</div>
-        <div>${formatDate(world.created_at)}</div>
-        <div>${world.planet_type}</div>
-        ${world.locked ? '<div>🔒 Locked</div>' : ''}
-        <p>${world.description}</p>
-        <button onclick="window.showFields(${world.id})">View All Fields</button>
-        <button onclick="window.handleApprove(${world.id})">✓ Approve</button>
-        <button onclick="window.handleReject(${world.id})">✕ Reject</button>
+        <div class="world-header">
+          <div>
+            <h3 class="world-title">${world.planet_name}</h3>
+            <div class="world-meta">
+              <span>by ${world.fields?.creator_name ?? 'Unknown'}</span>
+              <span>${formatDate(world.created_at)}</span>
+            </div>
+          </div>
+          <div style="display:flex; gap:0.5rem;">
+            <span class="world-type">${world.planet_type || 'unknown'}</span>
+            ${world.locked ? '<span class="world-locked">🔒 Locked</span>' : ''}
+          </div>
+        </div>
+
+        <p class="world-description">${world.description || ''}</p>
+
+        <details class="world-fields">
+          <summary>View All Fields</summary>
+          <div class="world-fields-content">
+            ${renderFields(world.fields)}
+          </div>
+        </details>
+
+        <div class="world-actions">
+          <button class="btn btn-approve" onclick="window.handleApprove('${world.id}')">✓ Approve</button>
+          <button class="btn btn-reject" onclick="window.handleReject('${world.id}')">✕ Reject</button>
+        </div>
       </div>
     `;
   }
