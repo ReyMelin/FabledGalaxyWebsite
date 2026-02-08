@@ -34,7 +34,7 @@ window.submitWorld = async function(payload) {
 window.loadApprovedWorlds = async function() {
   const res = await window.sb
     .from("worlds")
-    .select("id, planet_name, creator_name, planet_type, description, locked, created_at, fields")
+    .select("id, planet_name, planet_type, description, locked, created_at, fields")
     .eq("status", "approved")
     .order("created_at", { ascending: false });
 
@@ -45,7 +45,7 @@ window.loadApprovedWorlds = async function() {
 window.loadWorldById = async function(id) {
   const res = await window.sb
     .from("worlds")
-    .select("id, planet_name, creator_name, planet_type, description, locked, created_at, fields")
+    .select("id, planet_name, planet_type, description, locked, created_at, fields")
     .eq("id", id)
     .eq("status", "approved")
     .single();
