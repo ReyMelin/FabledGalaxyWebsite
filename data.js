@@ -128,356 +128,153 @@ const FabledGalaxyData = (function() {
         };
         
         worlds.push(world);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(worlds));
-        
-        return world;
-    }
 
-    /**
-     * Add a contribution to an open planet
-     */
-    function addContribution(planetId, contribution) {
-        const world = getWorld(planetId);
-        
-        if (!world) {
-            console.error('World not found');
-            return null;
-        }
-        
-        if (world.collaboration !== 'open') {
-            console.error('This world is not open for collaboration');
-            return null;
-        }
-        
-        const newContribution = {
-            id: 'contrib_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-            section: contribution.section, // 'civilization', 'technology', 'magic', 'lore'
-            field: contribution.field,     // specific field like 'inhabitants', 'legends', etc.
-            content: contribution.content,
-            contributorName: contribution.contributorName || 'Anonymous Traveler',
-            createdAt: new Date().toISOString()
-        };
-        
-        const contributions = world.contributions || [];
-        contributions.push(newContribution);
-        
-        return updateWorld(planetId, { contributions });
-    }
+        const FabledGalaxyData = (function() {
+            /**
+             * Get approved planets (for public display) from Supabase
+             */
+            async function getPlanets() {
+                return await window.loadApprovedWorlds();
+            }
 
-    /**
-     * Update an existing planet
-     */
-    function updatePlanet(id, updates) {
-        const worlds = getWorlds();
-        const index = worlds.findIndex(w => w.id === id);
-        
-        if (index === -1) return null;
-        
-        worlds[index] = {
-            ...worlds[index],
-            ...updates,
-            updatedAt: new Date().toISOString()
-        };
-        
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(worlds));
-        return worlds[index];
-    }
+            /**
+             * Get all planets regardless of status (moderator use)
+             */
+            async function getAllPlanets() {
+                const { data, error } = await window.sb
+                    .from("worlds")
+                    .select("id, planet_name, planet_type, description, locked, created_at, fields, status")
+                    .order("created_at", { ascending: false });
+                if (error) throw error;
+                return data;
+            }
 
-    /**
-     * Delete a planet (moderator only)
-     */
-    function deletePlanet(id) {
-        if (!isModerator()) {
-            console.error('Unauthorized: Only moderators can delete worlds');
-            return false;
-        }
-        
-        const worlds = getWorlds();
-        const filtered = worlds.filter(w => w.id !== id);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(filtered));
-        return true;
-    }
+            /**
+             * Get pending planets (moderator use)
+             */
+            async function getPendingPlanets() {
+                const { data, error } = await window.sb
+                    .from("worlds")
+                    .select("id, planet_name, planet_type, description, locked, created_at, fields, status")
+                    .eq("status", "pending")
+                    .order("created_at", { ascending: false });
+                if (error) throw error;
+                return data;
+            }
 
-    /**
-     * Moderator authentication
-     */
-    function loginModerator(password) {
-        if (password === MOD_PASSWORD) {
-            localStorage.setItem(MOD_KEY, 'true');
-            return true;
-        }
-        return false;
-    }
+            /**
+             * Get a single planet by ID
+             */
+            async function getPlanet(id) {
+                return await window.loadWorldById(id);
+            }
 
-    function logoutModerator() {
-        localStorage.removeItem(MOD_KEY);
-    }
+            /**
+             * Save a new planet to Supabase
+             */
+            async function savePlanet(planetData) {
+                const { data, error } = await window.sb
+                    .from("worlds")
+                    .insert([planetData])
+                    .select();
+                if (error) throw error;
+                return data[0];
+            }
 
-    function isModerator() {
-        return localStorage.getItem(MOD_KEY) === 'true';
-    }
+            /**
+             * Update an existing planet
+             */
+            async function updatePlanet(id, updates) {
+                const { data, error } = await window.sb
+                    .from("worlds")
+                    .update(updates)
+                    .eq("id", id)
+                    .select();
+                if (error) throw error;
+                return data[0];
+            }
 
-    /**
-     * Approve a pending planet (moderator only)
-     */
-    function approvePlanet(id) {
-        if (!isModerator()) {
-            console.error('Unauthorized: Only moderators can approve planets');
-            return false;
-        }
-        return updatePlanetStatus(id, 'approved');
-    }
-
-    /**
-     * Reject a pending planet (moderator only)
-     */
-    function rejectPlanet(id) {
-        if (!isModerator()) {
-            console.error('Unauthorized: Only moderators can reject planets');
-            return false;
-        }
-        return updatePlanetStatus(id, 'rejected');
-    }
-
-    /**
-     * Update planet status (internal)
-     */
-    function updatePlanetStatus(id, status) {
-        const planets = getAllPlanetsRaw();
-        const index = planets.findIndex(p => p.id === id);
-        
-        if (index === -1) return null;
-        
-        planets[index].status = status;
-        planets[index].updatedAt = new Date().toISOString();
-        planets[index].moderatedAt = new Date().toISOString();
-        
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(planets));
-        return planets[index];
-    }
-
-    /**
-     * Export all data as JSON
-     */
-    function exportData() {
-        const planets = getPlanets();
-        const dataStr = JSON.stringify(planets, null, 2);
-        const blob = new Blob([dataStr], { type: 'application/json' });
-        const url = URL.createObjectURL(blob);
-        
-        const a = document.createElement('a');
-        a.href = url;
-        a.download = `fabled-galaxy-export-${new Date().toISOString().split('T')[0]}.json`;
-        a.click();
-        
-        URL.revokeObjectURL(url);
-    }
-
-    /**
-     * Import data from JSON
-     */
-    function importData(jsonString) {
-        try {
-            const planets = JSON.parse(jsonString);
-            if (Array.isArray(planets)) {
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(planets));
+            /**
+             * Delete a planet (moderator only)
+             */
+            async function deletePlanet(id) {
+                const { error } = await window.sb
+                    .from("worlds")
+                    .delete()
+                    .eq("id", id);
+                if (error) throw error;
                 return true;
             }
-        } catch (e) {
-            console.error('Import error:', e);
-        }
-        return false;
-    }
 
-    /**
-     * Generate unique ID
-     */
-    function generateId() {
-        return 'planet_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
-    }
-
-    /**
-     * Get random planet color for galaxy map
-     */
-    function getRandomPlanetColor() {
-        const colors = [
-            '#7c5bf5', // Purple
-            '#00d9ff', // Cyan
-            '#ff6b9d', // Pink
-            '#ffd700', // Gold
-            '#4ade80', // Green
-            '#f97316', // Orange
-            '#06b6d4', // Teal
-            '#a855f7', // Violet
-        ];
-        return colors[Math.floor(Math.random() * colors.length)];
-    }
-
-    /**
-     * Get planet type display info
-     */
-    function getPlanetTypeInfo(type) {
-        const types = {
-            'terrestrial': { emoji: '🌍', label: 'Terrestrial World' },
-            'ocean': { emoji: '🌊', label: 'Ocean World' },
-            'desert': { emoji: '🏜️', label: 'Desert World' },
-            'ice': { emoji: '❄️', label: 'Ice World' },
-            'volcanic': { emoji: '🌋', label: 'Volcanic World' },
-            'forest': { emoji: '🌲', label: 'Forest World' },
-            'sky': { emoji: '☁️', label: 'Sky World' },
-            'crystal': { emoji: '💎', label: 'Crystal World' },
-            'dark': { emoji: '🌑', label: 'Dark World' },
-            'arcane': { emoji: '🔮', label: 'Arcane World' },
-            'city': { emoji: '🏙️', label: 'City World' },
-            'other': { emoji: '✦', label: 'Unique World' },
-            'unknown': { emoji: '❓', label: 'Unknown World' }
-        };
-        return types[type] || types['unknown'];
-    }
-
-    /**
-     * Sample planets for demo
-     */
-    function getSamplePlanets() {
-        return [
-            {
-                name: 'Luminos Prime',
-                type: 'crystal',
-                description: 'A world of living crystals that sing with the light of three suns. The surface is covered in prismatic formations that channel energy throughout the planet.',
-                inhabitants: 'The Luminari - beings of pure light who take crystalline forms to interact with the physical world.',
-                civilization: 'A harmonious society organized around the Great Resonance, where collective thoughts create reality.',
-                techLevel: 'magitech',
-                technology: 'Crystal-based technology that converts light into matter and energy.',
-                magicExists: 'yes',
-                magicSystem: 'Light-weaving: The ability to bend and shape photons into solid constructs.',
-                creationMyth: 'In the beginning, there was only the First Light. It shattered itself into a billion fragments to create the universe.',
-                creatorName: 'StarWeaver',
-                collaboration: 'open',
-                position: { x: 25, y: 30 },
-                color: '#00d9ff',
-                planetImage: 'Imgs/New Crystal Galaxy.avif',
-                status: 'approved'
-            },
-            {
-                name: 'Verdant Deep',
-                type: 'ocean',
-                description: 'An endless ocean world where massive kelp forests stretch from the seafloor to the surface, creating layered ecosystems.',
-                inhabitants: 'The Tidekeepers - amphibious beings who can breathe both water and air.',
-                civilization: 'Nomadic tribes that follow the great migration of bioluminescent leviathans.',
-                techLevel: 'ancient',
-                technology: 'Bio-organic tools grown from living coral and kelp.',
-                magicExists: 'yes',
-                magicSystem: 'Current-speaking: The ability to communicate with and command ocean currents.',
-                legends: 'The legend of the Abyssal Heart - a massive pearl said to control all the waters of the world.',
-                creatorName: 'DeepDreamer',
-                collaboration: 'locked',
-                position: { x: 55, y: 45 },
-                color: '#4ade80',
-                planetImage: 'Imgs/eyeship rotated.avif',
-                status: 'approved'
-            },
-            {
-                name: 'Ashfall',
-                type: 'volcanic',
-                description: 'A world of eternal fire where volcanoes paint the sky red and rivers of lava carve the landscape.',
-                inhabitants: 'The Ember-Born - humanoids with skin like cooling magma and eyes of flame.',
-                civilization: 'Forge-cities built inside dormant volcanoes, powered by geothermal energy.',
-                factions: 'The Flame Keepers guard the sacred fires. The Ash Walkers explore the cooling wastelands.',
-                techLevel: 'industrial',
-                technology: 'Steam and magma-powered machinery, heat-resistant alloys.',
-                magicExists: 'rare',
-                magicSystem: 'Pyrokenesis exists but is considered a dangerous gift, carefully controlled.',
-                history: 'The Great Cooling of 1000 years ago nearly ended civilization until the Forge Pact was signed.',
-                creatorName: 'CinderScribe',
-                collaboration: 'open',
-                position: { x: 35, y: 60 },
-                color: '#f97316',
-                planetImage: 'Imgs/fractalFingersfULL.avif',
-                status: 'approved'
-            },
-            {
-                name: 'Whisperwind',
-                type: 'sky',
-                description: 'A world with no solid ground - only endless layers of clouds and floating islands held aloft by mysterious forces.',
-                inhabitants: 'The Skylark people - humans born with feathered wings and hollow bones.',
-                civilization: 'Island nations connected by rope bridges and airship trade routes.',
-                techLevel: 'renaissance',
-                technology: 'Windmills, gliders, and lighter-than-air vessels.',
-                magicExists: 'yes',
-                magicSystem: 'Wind-binding: The art of capturing winds in jars and releasing them as needed.',
-                creationMyth: 'The world was once solid until the Wind Goddess breathed it into the sky.',
-                creatorName: 'CloudChaser',
-                collaboration: 'locked',
-                position: { x: 70, y: 25 },
-                color: '#a855f7',
-                planetImage: 'Imgs/spacescapeship.avif',
-                status: 'approved'
-            },
-            {
-                name: 'Shadowmere',
-                type: 'dark',
-                description: 'A world shrouded in eternal twilight where bioluminescent life provides the only illumination.',
-                inhabitants: 'The Umbral - pale beings with large eyes adapted to the darkness.',
-                civilization: 'Underground cities carved into massive mushroom stems.',
-                factions: 'The Light Keepers cultivate glowing gardens. The Deep Dwellers explore the absolute dark.',
-                techLevel: 'medieval',
-                technology: 'Bio-luminescent cultivation, echo-location devices.',
-                magicExists: 'yes',
-                magicSystem: 'Shadow-stepping: The ability to travel through darkness instantaneously.',
-                legends: 'The Last Dawn - a prophecy that light will one day return to the world.',
-                creatorName: 'NightWriter',
-                collaboration: 'open',
-                position: { x: 65, y: 65 },
-                color: '#7c5bf5',
-                planetImage: 'Imgs/yogg.avif',
-                status: 'approved'
-            },
-            {
-                name: 'Florantine',
-                type: 'forest',
-                description: 'A lush world where forests of pink-blossomed trees cover entire continents, their roots intertwined in a planet-spanning network of life.',
-                inhabitants: 'The Bloomkin - small humanoids who photosynthesize and communicate through pollen clouds.',
-                civilization: 'Arboreal communities living in harmony with the Great Grove, where the oldest tree is said to be conscious.',
-                factions: 'The Petal Guard protects endangered species. The Root Speakers commune with the forest network.',
-                techLevel: 'ancient',
-                technology: 'Bio-organic architecture, seed-based messaging systems, living tools that grow to fit their purpose.',
-                magicExists: 'yes',
-                magicSystem: 'Bloom-weaving: Drawing power from flowers to heal, grow, and transform organic matter.',
-                creationMyth: 'The First Seed fell from a dying star and took root in cosmic dust, growing the world from its branches.',
-                legends: 'The Eternal Bloom - a flower that grants immortality but only blooms once every thousand years.',
-                creatorName: 'PetalScribe',
-                collaboration: 'open',
-                position: { x: 45, y: 35 },
-                color: '#ff6b9d',
-                planetImage: 'Imgs/Pink Poppy Flowers.avif',
-                status: 'approved'
+            /**
+             * Add a contribution to an open planet
+             */
+            async function addContribution(planetId, contribution) {
+                // Fetch planet
+                const planet = await getPlanet(planetId);
+                if (!planet) throw new Error('World not found');
+                if (!planet.fields || planet.fields.collaboration !== 'open') throw new Error('This world is not open for collaboration');
+                // Add to contributions array
+                const contributions = planet.fields.contributions || [];
+                contributions.push({
+                    ...contribution,
+                    id: 'contrib_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
+                    createdAt: new Date().toISOString()
+                });
+                // Update planet
+                return await updatePlanet(planetId, { fields: { ...planet.fields, contributions } });
             }
-        ];
-    }
 
-    // Public API
-    return {
-        init,
-        getPlanets,
-        getAllPlanets,
-        getPendingPlanets,
-        getPlanet,
-        savePlanet,
-        updatePlanet,
-        deletePlanet,
-        addContribution,
-        loginModerator,
-        logoutModerator,
-        isModerator,
-        approvePlanet,
-        rejectPlanet,
-        exportData,
-        importData,
-        getPlanetTypeInfo
-    };
-})();
+            /**
+             * Approve a pending planet (moderator only)
+             */
+            async function approvePlanet(id) {
+                return await updatePlanet(id, { status: 'approved' });
+            }
 
-// Initialize on load
-document.addEventListener('DOMContentLoaded', () => {
-    FabledGalaxyData.init();
-});
+            /**
+             * Reject a pending planet (moderator only)
+             */
+            async function rejectPlanet(id) {
+                return await updatePlanet(id, { status: 'rejected' });
+            }
+
+            /**
+             * Get planet type display info
+             */
+            function getPlanetTypeInfo(type) {
+                const types = {
+                    'terrestrial': { emoji: '🌍', label: 'Terrestrial World' },
+                    'ocean': { emoji: '🌊', label: 'Ocean World' },
+                    'desert': { emoji: '🏜️', label: 'Desert World' },
+                    'ice': { emoji: '❄️', label: 'Ice World' },
+                    'volcanic': { emoji: '🌋', label: 'Volcanic World' },
+                    'forest': { emoji: '🌲', label: 'Forest World' },
+                    'sky': { emoji: '☁️', label: 'Sky World' },
+                    'crystal': { emoji: '💎', label: 'Crystal World' },
+                    'dark': { emoji: '🌑', label: 'Dark World' },
+                    'arcane': { emoji: '🔮', label: 'Arcane World' },
+                    'city': { emoji: '🏙️', label: 'City World' },
+                    'other': { emoji: '✦', label: 'Unique World' },
+                    'unknown': { emoji: '❓', label: 'Unknown World' }
+                };
+                return types[type] || types['unknown'];
+            }
+
+            // Export/import utilities can be added as needed
+
+            return {
+                getPlanets,
+                getAllPlanets,
+                getPendingPlanets,
+                getPlanet,
+                savePlanet,
+                updatePlanet,
+                deletePlanet,
+                addContribution,
+                approvePlanet,
+                rejectPlanet,
+                getPlanetTypeInfo
+            };
+        })();
+        try {

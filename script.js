@@ -174,31 +174,59 @@ function initPlanetNodes() {
     const tooltipCreator = tooltip.querySelector('.tooltip-creator');
     const tooltipType = tooltip.querySelector('.tooltip-type');
     
-    // Load planets from data service
-    // Load worlds from data service
-    const worlds = typeof FabledGalaxyData !== 'undefined' ? FabledGalaxyData.getAllPlanets() : [];
-    
-    // Clear existing nodes and populate with saved planets
-    galaxyOverlay.innerHTML = '';
-    
-    worlds.forEach(world => {
-        const typeInfo = typeof FabledGalaxyData !== 'undefined' 
-            ? FabledGalaxyData.getPlanetTypeInfo(planet.type) 
-            : { emoji: '🌍', label: 'World' };
-        
-        const node = document.createElement('div');
-        node.className = 'planet-node';
-        node.style.top = `${planet.position.y}%`;
-        node.style.left = `${planet.position.x}%`;
-        node.style.setProperty('--planet-color', planet.color || '#ffd700');
-        node.dataset.id = planet.id;
-        node.dataset.name = planet.name;
-        node.dataset.creator = planet.creatorName;
-        node.dataset.type = typeInfo.label;
-        node.dataset.emoji = typeInfo.emoji;
-        
-        galaxyOverlay.appendChild(node);
-    });
+    // Load planets from Supabase
+    (async () => {
+        const worlds = typeof FabledGalaxyData !== 'undefined' ? await FabledGalaxyData.getAllPlanets() : [];
+        galaxyOverlay.innerHTML = '';
+        worlds.forEach(world => {
+            // Supabase schema: planet_name, planet_type, fields, etc.
+            const typeInfo = typeof FabledGalaxyData !== 'undefined'
+                ? FabledGalaxyData.getPlanetTypeInfo(world.planet_type)
+                : { emoji: '🌍', label: 'World' };
+            const position = world.fields?.position || { x: 10, y: 10 };
+            const color = world.fields?.color || '#ffd700';
+            const creatorName = world.fields?.creator_name || 'Unknown';
+            const node = document.createElement('div');
+            node.className = 'planet-node';
+            node.style.top = `${position.y}%`;
+            node.style.left = `${position.x}%`;
+            node.style.setProperty('--planet-color', color);
+            node.dataset.id = world.id;
+            node.dataset.name = world.planet_name;
+            node.dataset.creator = creatorName;
+            node.dataset.type = typeInfo.label;
+            node.dataset.emoji = typeInfo.emoji;
+            galaxyOverlay.appendChild(node);
+        });
+        // Setup interactions for all planet nodes
+        const planetNodes = document.querySelectorAll('.planet-node');
+        planetNodes.forEach(node => {
+            node.addEventListener('mouseenter', (e) => {
+                const name = node.dataset.name;
+                const creator = node.dataset.creator;
+                const type = node.dataset.type;
+                const emoji = node.dataset.emoji || '';
+                tooltipName.textContent = name;
+                if (tooltipCreator) tooltipCreator.textContent = `by ${creator}`;
+                tooltipType.textContent = `${emoji} ${type}`;
+                tooltip.classList.add('visible');
+                updateTooltipPosition(e);
+            });
+            node.addEventListener('mousemove', (e) => {
+                updateTooltipPosition(e);
+            });
+            node.addEventListener('mouseleave', () => {
+                tooltip.classList.remove('visible');
+            });
+            node.addEventListener('click', () => {
+                // Navigate to planet page
+                const planetId = node.dataset.id;
+                if (planetId) {
+                    window.location.href = `planet.html?id=${planetId}`;
+                }
+            });
+        });
+    })();
     
     // Setup interactions for all planet nodes
     const planetNodes = document.querySelectorAll('.planet-node');

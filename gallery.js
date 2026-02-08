@@ -109,7 +109,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         return {
                             id: w.id,
                             name: w.planet_name,
-                            creatorName: w.creator_name || (w.fields?.creator_name) || 'Unknown',
+                            creatorName: w.fields?.creator_name || 'Unknown',
                             type: w.planet_type,
                             description: w.description,
                             collaboration: w.locked ? 'locked' : 'open',
