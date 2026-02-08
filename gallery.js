@@ -30,16 +30,6 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Moderator elements
     const modBtn = document.getElementById('mod-btn');
-    const modModal = document.getElementById('mod-modal');
-    const modalClose = document.getElementById('modal-close');
-    const modPassword = document.getElementById('mod-password');
-    const modLoginBtn = document.getElementById('mod-login-btn');
-    const modLogoutBtn = document.getElementById('mod-logout-btn');
-    const modLoginForm = document.getElementById('mod-login-form');
-    const modPanel = document.getElementById('mod-panel');
-    const modError = document.getElementById('mod-error');
-    const exportBtn = document.getElementById('export-btn');
-    const importFile = document.getElementById('import-file');
     
     // Stats
     const totalPlanetsEl = document.getElementById('total-planets');
@@ -71,7 +61,6 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPlanets();
         setupEventListeners();
         setupMapControls();
-        updateModeratorUI();
     }
 
     /**
@@ -245,19 +234,6 @@ document.addEventListener('DOMContentLoaded', () => {
             node.classList.add('open-world');
         }
         
-        // Moderator delete button
-        if (FabledGalaxyData.isModerator()) {
-            const deleteBtn = document.createElement('button');
-            deleteBtn.className = 'planet-delete';
-            deleteBtn.innerHTML = '×';
-            deleteBtn.title = 'Delete planet';
-            deleteBtn.onclick = (e) => {
-                e.stopPropagation();
-                deletePlanet(planet.id, planet.name);
-            };
-            node.appendChild(deleteBtn);
-        }
-        
         return node;
     }
     
@@ -330,10 +306,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         ? '<span class="card-collab">🔓 Open</span>' 
                         : ''
                     }
-                    ${FabledGalaxyData.isModerator() 
-                        ? `<button class="card-delete" onclick="event.stopPropagation(); deletePlanetFromCard('${planet.id}', '${planet.name.replace(/'/g, "\\'")}')">×</button>` 
-                        : ''
-                    }
                 </div>
                 <div class="card-content">
                     <h3 class="card-name">${planet.name}</h3>
@@ -384,51 +356,9 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
         
-        // Moderator modal
+        // Moderator button - redirect to admin page
         modBtn.addEventListener('click', () => {
-            modModal.style.display = 'flex';
-        });
-        
-        modalClose.addEventListener('click', () => {
-            modModal.style.display = 'none';
-        });
-        
-        modModal.addEventListener('click', (e) => {
-            if (e.target === modModal) {
-                modModal.style.display = 'none';
-            }
-        });
-        
-        modLoginBtn.addEventListener('click', handleModLogin);
-        modPassword.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') handleModLogin();
-        });
-        
-        modLogoutBtn.addEventListener('click', () => {
-            FabledGalaxyData.logoutModerator();
-            updateModeratorUI();
-            loadPlanets();
-        });
-        
-        // Export/Import
-        exportBtn.addEventListener('click', () => {
-            FabledGalaxyData.exportData();
-        });
-        
-        importFile.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    if (FabledGalaxyData.importData(event.target.result)) {
-                        alert('Data imported successfully!');
-                        loadPlanets();
-                    } else {
-                        alert('Failed to import data. Please check the file format.');
-                    }
-                };
-                reader.readAsText(file);
-            }
+            window.location.href = 'admin.html';
         });
     }
 
@@ -817,132 +747,7 @@ document.addEventListener('DOMContentLoaded', () => {
         openWorldsEl.textContent = openCount;
     }
 
-    /**
-     * Handle moderator login
-     */
-    function handleModLogin() {
-        const password = modPassword.value;
-        if (FabledGalaxyData.loginModerator(password)) {
-            modError.style.display = 'none';
-            modPassword.value = '';
-            updateModeratorUI();
-            loadPlanets();
-        } else {
-            modError.style.display = 'block';
-            modPassword.classList.add('error');
-            setTimeout(() => modPassword.classList.remove('error'), 500);
-        }
-    }
 
-    /**
-     * Update moderator UI based on login state
-     */
-    function updateModeratorUI() {
-        const isMod = FabledGalaxyData.isModerator();
-        
-        if (isMod) {
-            modLoginForm.style.display = 'none';
-            modPanel.style.display = 'block';
-            modBtn.classList.add('active');
-            modBtn.innerHTML = '🔓';
-            renderPendingPlanets();
-        } else {
-            modLoginForm.style.display = 'block';
-            modPanel.style.display = 'none';
-            modBtn.classList.remove('active');
-            modBtn.innerHTML = '🔐';
-        }
-    }
-
-    /**
-     * Render pending planets for moderator review
-     */
-    function renderPendingPlanets() {
-        const pendingContainer = document.getElementById('pending-planets');
-        const pendingCount = document.getElementById('pending-count');
-        
-        if (!pendingContainer) return;
-        
-        const pendingPlanets = FabledGalaxyData.getPendingPlanets();
-        pendingCount.textContent = pendingPlanets.length;
-        
-        if (pendingPlanets.length === 0) {
-            pendingContainer.innerHTML = '<p class="pending-empty">No planets pending review</p>';
-            return;
-        }
-        
-        pendingContainer.innerHTML = pendingPlanets.map(planet => {
-            const typeInfo = FabledGalaxyData.getPlanetTypeInfo(planet.type);
-            const createdDate = new Date(planet.createdAt).toLocaleDateString();
-            
-            return `
-                <div class="pending-item" data-id="${planet.id}">
-                    <div class="pending-item-header">
-                        <span class="pending-item-name">${planet.name}</span>
-                        <span class="pending-item-type">${typeInfo.emoji} ${typeInfo.label}</span>
-                    </div>
-                    <div class="pending-item-meta">
-                        By ${planet.creatorName || 'Anonymous'} • ${createdDate}
-                    </div>
-                    <div class="pending-item-actions">
-                        <button class="btn btn-approve" onclick="window.approvePlanetFromMod('${planet.id}', '${planet.name.replace(/'/g, "\\'")}')">
-                            ✓ Approve
-                        </button>
-                        <button class="btn btn-reject" onclick="window.rejectPlanetFromMod('${planet.id}', '${planet.name.replace(/'/g, "\\'")}')">
-                            ✗ Reject
-                        </button>
-                        <a href="planet.html?id=${planet.id}" class="btn btn-secondary" target="_blank">
-                            👁 View
-                        </a>
-                    </div>
-                </div>
-            `;
-        }).join('');
-    }
-
-    /**
-     * Approve a planet (moderator only)
-     */
-    function approvePlanet(id, name) {
-        if (!FabledGalaxyData.isModerator()) return;
-        
-        if (confirm(`Approve "${name}" to be visible in the galaxy?`)) {
-            FabledGalaxyData.approvePlanet(id);
-            renderPendingPlanets();
-            loadPlanets();
-        }
-    }
-
-    /**
-     * Reject a planet (moderator only)
-     */
-    function rejectPlanet(id, name) {
-        if (!FabledGalaxyData.isModerator()) return;
-        
-        if (confirm(`Reject "${name}"? It will be hidden from the galaxy.`)) {
-            FabledGalaxyData.rejectPlanet(id);
-            renderPendingPlanets();
-        }
-    }
-
-    // Expose for inline onclick
-    window.approvePlanetFromMod = approvePlanet;
-    window.rejectPlanetFromMod = rejectPlanet;
-
-    /**
-     * Delete a planet (moderator only)
-     */
-    function deletePlanet(id, name) {
-        if (!FabledGalaxyData.isModerator()) return;
-        
-        if (confirm(`Are you sure you want to delete "${name}"? This cannot be undone.`)) {
-            FabledGalaxyData.deletePlanet(id);
-            loadPlanets();
-        }
-    }
-    
-    // Expose deletePlanet for inline onclick
-    window.deletePlanetFromCard = deletePlanet;
 
     /**
      * Utility: Truncate text

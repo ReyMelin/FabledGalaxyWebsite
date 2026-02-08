@@ -321,6 +321,27 @@
             throw new Error("Not logged in");
         }
 
+        // Check if user is an admin
+        const { data: adminData, error: adminError } = await window.sb
+            .from("admins")
+            .select("id")
+            .eq("user_id", user.id)
+            .single();
+
+        if (adminError || !adminData) {
+            mainContent.innerHTML = `
+                <div class="login-required">
+                    <h2>Access Denied</h2>
+                    <p>You don't have admin privileges.</p>
+                    <p style="color: var(--color-text-dim); margin-top: 0.5rem; font-size: 0.9rem;">Logged in as: ${user.email || user.user_metadata?.full_name || 'Unknown'}</p>
+                    <button onclick="window.logout()" class="btn" style="margin-top: 1rem; background: var(--color-danger); color: white; padding: 0.75rem 1.5rem; border: none; border-radius: 8px; cursor: pointer;">
+                        Log Out
+                    </button>
+                </div>
+            `;
+            throw new Error("Not an admin");
+        }
+
         async function loadPending() {
             const res = await window.sb
                 .from("worlds")

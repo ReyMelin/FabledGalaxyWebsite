@@ -193,44 +193,6 @@
         </footer>
     </main>
 
-    <!-- Moderator Modal -->
-    <div class="modal-overlay" id="mod-modal" style="display: none;">
-        <div class="modal-content">
-            <button class="modal-close" id="modal-close">×</button>
-            <h2>🔐 Moderator Access</h2>
-            <div id="mod-login-form">
-                <p>Enter moderator password to access admin features.</p>
-                <input type="password" id="mod-password" placeholder="Password">
-                <button class="btn btn-primary" id="mod-login-btn">Login</button>
-                <p class="mod-error" id="mod-error" style="display: none;">Invalid password</p>
-            </div>
-            <div id="mod-panel" style="display: none;">
-                <p class="mod-status">✅ Logged in as Moderator</p>
-                
-                <!-- Pending Review Section -->
-                <div class="mod-review-section">
-                    <h3>📋 Pending Review <span id="pending-count" class="pending-badge">0</span></h3>
-                    <div id="pending-planets" class="pending-list">
-                        <!-- Pending planets will be rendered here -->
-                    </div>
-                </div>
-                
-                <div class="mod-actions">
-                    <button class="btn btn-secondary" id="export-btn">
-                        📥 Export All Data
-                    </button>
-                    <label class="btn btn-secondary">
-                        📤 Import Data
-                        <input type="file" id="import-file" accept=".json" style="display: none;">
-                    </label>
-                    <button class="btn btn-secondary" id="mod-logout-btn">
-                        🚪 Logout
-                    </button>
-                </div>
-            </div>
-        </div>
-    </div>
-
     <script src="data.js"></script>
     <script type="module" src="supabaseClient.js"></script>
     <script src="script.js" defer></script>
