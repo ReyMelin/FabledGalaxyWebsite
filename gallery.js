@@ -1,3 +1,21 @@
+function getPlanetTypeInfo(type) {
+    const types = {
+        terrestrial: { emoji: '🌍', label: 'Terrestrial World' },
+        ocean: { emoji: '🌊', label: 'Ocean World' },
+        desert: { emoji: '🏜️', label: 'Desert World' },
+        ice: { emoji: '❄️', label: 'Ice World' },
+        volcanic: { emoji: '🌋', label: 'Volcanic World' },
+        forest: { emoji: '🌲', label: 'Forest World' },
+        sky: { emoji: '☁️', label: 'Sky World' },
+        crystal: { emoji: '💎', label: 'Crystal World' },
+        dark: { emoji: '🌑', label: 'Dark World' },
+        arcane: { emoji: '🔮', label: 'Arcane World' },
+        city: { emoji: '🏙️', label: 'City World' },
+        other: { emoji: '✦', label: 'Unique World' },
+        unknown: { emoji: '❓', label: 'Unknown World' }
+    };
+    return types[type] || types.unknown;
+}
 /**
  * Fabled Galaxy - Galaxy Gallery
  * Handles the interactive galaxy map, filtering, and planet display
@@ -288,7 +306,7 @@ document.addEventListener('DOMContentLoaded', () => {
         planetGrid.innerHTML = '';
         
         planets.forEach(planet => {
-            const typeInfo = FabledGalaxyData.getPlanetTypeInfo(planet.type);
+            const typeInfo = getPlanetTypeInfo(planet.type);
             const card = document.createElement('div');
             card.className = 'planet-card';
             card.dataset.id = planet.id;
@@ -647,7 +665,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const planet = allPlanets.find(p => p.id === node.dataset.id);
         if (!planet) return;
         
-        const typeInfo = FabledGalaxyData.getPlanetTypeInfo(planet.type);
+        const typeInfo = getPlanetTypeInfo(planet.type);
         
         tooltip.querySelector('.tooltip-type-icon').textContent = typeInfo.emoji;
         tooltip.querySelector('.tooltip-name').textContent = planet.name;

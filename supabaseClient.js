@@ -1,9 +1,10 @@
 
-
-const SUPABASE_URL = "https://uyhooadpxmausptmtsdm.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5aG9vYWRweG1hdXNwdG10c2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzODYyNjIsImV4cCI6MjA4NTk2MjI2Mn0.JNxXmQrFIB4QOem3LoScmWJXg-wNUipgDzhWwusns9s";
-
-window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// Prevent double initialization if the script is loaded twice
+if (!window.sb) {
+  const SUPABASE_URL = "https://uyhooadpxmausptmtsdm.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5aG9vYWRweG1hdXNwdG10c2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzODYyNjIsImV4cCI6MjA4NTk2MjI2Mn0.JNxXmQrFIB4QOem3LoScmWJXg-wNUipgDzhWwusns9s";
+  window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+}
 
 window.submitWorld = async function(payload) {
   // Check if user is logged in (optional - email can be used instead)

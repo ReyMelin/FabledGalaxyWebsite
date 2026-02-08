@@ -296,13 +296,10 @@
         <script>
             document.addEventListener('DOMContentLoaded', function() {
                 if (window.updateAuthUI) window.updateAuthUI();
-            });
-        </script>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script type="module" src="supabaseClient.js"></script>
-    <script type="module">
                 // Check if Supabase client exists
                 console.log(window.sb ? "✅ sb exists" : "❌ sb missing");
+            });
+        </script>
                 // Check session
                 const sessionResult = await window.sb.auth.getSession();
                 // Optionally log session status (avoid logging sensitive info)
@@ -360,16 +357,13 @@
         }
 
         async function setStatus(id, status) {
-            const { data: { user } } = await window.sb.auth.getUser();
+            // Only update status field to comply with policy
             const res = await window.sb
                 .from("worlds")
-                .update({
-                    status,
-                    approved_at: status === "approved" ? new Date().toISOString() : null,
-                    approved_by: status === "approved" ? user.id : null
-                })
-                .eq("id", id);
-
+                .update({ status })
+                .eq("id", id)
+                .select()
+                .single();
             if (res.error) throw res.error;
         }
 
@@ -517,8 +511,5 @@
         renderPendingList();
     </script>
 
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./supabaseClient.js"></script>
-    <script src="./admin.js"></script>
 </body>
 </html>
