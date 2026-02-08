@@ -127,121 +127,68 @@ const FabledGalaxyData = (function() {
             status: planetData.status || 'pending'
         };
         
-        worlds.push(world);
-
-        const FabledGalaxyData = (function() {
-            /**
-             * Get approved planets (for public display) from Supabase
-             */
-            async function getPlanets() {
-                return await window.loadApprovedWorlds();
+                worlds.push(world);
+                setWorlds(worlds);
+                return world;
             }
-
-            /**
-             * Get all planets regardless of status (moderator use)
-             */
-            async function getAllPlanets() {
-                const { data, error } = await window.sb
-                    .from("worlds")
-                    .select("id, planet_name, planet_type, description, locked, created_at, fields, status")
-                    .order("created_at", { ascending: false });
-                if (error) throw error;
-                return data;
+        
+            // Utility functions for localStorage
+            function getAllWorldsRaw() {
+                try {
+                    const data = localStorage.getItem(STORAGE_KEY);
+                    return data ? JSON.parse(data) : [];
+                } catch (e) {
+                    console.error('Error reading worlds:', e);
+                    return [];
+                }
             }
-
-            /**
-             * Get pending planets (moderator use)
-             */
-            async function getPendingPlanets() {
-                const { data, error } = await window.sb
-                    .from("worlds")
-                    .select("id, planet_name, planet_type, description, locked, created_at, fields, status")
-                    .eq("status", "pending")
-                    .order("created_at", { ascending: false });
-                if (error) throw error;
-                return data;
+        
+            function setWorlds(worlds) {
+                try {
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(worlds));
+                } catch (e) {
+                    console.error('Error saving worlds:', e);
+                }
             }
-
-            /**
-             * Get a single planet by ID
-             */
-            async function getPlanet(id) {
-                return await window.loadWorldById(id);
+        
+            function generateId() {
+                return 'planet_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
             }
-
-            /**
-             * Save a new planet to Supabase
-             */
-            async function savePlanet(planetData) {
-                const { data, error } = await window.sb
-                    .from("worlds")
-                    .insert([planetData])
-                    .select();
-                if (error) throw error;
-                return data[0];
+        
+            function getSampleWorlds() {
+                return [
+                    {
+                        id: generateId(),
+                        name: 'Terra Prime',
+                        type: 'terrestrial',
+                        description: 'A lush, Earth-like world.',
+                        status: 'approved',
+                        creatorName: 'DemoUser',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        color: getRandomWorldColor(),
+                        position: { x: 20, y: 30 }
+                    },
+                    {
+                        id: generateId(),
+                        name: 'Aqua Sphere',
+                        type: 'ocean',
+                        description: 'A water world with floating cities.',
+                        status: 'approved',
+                        creatorName: 'DemoUser',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString(),
+                        color: getRandomWorldColor(),
+                        position: { x: 50, y: 60 }
+                    }
+                ];
             }
-
-            /**
-             * Update an existing planet
-             */
-            async function updatePlanet(id, updates) {
-                const { data, error } = await window.sb
-                    .from("worlds")
-                    .update(updates)
-                    .eq("id", id)
-                    .select();
-                if (error) throw error;
-                return data[0];
+        
+            function getRandomWorldColor() {
+                const colors = ['#6ec1e4', '#e4b96e', '#6ee4a1', '#e46e9c', '#b96ee4', '#e46e6e', '#6ee4e4'];
+                return colors[Math.floor(Math.random() * colors.length)];
             }
-
-            /**
-             * Delete a planet (moderator only)
-             */
-            async function deletePlanet(id) {
-                const { error } = await window.sb
-                    .from("worlds")
-                    .delete()
-                    .eq("id", id);
-                if (error) throw error;
-                return true;
-            }
-
-            /**
-             * Add a contribution to an open planet
-             */
-            async function addContribution(planetId, contribution) {
-                // Fetch planet
-                const planet = await getPlanet(planetId);
-                if (!planet) throw new Error('World not found');
-                if (!planet.fields || planet.fields.collaboration !== 'open') throw new Error('This world is not open for collaboration');
-                // Add to contributions array
-                const contributions = planet.fields.contributions || [];
-                contributions.push({
-                    ...contribution,
-                    id: 'contrib_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9),
-                    createdAt: new Date().toISOString()
-                });
-                // Update planet
-                return await updatePlanet(planetId, { fields: { ...planet.fields, contributions } });
-            }
-
-            /**
-             * Approve a pending planet (moderator only)
-             */
-            async function approvePlanet(id) {
-                return await updatePlanet(id, { status: 'approved' });
-            }
-
-            /**
-             * Reject a pending planet (moderator only)
-             */
-            async function rejectPlanet(id) {
-                return await updatePlanet(id, { status: 'rejected' });
-            }
-
-            /**
-             * Get planet type display info
-             */
+        
             function getPlanetTypeInfo(type) {
                 const types = {
                     'terrestrial': { emoji: '🌍', label: 'Terrestrial World' },
@@ -260,20 +207,15 @@ const FabledGalaxyData = (function() {
                 };
                 return types[type] || types['unknown'];
             }
-
-            // Export/import utilities can be added as needed
-
+        
+            // Exported API
             return {
+                init,
                 getPlanets,
                 getAllPlanets,
                 getPendingPlanets,
                 getPlanet,
                 savePlanet,
-                updatePlanet,
-                deletePlanet,
-                addContribution,
-                approvePlanet,
-                rejectPlanet,
                 getPlanetTypeInfo
             };
         })();
