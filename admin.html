@@ -1,36 +1,37 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="robots" content="noindex, nofollow">
-    <link rel="icon" type="image/png" sizes="32x32" href="favicon.png">
-    <title>Admin Panel | Fabled Galaxy</title>
-    
-    <link rel="stylesheet" href="styles.css">
-    
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
+  <title>Admin Panel | Fabled Galaxy</title>
+
+  <link rel="stylesheet" href="styles.css?v=20260209" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </head>
+
 <body>
-    <div class="starfield"></div>
-    
-    <div class="admin-container">
-        <a href="index.html" class="back-link">← Back to Home</a>
-        
-        <header class="admin-header">
-            <h1 class="admin-title">Admin Panel</h1>
-            <p class="admin-subtitle">Review and manage pending world submissions</p>
-        </header>
-        
-        <main id="main-content">
-            <div class="loading">Loading...</div>
-        </main>
-        <!-- Scripts should be loaded at the end of body -->
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-        <script src="./supabaseClient.js"></script>
-        <script src="./admin.js" defer></script>
-    </div>
+  <div class="starfield"></div>
+
+  <div class="admin-container">
+    <a href="index.html" class="back-link">← Back to Home</a>
+
+    <header class="admin-header">
+      <h1 class="admin-title">Admin Panel</h1>
+      <p class="admin-subtitle">Review and manage pending world submissions</p>
+    </header>
+
+    <main id="main-content">
+      <div class="loading">Loading...</div>
+    </main>
+  </div>
+
+  <!-- Scripts at end of body -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabaseClient.js?v=20260209"></script>
+  <script src="./admin.js?v=20260209"></script>
 </body>
 </html>
