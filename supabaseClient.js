@@ -112,6 +112,18 @@ window.updateAuthUI = async function() {
   }
 };
 
+window.loginWithDiscord = async function() {
+  const next = encodeURIComponent(window.location.href); // full current page URL
+  const redirectTo = `${window.location.origin}/FabledGalaxyWebsite/auth-callback.html?next=${next}`;
+
+  const { error } = await window.sb.auth.signInWithOAuth({
+    provider: "discord",
+    options: { redirectTo }
+  });
+
+  if (error) throw error;
+};
+
 // Auto-update UI when DOM is ready
 if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', () => window.updateAuthUI());

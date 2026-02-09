@@ -10,6 +10,7 @@
 </head>
 <body>
   <p>Signing you in…</p>
+
   <script>
     (async () => {
       // Wait until window.sb exists
@@ -20,14 +21,49 @@
         }, 50);
       });
 
-      // Complete the OAuth session
-      const { data, error } = await window.sb.auth.getSession();
-      if (error) console.warn(error.message);
+      // ✅ Exchange OAuth code for a session
+      const url = new URL(window.location.href);
+      const code = url.searchParams.get("code");
+      if (code) {
+        const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
+        if (error) console.warn("exchangeCodeForSession:", error.message);
+      }
 
-      // Support both 'redirect' and 'next' as parameter names
-      const params = new URL(location.href).searchParams;
-      const next = params.get("redirect") || params.get("next") || "gallery.html";
-      location.replace(next);
+
+  (async () => {
+    await new Promise(r => {
+      if (window.sb) return r();
+      const t = setInterval(() => {
+        if (window.sb) { clearInterval(t); r(); }
+      }, 50);
+    });
+
+    // Exchange OAuth code -> session
+    const url = new URL(window.location.href);
+    if (url.searchParams.get("code")) {
+      const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
+      if (error) console.warn("exchangeCodeForSession:", error.message);
+    }
+
+    // Read next
+    const nextRaw = url.searchParams.get("next") || "gallery.html";
+
+    // ✅ Safety: only allow redirects to your own origin
+    let nextUrl;
+    try {
+      nextUrl = new URL(nextRaw, window.location.origin);
+    } catch {
+      nextUrl = new URL("gallery.html", window.location.origin);
+    }
+
+    if (nextUrl.origin !== window.location.origin) {
+      nextUrl = new URL("gallery.html", window.location.origin);
+    }
+
+    window.location.replace(nextUrl.href);
+  })();
+
+
     })();
   </script>
 </body>
