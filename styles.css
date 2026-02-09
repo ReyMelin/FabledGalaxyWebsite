@@ -41,8 +41,7 @@
 }
 }
 .world-card:hover {
-    border-color: var(--color-accent);
-    box-shadow: 0 0 20px var(--color-accent-glow);
+    /* border-color and box-shadow removed to eliminate red line on hover */
 }
 .world-header {
     display: flex;
