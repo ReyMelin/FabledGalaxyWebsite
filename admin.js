@@ -35,9 +35,11 @@
   const { data: { user } } = await window.sb.auth.getUser();
   if (!user) {
     mainContent.innerHTML = `
-      <h2>Login Required</h2>
-      <p>You must be logged in as an admin to access this page.</p>
-      <a href="/auth-callback.html"><button>Login with Discord</button></a>
+      <div class="login-required">
+        <h2>Login Required</h2>
+        <p>You must be logged in as an admin to access this page.</p>
+        <button class="btn btn-discord-login" onclick="window.loginWithDiscord?.()">Login with Discord</button>
+      </div>
     `;
     throw new Error("Not logged in");
   }
@@ -115,16 +117,27 @@
   async function renderPendingList() {
     try {
       const worlds = await loadPending();
-      if (worlds.length === 0) {
+      if (!worlds || worlds.length === 0) {
         mainContent.innerHTML = `
-          <h2>No Pending Submissions</h2>
-          <p>All world submissions have been reviewed.</p>
+          <div class="empty-state">
+            <h3>No Pending Submissions</h3>
+            <p>All world submissions have been reviewed.</p>
+          </div>
         `;
         return;
       }
-      mainContent.innerHTML = worlds.map(renderWorldCard).join('');
+      mainContent.innerHTML = `
+        <div class="pending-list">
+          ${worlds.map(renderWorldCard).join('')}
+        </div>
+      `;
     } catch (error) {
-      mainContent.innerHTML = `<div>Error loading pending worlds:<br>${error.message}</div>`;
+      mainContent.innerHTML = `
+        <div class="error-message">
+          <strong>Error loading pending worlds:</strong><br>
+          ${error.message}
+        </div>
+      `;
     }
   }
 
