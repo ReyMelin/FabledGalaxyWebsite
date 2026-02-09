@@ -61,10 +61,12 @@ window.loadWorldById = async function(id) {
 
 // Auth functions
 window.loginWithDiscord = async function() {
+  const next = encodeURIComponent(window.location.href);
+  const redirectTo = `${window.location.origin}/FabledGalaxyWebsite/auth-callback.html?next=${next}`;
   const { error } = await window.sb.auth.signInWithOAuth({
     provider: 'discord',
     options: {
-      redirectTo: window.location.origin + window.location.pathname
+      redirectTo
     }
   });
   if (error) throw error;
