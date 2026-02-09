@@ -3,41 +3,32 @@
 <head>
   <meta charset="utf-8" />
   <title>Signing you in...</title>
+  <meta name="robots" content="noindex" />
   <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabaseClient.js"></script>
 </head>
 <body>
   <p>Signing you in…</p>
+  <script>
+    (async () => {
+      // Wait until window.sb exists
+      await new Promise(r => {
+        if (window.sb) return r();
+        const t = setInterval(() => {
+          if (window.sb) { clearInterval(t); r(); }
+        }, 50);
+      });
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="supabaseClient.js"></script>
-  <!doctype html>
-  <html>
-  <head>
-    <meta charset="utf-8" />
-    <meta name="robots" content="noindex" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./supabaseClient.js"></script>
-  </head>
-  <body>
-    <p>Signing you in…</p>
-    <script>
-      (async () => {
-        // Wait until window.sb exists
-        await new Promise(r => {
-          if (window.sb) return r();
-          const t = setInterval(() => {
-            if (window.sb) { clearInterval(t); r(); }
-          }, 50);
-        });
+      // Complete the OAuth session
+      const { data, error } = await window.sb.auth.getSession();
+      if (error) console.warn(error.message);
 
-        // Complete the OAuth session
-        const { data, error } = await window.sb.auth.getSession();
-        if (error) console.warn(error.message);
-
-        // Redirect back to the original page or default
-        const next = new URL(location.href).searchParams.get("next") || "gallery.html";
-        location.replace(next);
-      })();
-    </script>
-  </body>
-  </html>
+      // Support both 'redirect' and 'next' as parameter names
+      const params = new URL(location.href).searchParams;
+      const next = params.get("redirect") || params.get("next") || "gallery.html";
+      location.replace(next);
+    })();
+  </script>
+</body>
+</html>
