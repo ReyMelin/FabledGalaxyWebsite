@@ -10,17 +10,15 @@
     <title>Planet | Fabled Galaxy</title>
     
     <!-- Main stylesheet -->
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260209">
     
     <!-- Preconnect to Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet">
     
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="styles.css?v=20260209">
     
-    <!-- Preload critical images -->
-    <link rel="preload" as="image" href="Imgs/fabled-galaxy-header-optimized.webp" type="image/webp">
 </head>
 <body>
     <!-- Starfield Background -->
@@ -63,31 +61,32 @@
 
         <!-- Planet Content -->
         <article class="planet-content" id="planet-content" style="display: none;">
-            <!-- Hero Section -->
-            <header class="planet-hero">
-                <div class="planet-image-container" id="planet-image">
-                    <!-- Image or fallback will be inserted here -->
-                </div>
-                <div class="planet-hero-info">
-                    <div class="planet-type-badge" id="planet-type-badge">
-                        <!-- Type badge inserted here -->
+            <div class="world-card">
+                <!-- Hero Section -->
+                <header class="planet-hero" style="margin-bottom:2rem;">
+                    <div class="planet-image-container" id="planet-image">
+                        <!-- Image or fallback will be inserted here -->
                     </div>
-                    <h1 class="planet-name" id="planet-name">Planet Name</h1>
-                    <p class="planet-creator">Created by <span id="creator-name">Creator</span></p>
-                    <div class="planet-meta">
-                        <span class="meta-item" id="collab-status">🔒 Locked</span>
-                        <span class="meta-item" id="created-date">Created: Date</span>
+                    <div class="planet-hero-info">
+                        <div class="planet-type-badge" id="planet-type-badge">
+                            <!-- Type badge inserted here -->
+                        </div>
+                        <h1 class="planet-name" id="planet-name">Planet Name</h1>
+                        <p class="planet-creator">Created by <span id="creator-name">Creator</span></p>
+                        <div class="planet-meta">
+                            <span class="meta-item" id="collab-status">🔒 Locked</span>
+                            <span class="meta-item" id="created-date">Created: Date</span>
+                        </div>
+                        <div class="planet-actions">
+                            <button class="btn btn-secondary btn-small" id="share-btn" title="Share this planet">
+                                📤 Share
+                            </button>
+                            <button class="btn btn-secondary btn-small mod-only" id="delete-btn" title="Delete planet" style="display: none;">
+                                🗑️ Delete
+                            </button>
+                        </div>
                     </div>
-                    <div class="planet-actions">
-                        <button class="btn btn-secondary btn-small" id="share-btn" title="Share this planet">
-                            📤 Share
-                        </button>
-                        <button class="btn btn-secondary btn-small mod-only" id="delete-btn" title="Delete planet" style="display: none;">
-                            🗑️ Delete
-                        </button>
-                    </div>
-                </div>
-            </header>
+                </header>
 
             <!-- Description -->
             <section class="planet-section">
@@ -257,329 +256,112 @@
         </footer>
     </main>
 
-    <script src="data.js"></script>
-    <script src="supabaseClient.js"></script>
-    <script src="script.js" defer></script>
+    <script src="data.js?v=20260209"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="supabaseClient.js?v=20260209" defer></script>
+    <script src="script.js?v=20260209" defer></script>
     <script>
-        document.addEventListener('DOMContentLoaded', async () => {
-            // Get planet ID from URL
-            const urlParams = new URLSearchParams(window.location.search);
-            const planetId = urlParams.get('id');
-            
-            // Elements
-            const loading = document.getElementById('loading');
-            const notFound = document.getElementById('not-found');
-            const content = document.getElementById('planet-content');
-            const deleteBtn = document.getElementById('delete-btn');
-            const shareBtn = document.getElementById('share-btn');
-            
-            if (!planetId) {
-                showNotFound();
-                return;
-            }
-            
+    (async () => {
+      const params = new URLSearchParams(location.search);
+      const id = params.get("id");
+      const el = document.getElementById("planet-content");
+      const loading = document.getElementById('loading');
+      const notFound = document.getElementById('not-found');
+      if (!id) {
+        loading.style.display = 'none';
+        notFound.style.display = 'flex';
+        el.style.display = 'none';
+        return;
+      }
+
             // Wait for Supabase client to be ready
-            async function waitForSupabase(timeout = 2000) {
-                return new Promise((resolve) => {
-                    if (window.loadWorldById) { resolve(true); return; }
-                    const start = Date.now();
-                    const check = setInterval(() => {
-                        if (window.loadWorldById) { clearInterval(check); resolve(true); }
-                        else if (Date.now() - start > timeout) { clearInterval(check); resolve(false); }
-                    }, 50);
-                });
-            }
-            
-            // Load planet data ONLY from Supabase
-            let planet = null;
-            const supabaseReady = await waitForSupabase();
-            if (supabaseReady && window.loadWorldById) {
-                try {
-                    const world = await window.loadWorldById(planetId);
-                    if (world) {
-                        // Map Supabase world to expected planet format
-                        const colors = ['#7c5bf5', '#00d9ff', '#ff6b9d', '#ffd700', '#4ade80', '#f97316', '#06b6d4', '#a855f7'];
-                        const hash = planetId.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-                        planet = {
-                            id: world.id,
-                            name: world.planet_name,
-                            type: world.planet_type,
-                            description: world.description,
-                            creatorName: world.creator_name || (world.fields?.creator_name) || 'Unknown',
-                            collaboration: world.locked ? 'locked' : 'open',
-                            createdAt: world.created_at,
-                            color: colors[hash % colors.length],
-                            ...(world.fields || {})
-                        };
-                    }
-                } catch (e) {
-                    console.warn('Supabase load failed:', e);
-                }
-            }
-            if (!planet) {
-                showNotFound();
-                return;
-            }
-            displayPlanet(planet);
-            
-            function showNotFound() {
-                loading.style.display = 'none';
-                notFound.style.display = 'flex';
-            }
-            
-            function displayPlanet(planet) {
-                loading.style.display = 'none';
-                content.style.display = 'block';
-                
-                // Update page title
-                document.title = `${planet.name} | Fabled Galaxy`;
-                
-                // Type info
-                const typeInfo = FabledGalaxyData.getPlanetTypeInfo(planet.type);
-                
-                // Hero section
-                const imageContainer = document.getElementById('planet-image');
-                if (planet.imageData) {
-                    imageContainer.innerHTML = `<img src="${planet.imageData}" alt="${planet.name}" width="300" height="300" loading="eager" decoding="async">`;
-                } else if (planet.planetImage) {
-                    imageContainer.innerHTML = `<img src="${planet.planetImage}" alt="${planet.name}" width="300" height="300" loading="eager" decoding="async">`;
+            await new Promise(resolve => {
+                if (window.sb) return resolve();
+                const t = setInterval(() => {
+                    if (window.sb) { clearInterval(t); resolve(); }
+                }, 25);
+            });
+
+            // get current user + admin flag
+            const { data: userRes } = await window.sb.auth.getUser();
+            const user = userRes?.user ?? null;
+
+      let isAdmin = false;
+      if (user) {
+        const { data } = await window.sb.rpc("is_admin");
+        isAdmin = !!data;
+      }
+
+      // build query
+      let q = window.sb.from("worlds")
+        .select("id, planet_name, planet_type, description, status, created_by, locked, created_at, fields, art_url, quadrant, weather")
+        .eq("id", id)
+        .single();
+
+      // If not logged in, only allow approved
+      if (!user) q = q.eq("status", "approved");
+
+      const { data: world, error } = await q;
+
+      // If logged in but not admin, and world is pending, only allow if created_by matches
+      if (!error && world && world.status !== "approved" && user && !isAdmin && world.created_by !== user.id) {
+        loading.style.display = 'none';
+        notFound.style.display = 'flex';
+        el.style.display = 'none';
+        notFound.textContent = "Planet not found (not authorized).";
+        return;
+      }
+
+      if (error || !world) {
+        loading.style.display = 'none';
+        notFound.style.display = 'flex';
+        el.style.display = 'none';
+        return;
+      }
+
+            // Render (populate existing layout instead of replacing it)
+            loading.style.display = 'none';
+            notFound.style.display = 'none';
+            el.style.display = 'block';
+
+            // Fill the pre-built template elements by ID
+            document.getElementById("planet-name").textContent = world.planet_name || "Untitled";
+            document.getElementById("creator-name").textContent = world.fields?.creator_name || "Unknown";
+            document.getElementById("planet-description").textContent = world.description || "";
+
+            // type badge
+            const type = world.planet_type || "unknown";
+            const badge = document.getElementById("planet-type-badge");
+            if (badge) badge.textContent = `${typeEmoji(type)} ${capitalize(type)}`;
+
+            // locked/open
+            const collab = document.getElementById("collab-status");
+            if (collab) collab.textContent = world.locked ? "🔒 Locked" : "🔓 Open";
+
+            // created date
+            const created = document.getElementById("created-date");
+            if (created) created.textContent = "Created: " + new Date(world.created_at).toLocaleString();
+
+            // hero image
+            const imgWrap = document.getElementById("planet-image");
+            if (imgWrap) {
+                if (world.art_url) {
+                    imgWrap.innerHTML = `<img src="${escapeAttr(world.art_url)}" alt="Planet art" loading="lazy" decoding="async">`;
                 } else {
-                    imageContainer.innerHTML = `<div class="planet-image-fallback" style="background-color: ${planet.color}20;"><span>${typeInfo.emoji}</span></div>`;
+                    imgWrap.innerHTML = `<div class="planet-image-fallback">${typeEmoji(type)}</div>`;
                 }
-                
-                document.getElementById('planet-type-badge').innerHTML = `${typeInfo.emoji} ${typeInfo.label}`;
-                document.getElementById('planet-name').textContent = planet.name;
-                document.getElementById('creator-name').textContent = planet.creatorName;
-                document.getElementById('collab-status').textContent = planet.collaboration === 'open' ? '🔓 Open for Collaboration' : '🔒 Locked';
-                document.getElementById('created-date').textContent = `Created: ${new Date(planet.createdAt).toLocaleDateString()}`;
-                
-                // Description
-                document.getElementById('planet-description').textContent = planet.description || 'No description provided.';
-                
-                // Civilization section
-                let hasCivilization = false;
-                if (planet.inhabitants) {
-                    document.getElementById('block-inhabitants').style.display = 'block';
-                    document.getElementById('planet-inhabitants').textContent = planet.inhabitants;
-                    hasCivilization = true;
-                }
-                if (planet.civilization) {
-                    document.getElementById('block-civilization').style.display = 'block';
-                    document.getElementById('planet-civilization').textContent = planet.civilization;
-                    hasCivilization = true;
-                }
-                if (planet.factions) {
-                    document.getElementById('block-factions').style.display = 'block';
-                    document.getElementById('planet-factions').textContent = planet.factions;
-                    hasCivilization = true;
-                }
-                if (hasCivilization) {
-                    document.getElementById('section-civilization').style.display = 'block';
-                }
-                
-                // Technology section
-                if (planet.technology || planet.techLevel) {
-                    document.getElementById('section-technology').style.display = 'block';
-                    if (planet.techLevel) {
-                        const techLabels = {
-                            'primitive': '🪨 Primitive / Stone Age',
-                            'ancient': '🏛️ Ancient / Classical',
-                            'medieval': '⚔️ Medieval',
-                            'renaissance': '🎨 Renaissance',
-                            'industrial': '🏭 Industrial',
-                            'modern': '🏙️ Modern',
-                            'futuristic': '🚀 Futuristic',
-                            'post-apocalyptic': '💀 Post-Apocalyptic',
-                            'magitech': '🔮⚙️ Magitech'
-                        };
-                        const techBadge = document.getElementById('tech-level-badge');
-                        techBadge.textContent = techLabels[planet.techLevel] || planet.techLevel;
-                        techBadge.style.display = 'inline-block';
-                    }
-                    document.getElementById('planet-technology').textContent = planet.technology || '';
-                }
-                
-                // Magic section
-                if (planet.magicSystem || planet.magicExists) {
-                    document.getElementById('section-magic').style.display = 'block';
-                    const magicLabels = {
-                        'yes': '✨ Magic is a fundamental force',
-                        'rare': '🌟 Magic is rare, known to few',
-                        'no': '❌ No magic exists',
-                        'ambiguous': '❓ Ambiguous - could be magic or explained'
-                    };
-                    document.getElementById('magic-status').textContent = magicLabels[planet.magicExists] || '';
-                    document.getElementById('planet-magic').textContent = planet.magicSystem || '';
-                }
-                
-                // Lore section
-                let hasLore = false;
-                if (planet.creationMyth) {
-                    document.getElementById('block-creation').style.display = 'block';
-                    document.getElementById('planet-creation').textContent = planet.creationMyth;
-                    hasLore = true;
-                }
-                if (planet.legends) {
-                    document.getElementById('block-legends').style.display = 'block';
-                    document.getElementById('planet-legends').textContent = planet.legends;
-                    hasLore = true;
-                }
-                if (planet.history) {
-                    document.getElementById('block-history').style.display = 'block';
-                    document.getElementById('planet-history').textContent = planet.history;
-                    hasLore = true;
-                }
-                if (hasLore) {
-                    document.getElementById('section-lore').style.display = 'block';
-                }
-                
-                // For open planets, show all sections so collaborators can add content
-                if (planet.collaboration === 'open') {
-                    document.getElementById('section-civilization').style.display = 'block';
-                    document.getElementById('section-technology').style.display = 'block';
-                    document.getElementById('section-magic').style.display = 'block';
-                    document.getElementById('section-lore').style.display = 'block';
-                }
-                
-                // Moderator actions
-                if (FabledGalaxyData.isModerator()) {
-                    deleteBtn.style.display = 'inline-flex';
-                    deleteBtn.addEventListener('click', () => {
-                        if (confirm(`Are you sure you want to delete "${planet.name}"? This cannot be undone.`)) {
-                            FabledGalaxyData.deletePlanet(planet.id);
-                            window.location.href = 'gallery.html';
-                        }
-                    });
-                }
-                
-                // Share button
-                shareBtn.addEventListener('click', () => {
-                    const url = window.location.href;
-                    if (navigator.share) {
-                        navigator.share({
-                            title: `${planet.name} | Fabled Galaxy`,
-                            text: `Explore ${planet.name} - ${truncateText(planet.description, 100)}`,
-                            url: url
-                        });
-                    } else if (navigator.clipboard) {
-                        navigator.clipboard.writeText(url).then(() => {
-                            shareBtn.innerHTML = '✓ Copied!';
-                            setTimeout(() => {
-                                shareBtn.innerHTML = '📤 Share';
-                            }, 2000);
-                        });
-                    }
-                });
-                
-                // Collaboration features
-                if (planet.collaboration === 'open') {
-                    setupCollaboration(planet);
-                }
-                
-                // Display existing contributions
-                displayContributions(planet);
             }
-            
-            function setupCollaboration(planet) {
-                // Show all collaboration forms
-                document.querySelectorAll('.collab-form-container').forEach(container => {
-                    container.style.display = 'block';
-                    
-                    const form = container.querySelector('.collab-form');
-                    const section = container.dataset.section;
-                    
-                    form.addEventListener('submit', (e) => {
-                        e.preventDefault();
-                        
-                        const fieldSelect = form.querySelector('.collab-field-select');
-                        const field = fieldSelect.value || fieldSelect.getAttribute('value');
-                        const content = form.querySelector('.collab-input').value.trim();
-                        const name = form.querySelector('.collab-name').value.trim() || 'Anonymous Traveler';
-                        
-                        if (!field || !content) {
-                            alert('Please fill in all required fields');
-                            return;
-                        }
-                        
-                        const result = FabledGalaxyData.addContribution(planet.id, {
-                            section,
-                            field,
-                            content,
-                            contributorName: name
-                        });
-                        
-                        if (result) {
-                            // Show success feedback
-                            const btn = form.querySelector('button[type="submit"]');
-                            const originalText = btn.innerHTML;
-                            btn.innerHTML = '✓ Added!';
-                            btn.disabled = true;
-                            
-                            // Clear form
-                            form.querySelector('.collab-input').value = '';
-                            form.querySelector('.collab-name').value = '';
-                            if (fieldSelect.tagName === 'SELECT') {
-                                fieldSelect.selectedIndex = 0;
-                            }
-                            
-                            // Refresh contributions display
-                            displayContributions(result);
-                            
-                            // Reset button
-                            setTimeout(() => {
-                                btn.innerHTML = originalText;
-                                btn.disabled = false;
-                            }, 2000);
-                        } else {
-                            alert('Could not add contribution. Please try again.');
-                        }
-                    });
-                });
+
+            // helper functions
+            function typeEmoji(t) {
+                const map = { terrestrial:"🌍", ocean:"🌊", desert:"🏜️", ice:"❄️", volcanic:"🌋", forest:"🌲", sky:"☁️", crystal:"💎", dark:"🌑", arcane:"🔮", city:"🏙️" };
+                return map[t] || "🪐";
             }
-            
-            function displayContributions(planet) {
-                const contributions = planet.contributions || [];
-                
-                // Group contributions by field
-                const byField = {};
-                contributions.forEach(c => {
-                    if (!byField[c.field]) byField[c.field] = [];
-                    byField[c.field].push(c);
-                });
-                
-                // Render contributions in their respective containers
-                document.querySelectorAll('.contributions-list').forEach(container => {
-                    const field = container.dataset.field;
-                    const fieldContribs = byField[field] || [];
-                    
-                    if (fieldContribs.length === 0) {
-                        container.innerHTML = '';
-                        return;
-                    }
-                    
-                    container.innerHTML = fieldContribs.map(c => `
-                        <div class="contribution-item">
-                            <p class="contribution-content">${escapeHtml(c.content)}</p>
-                            <span class="contribution-meta">
-                                — ${escapeHtml(c.contributorName)}, ${new Date(c.createdAt).toLocaleDateString()}
-                            </span>
-                        </div>
-                    `).join('');
-                });
-            }
-            
-            function escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
-            }
-            
-            function truncateText(text, maxLength) {
-                if (!text) return '';
-                if (text.length <= maxLength) return text;
-                return text.substring(0, maxLength).trim() + '...';
-            }
-        });
+            function capitalize(s){ return String(s).charAt(0).toUpperCase() + String(s).slice(1); }
+    })();
+
+    function escapeHtml(s){return String(s).replace(/[&<>"']/g,m=>({ "&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;","'":"&#039;" }[m]));}
+    function escapeAttr(s){return String(s).replace(/"/g,"&quot;");}
     </script>
 </body>
 </html>

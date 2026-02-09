@@ -27,13 +27,8 @@ const FabledGalaxyData = (function() {
      * Get all planets (internal use)
      */
     function getAllPlanetsRaw() {
-        try {
-            const data = localStorage.getItem(STORAGE_KEY);
-            return data ? JSON.parse(data) : [];
-        } catch (e) {
-            console.error('Error reading worlds:', e);
-            return [];
-        }
+        // LocalStorage fallback removed for production
+        return [];
     }
 
     /**
@@ -72,83 +67,18 @@ const FabledGalaxyData = (function() {
      * Save a new planet
      */
     function savePlanet(planetData) {
-        const worlds = getAllWorldsRaw();
-        
-        const world = {
-            id: planetData.id || generateId(),
-            createdAt: planetData.createdAt || new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-            
-            // Basic info
-            name: planetData.planetName || planetData.name,
-            type: planetData.planetType || planetData.type || 'unknown',
-            description: planetData.planetDescription || planetData.description || '',
-            
-            // Civilization
-            inhabitants: planetData.inhabitants || '',
-            civilization: planetData.civilization || '',
-            factions: planetData.factions || '',
-            
-            // Technology
-            techLevel: planetData.techLevel || '',
-            technology: planetData.technology || '',
-            
-            // Magic
-            magicExists: planetData.magicExists || 'ambiguous',
-            magicSystem: planetData.magicSystem || '',
-            
-            // Lore
-            creationMyth: planetData.creationMyth || '',
-            legends: planetData.legends || '',
-            history: planetData.history || '',
-            
-            // Meta
-            creatorName: planetData.creatorName || 'Anonymous',
-            creatorEmail: planetData.creatorEmail || '',
-            collaboration: planetData.collaboration || 'locked',
-            
-            // Visuals
-            imageData: planetData.imageData || null,
-            planetImage: planetData.planetImage || null,
-            
-            // Contributions from collaborators
-            contributions: planetData.contributions || [],
-            
-            // Galaxy position (random if not specified)
-            position: planetData.position || {
-                x: 10 + Math.random() * 80,
-                y: 10 + Math.random() * 80
-            },
-            
-            // Display
-            color: planetData.color || getRandomWorldColor(),
-            
-            // Moderation status: pending, approved, rejected
-            status: planetData.status || 'pending'
-        };
-        
-                worlds.push(world);
-                setWorlds(worlds);
-                return world;
-            }
+        // LocalStorage save disabled for production
+        return null;
+    }
         
             // Utility functions for localStorage
             function getAllWorldsRaw() {
-                try {
-                    const data = localStorage.getItem(STORAGE_KEY);
-                    return data ? JSON.parse(data) : [];
-                } catch (e) {
-                    console.error('Error reading worlds:', e);
-                    return [];
-                }
+                // LocalStorage fallback removed for production
+                return [];
             }
-        
+
             function setWorlds(worlds) {
-                try {
-                    localStorage.setItem(STORAGE_KEY, JSON.stringify(worlds));
-                } catch (e) {
-                    console.error('Error saving worlds:', e);
-                }
+                // LocalStorage save disabled for production
             }
         
             function generateId() {

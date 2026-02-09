@@ -33,8 +33,12 @@
     background: rgba(30, 30, 50, 0.6);
     border: 1px solid rgba(124, 58, 237, 0.3);
     border-radius: 12px;
-    padding: 1.5rem;
+    padding: 2.5rem 2rem;
+    margin-bottom: 2.5rem;
     transition: all 0.3s ease;
+.planet-content {
+    padding: 2rem 0 4rem 0;
+}
 }
 .world-card:hover {
     border-color: var(--color-accent);

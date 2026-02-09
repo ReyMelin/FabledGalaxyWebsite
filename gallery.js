@@ -104,13 +104,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     /**
-     * Load and display planets from Supabase (with localStorage fallback)
+     * Load and display planets from Supabase (no localStorage fallback)
      */
     async function loadPlanets() {
         try {
             // Wait for Supabase client to be ready
             const supabaseReady = await waitForSupabase();
-            
             if (supabaseReady && window.loadApprovedWorlds) {
                 const worlds = await window.loadApprovedWorlds();
                 if (worlds && worlds.length > 0) {
@@ -119,7 +118,6 @@ document.addEventListener('DOMContentLoaded', () => {
                         '#7c5bf5', '#00d9ff', '#ff6b9d', '#ffd700',
                         '#4ade80', '#f97316', '#06b6d4', '#a855f7'
                     ];
-                    
                     // Map Supabase fields to expected format
                     allPlanets = worlds.map((w, index) => {
                         // Generate deterministic position based on ID
@@ -147,9 +145,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 }
             }
         } catch (error) {
-            console.warn('Failed to load from Supabase, falling back to localStorage:', error);
+            console.warn('Failed to load from Supabase:', error);
         }
-        
         // Only show Supabase worlds; do not fallback to demo/sample planets
         renderPlanets([]);
         updateStats([]);
