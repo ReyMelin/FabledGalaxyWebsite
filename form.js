@@ -4,6 +4,41 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+        // Auto-fill creator name and email if user is logged in (Discord)
+        (async function autoFillCreatorFields() {
+            if (window.sb && window.sb.auth && window.sb.auth.getUser) {
+                try {
+                    const { data: { user } } = await window.sb.auth.getUser();
+                    if (user) {
+                        // Prefer Discord global_name, then full_name, then name, then fallback
+                        const autoName =
+                            user.user_metadata?.custom_claims?.global_name ||
+                            user.user_metadata?.full_name ||
+                            user.user_metadata?.name ||
+                            "Creator";
+                        const creatorNameInput = document.getElementById("creator-name");
+                        if (creatorNameInput) {
+                            creatorNameInput.value = autoName;
+                            creatorNameInput.readOnly = true;
+                        }
+                        const emailInput = document.getElementById("creator-email");
+                        if (emailInput) {
+                            if (user.email) {
+                                emailInput.value = user.email;
+                                emailInput.required = false;
+                                // Hide the email field visually
+                                const fieldGroup = emailInput.closest(".form-group") || emailInput.closest(".field");
+                                if (fieldGroup) fieldGroup.style.display = "none";
+                            } else {
+                                emailInput.required = false;
+                            }
+                        }
+                    }
+                } catch (e) {
+                    // Fail silently if auth not available
+                }
+            }
+        })();
     const form = document.getElementById('fable-form');
     if (!form) return; // Only run on form page
 
@@ -22,6 +57,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize
     updateProgress();
     setupCharacterCount();
+    setupAllLiveCounters();
     setupFileUpload();
     setupProgressStepClicks();
 
@@ -43,13 +79,53 @@ document.addEventListener('DOMContentLoaded', () => {
     // Form submission
     form.addEventListener('submit', (e) => {
         e.preventDefault();
-        
         if (!validateCurrentStep()) return;
-        
         // Collect form data
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
-        
+
+        // Enforce max length in JS (defensive)
+        if (data.planetName && data.planetName.length > 60) {
+            showErrorMessage('Planet name is too long.');
+            return;
+        }
+        if (data.planetDescription && data.planetDescription.length > 240) {
+            showErrorMessage('Planet description is too long.');
+            return;
+        }
+        if (data.inhabitants && data.inhabitants.length > 2000) {
+            showErrorMessage('Inhabitants field is too long.');
+            return;
+        }
+        if (data.civilization && data.civilization.length > 2000) {
+            showErrorMessage('Civilization field is too long.');
+            return;
+        }
+        if (data.factions && data.factions.length > 2000) {
+            showErrorMessage('Factions field is too long.');
+            return;
+        }
+        if (data.technology && data.technology.length > 2000) {
+            showErrorMessage('Technology field is too long.');
+            return;
+        }
+        if (data.magicSystem && data.magicSystem.length > 2000) {
+            showErrorMessage('Magic system field is too long.');
+            return;
+        }
+        if (data.creationMyth && data.creationMyth.length > 2000) {
+            showErrorMessage('Creation myth field is too long.');
+            return;
+        }
+        if (data.legends && data.legends.length > 2000) {
+            showErrorMessage('Legends field is too long.');
+            return;
+        }
+        if (data.history && data.history.length > 2000) {
+            showErrorMessage('History field is too long.');
+            return;
+        }
+
         // Handle image data if present
         const fileInput = document.getElementById('planet-art');
         if (fileInput && fileInput.files.length > 0) {
@@ -63,6 +139,39 @@ document.addEventListener('DOMContentLoaded', () => {
             savePlanetAndShowSuccess(data);
         }
     });
+/**
+ * Setup live character counters for all relevant fields
+ */
+function setupAllLiveCounters() {
+    const counters = [
+        { id: 'planet-name', max: 60 },
+        { id: 'planet-description', max: 240 },
+        { id: 'inhabitants', max: 2000 },
+        { id: 'civilization', max: 2000 },
+        { id: 'factions', max: 2000 },
+        { id: 'technology', max: 2000 },
+        { id: 'magic-system', max: 2000 },
+        { id: 'creation-myth', max: 2000 },
+        { id: 'legends', max: 2000 },
+        { id: 'history', max: 2000 },
+    ];
+    counters.forEach(({ id, max }) => {
+        const field = document.getElementById(id);
+        const countSpan = document.getElementById(id + '-count');
+        if (field && countSpan) {
+            field.addEventListener('input', () => {
+                countSpan.textContent = field.value.length;
+                if (field.value.length > max * 0.9) {
+                    countSpan.style.color = '#ff6b9d';
+                } else {
+                    countSpan.style.color = '';
+                }
+            });
+            // Initialize on load
+            countSpan.textContent = field.value.length;
+        }
+    });
+}
 
     /**
      * Save planet to Supabase and show success
