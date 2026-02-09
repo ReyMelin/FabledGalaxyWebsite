@@ -1,53 +1,29 @@
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>Signing you in...</title>
-  <meta name="robots" content="noindex" />
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="./supabaseClient.js"></script>
-</head>
-<body>
-  <p>Signing you in…</p>
+<script>
+  (async () => {
+    // Wait until window.sb exists
+    await new Promise((r) => {
+      if (window.sb) return r();
+      const t = setInterval(() => {
+        if (window.sb) {
+          clearInterval(t);
+          r();
+        }
+      }, 50);
+    });
 
-  <script>
-    (async () => {
-      // Wait until window.sb exists
-      await new Promise(resolve => {
-        if (window.sb) return resolve();
-        const t = setInterval(() => {
-          if (window.sb) { clearInterval(t); resolve(); }
-        }, 50);
-      });
+    const url = new URL(window.location.href);
 
-      const url = new URL(window.location.href);
+    // ✅ Finish OAuth login
+    if (url.searchParams.get("code")) {
+      const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
+      if (error) console.warn("exchangeCodeForSession:", error.message);
+    }
 
-      // Exchange OAuth code for session (only once)
-      if (url.searchParams.get("code")) {
-        const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
-        if (error) console.warn("exchangeCodeForSession:", error.message);
-      }
+    // ✅ Redirect back to the page the user logged in from
+    const next = localStorage.getItem("fg_next") || "/FabledGalaxyWebsite/gallery.html";
+    localStorage.removeItem("fg_next");
 
-      // Get "next" (full URL) or fallback
-      const nextRaw = url.searchParams.get("next") || "gallery.html";
-
-      // Safety: only redirect to same origin
-      let nextUrl;
-      try {
-        nextUrl = new URL(nextRaw, window.location.origin);
-      } catch {
-        nextUrl = new URL("gallery.html", window.location.origin);
-      }
-
-      if (nextUrl.origin !== window.location.origin) {
-        nextUrl = new URL("gallery.html", window.location.origin);
-      }
-
-      // Go back to where login started
-      window.location.replace(nextUrl.href);
-    })();
-  </script>
-</body>
-</html>
+    window.location.replace(next);
+  })();
+</script>
 
