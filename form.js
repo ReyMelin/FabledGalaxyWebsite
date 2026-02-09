@@ -85,43 +85,43 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = Object.fromEntries(formData.entries());
 
         // Enforce max length in JS (defensive)
-        if (data.planetName && data.planetName.length > 60) {
+        if (data.planetName && data.planetName.length > 120) {
             showErrorMessage('Planet name is too long.');
             return;
         }
-        if (data.planetDescription && data.planetDescription.length > 240) {
+        if (data.planetDescription && data.planetDescription.length > 1000) {
             showErrorMessage('Planet description is too long.');
             return;
         }
-        if (data.inhabitants && data.inhabitants.length > 2000) {
+        if (data.inhabitants && data.inhabitants.length > 5000) {
             showErrorMessage('Inhabitants field is too long.');
             return;
         }
-        if (data.civilization && data.civilization.length > 2000) {
+        if (data.civilization && data.civilization.length > 5000) {
             showErrorMessage('Civilization field is too long.');
             return;
         }
-        if (data.factions && data.factions.length > 2000) {
+        if (data.factions && data.factions.length > 3000) {
             showErrorMessage('Factions field is too long.');
             return;
         }
-        if (data.technology && data.technology.length > 2000) {
+        if (data.technology && data.technology.length > 4000) {
             showErrorMessage('Technology field is too long.');
             return;
         }
-        if (data.magicSystem && data.magicSystem.length > 2000) {
+        if (data.magicSystem && data.magicSystem.length > 4000) {
             showErrorMessage('Magic system field is too long.');
             return;
         }
-        if (data.creationMyth && data.creationMyth.length > 2000) {
+        if (data.creationMyth && data.creationMyth.length > 4000) {
             showErrorMessage('Creation myth field is too long.');
             return;
         }
-        if (data.legends && data.legends.length > 2000) {
+        if (data.legends && data.legends.length > 4000) {
             showErrorMessage('Legends field is too long.');
             return;
         }
-        if (data.history && data.history.length > 2000) {
+        if (data.history && data.history.length > 4000) {
             showErrorMessage('History field is too long.');
             return;
         }
@@ -144,16 +144,16 @@ document.addEventListener('DOMContentLoaded', () => {
  */
 function setupAllLiveCounters() {
     const counters = [
-        { id: 'planet-name', max: 60 },
-        { id: 'planet-description', max: 240 },
-        { id: 'inhabitants', max: 2000 },
-        { id: 'civilization', max: 2000 },
-        { id: 'factions', max: 2000 },
-        { id: 'technology', max: 2000 },
-        { id: 'magic-system', max: 2000 },
-        { id: 'creation-myth', max: 2000 },
-        { id: 'legends', max: 2000 },
-        { id: 'history', max: 2000 },
+        { id: 'planet-name', max: 120 },
+        { id: 'planet-description', max: 1000 },
+        { id: 'inhabitants', max: 5000 },
+        { id: 'civilization', max: 5000 },
+        { id: 'factions', max: 3000 },
+        { id: 'technology', max: 4000 },
+        { id: 'magic-system', max: 4000 },
+        { id: 'creation-myth', max: 4000 },
+        { id: 'legends', max: 4000 },
+        { id: 'history', max: 4000 },
     ];
     counters.forEach(({ id, max }) => {
         const field = document.getElementById(id);

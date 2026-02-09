@@ -159,7 +159,8 @@
                         <textarea class="collab-input" placeholder="Describe new inventions, tools, or technological advances..." rows="3" required></textarea>
                         <div class="collab-form-footer">
                             <input type="text" class="collab-name" placeholder="Your name (optional)">
-                            <button type="submit" class="btn btn-primary btn-small">Contribute</button>
+                            <button type="submit" class="btn btn-primary btn-small" disabled style="opacity:0.7;cursor:not-allowed;">Contribute</button>
+                            <div class="coming-soon-msg" style="color:#ff6b9d;margin-top:0.5em;font-size:0.95em;">Contributing to this world is coming soon!</div>
                         </div>
                     </form>
                 </div>
@@ -231,6 +232,21 @@
                             <button type="submit" class="btn btn-primary btn-small">Contribute</button>
                         </div>
                     </form>
+                </div>
+            </section>
+
+            <!-- Visuals & Creator Info -->
+            <section class="planet-section" id="section-visuals" style="display: none;">
+                <h2><span class="section-icon">🎨</span> Visuals & Creator</h2>
+                <div class="section-content">
+                    <div class="visuals-block" id="block-art" style="display: none;">
+                        <h3>Planet Art</h3>
+                        <div id="planet-art"></div>
+                    </div>
+                    <div class="creator-block" id="block-creator" style="display: none;">
+                        <h3>Creator</h3>
+                        <p><strong>Name:</strong> <span id="planet-creator-name"></span></p>
+                    </div>
                 </div>
             </section>
 
@@ -345,12 +361,111 @@
             // hero image
             const imgWrap = document.getElementById("planet-image");
             if (imgWrap) {
-                if (world.art_url) {
-                    imgWrap.innerHTML = `<img src="${escapeAttr(world.art_url)}" alt="Planet art" loading="lazy" decoding="async">`;
-                } else {
-                    imgWrap.innerHTML = `<div class="planet-image-fallback">${typeEmoji(type)}</div>`;
+                    if (world.art_url) {
+                            imgWrap.innerHTML = `<img src="${escapeAttr(world.art_url)}" alt="Planet art" loading="lazy" decoding="async">`;
+                    } else {
+                            imgWrap.innerHTML = `<div class="planet-image-fallback">${typeEmoji(type)}</div>`;
+                    }
+            }
+
+            // --- Display all creative writing sections if present ---
+            // Civilization Section
+            const civSection = document.getElementById('section-civilization');
+            let civVisible = false;
+            if (world.fields) {
+                // Inhabitants
+                if (world.fields.inhabitants) {
+                    document.getElementById('block-inhabitants').style.display = '';
+                    document.getElementById('planet-inhabitants').textContent = world.fields.inhabitants;
+                    civVisible = true;
+                }
+                // Civilization
+                if (world.fields.civilization) {
+                    document.getElementById('block-civilization').style.display = '';
+                    document.getElementById('planet-civilization').textContent = world.fields.civilization;
+                    civVisible = true;
+                }
+                // Factions
+                if (world.fields.factions) {
+                    document.getElementById('block-factions').style.display = '';
+                    document.getElementById('planet-factions').textContent = world.fields.factions;
+                    civVisible = true;
                 }
             }
+            if (civVisible) civSection.style.display = '';
+
+            // Technology Section
+            const techSection = document.getElementById('section-technology');
+            let techVisible = false;
+            if (world.fields) {
+                if (world.fields.technology) {
+                    document.getElementById('planet-technology').textContent = world.fields.technology;
+                    techSection.style.display = '';
+                    techVisible = true;
+                }
+                if (world.fields.techLevel) {
+                    const techBadge = document.getElementById('tech-level-badge');
+                    if (techBadge) {
+                        techBadge.style.display = '';
+                        techBadge.textContent = world.fields.techLevel;
+                    }
+                }
+            }
+
+            // Magic Section
+            const magicSection = document.getElementById('section-magic');
+            let magicVisible = false;
+            if (world.fields) {
+                if (world.fields.magicSystem) {
+                    document.getElementById('planet-magic').textContent = world.fields.magicSystem;
+                    magicSection.style.display = '';
+                    magicVisible = true;
+                }
+                if (world.fields.magicExists) {
+                    const magicStatus = document.getElementById('magic-status');
+                    if (magicStatus) {
+                        magicStatus.style.display = '';
+                        magicStatus.textContent = world.fields.magicExists;
+                    }
+                }
+            }
+
+            // Lore Section
+            const loreSection = document.getElementById('section-lore');
+            let loreVisible = false;
+            if (world.fields) {
+                if (world.fields.creationMyth) {
+                    document.getElementById('block-creation').style.display = '';
+                    document.getElementById('planet-creation').textContent = world.fields.creationMyth;
+                    loreVisible = true;
+                }
+                if (world.fields.legends) {
+                    document.getElementById('block-legends').style.display = '';
+                    document.getElementById('planet-legends').textContent = world.fields.legends;
+                    loreVisible = true;
+                }
+                if (world.fields.history) {
+                    document.getElementById('block-history').style.display = '';
+                    document.getElementById('planet-history').textContent = world.fields.history;
+                    loreVisible = true;
+                }
+            }
+            if (loreVisible) loreSection.style.display = '';
+
+            // Visuals & Creator Section
+            const visualsSection = document.getElementById('section-visuals');
+            let visualsVisible = false;
+            if (world.art_url) {
+                document.getElementById('block-art').style.display = '';
+                document.getElementById('planet-art').innerHTML = `<img src="${escapeAttr(world.art_url)}" alt="Planet art" style="max-width:100%;border-radius:8px;">`;
+                visualsVisible = true;
+            }
+            if (world.fields && world.fields.creator_name) {
+                document.getElementById('block-creator').style.display = '';
+                document.getElementById('planet-creator-name').textContent = world.fields.creator_name;
+                visualsVisible = true;
+            }
+            if (visualsVisible) visualsSection.style.display = '';
 
             // helper functions
             function typeEmoji(t) {

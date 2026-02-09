@@ -325,7 +325,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     <h3 class="card-name">${planet.name}</h3>
                     <p class="card-type">${typeInfo.emoji} ${typeInfo.label}</p>
                     <p class="card-creator">by ${planet.creatorName}</p>
-                    <p class="card-description">${truncateText(planet.description, 100)}</p>
+                    <p class="card-description">${truncateText(planet.description, 300)}</p>
                 </div>
             `;
             
@@ -668,7 +668,7 @@ document.addEventListener('DOMContentLoaded', () => {
         tooltip.querySelector('.tooltip-name').textContent = planet.name;
         tooltip.querySelector('.tooltip-creator').textContent = `by ${planet.creatorName}`;
         tooltip.querySelector('.tooltip-type').textContent = typeInfo.label;
-        tooltip.querySelector('.tooltip-description').textContent = truncateText(planet.description, 150);
+        tooltip.querySelector('.tooltip-description').textContent = truncateText(planet.description, 500);
         tooltip.querySelector('.tooltip-collab').textContent = planet.collaboration === 'open' ? '🔓 Open for collaboration' : '🔒 Locked';
         tooltip.querySelector('.tooltip-hint').textContent = 'Click to explore →';
         
