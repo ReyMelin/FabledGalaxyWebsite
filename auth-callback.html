@@ -14,57 +14,40 @@
   <script>
     (async () => {
       // Wait until window.sb exists
-      await new Promise(r => {
-        if (window.sb) return r();
+      await new Promise(resolve => {
+        if (window.sb) return resolve();
         const t = setInterval(() => {
-          if (window.sb) { clearInterval(t); r(); }
+          if (window.sb) { clearInterval(t); resolve(); }
         }, 50);
       });
 
-      // ✅ Exchange OAuth code for a session
       const url = new URL(window.location.href);
-      const code = url.searchParams.get("code");
-      if (code) {
+
+      // Exchange OAuth code for session (only once)
+      if (url.searchParams.get("code")) {
         const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
         if (error) console.warn("exchangeCodeForSession:", error.message);
       }
 
+      // Get "next" (full URL) or fallback
+      const nextRaw = url.searchParams.get("next") || "gallery.html";
 
-  (async () => {
-    await new Promise(r => {
-      if (window.sb) return r();
-      const t = setInterval(() => {
-        if (window.sb) { clearInterval(t); r(); }
-      }, 50);
-    });
+      // Safety: only redirect to same origin
+      let nextUrl;
+      try {
+        nextUrl = new URL(nextRaw, window.location.origin);
+      } catch {
+        nextUrl = new URL("gallery.html", window.location.origin);
+      }
 
-    // Exchange OAuth code -> session
-    const url = new URL(window.location.href);
-    if (url.searchParams.get("code")) {
-      const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
-      if (error) console.warn("exchangeCodeForSession:", error.message);
-    }
+      if (nextUrl.origin !== window.location.origin) {
+        nextUrl = new URL("gallery.html", window.location.origin);
+      }
 
-    // Read next
-    const nextRaw = url.searchParams.get("next") || "gallery.html";
-
-    // ✅ Safety: only allow redirects to your own origin
-    let nextUrl;
-    try {
-      nextUrl = new URL(nextRaw, window.location.origin);
-    } catch {
-      nextUrl = new URL("gallery.html", window.location.origin);
-    }
-
-    if (nextUrl.origin !== window.location.origin) {
-      nextUrl = new URL("gallery.html", window.location.origin);
-    }
-
-    window.location.replace(nextUrl.href);
-  })();
-
-
+      // Go back to where login started
+      window.location.replace(nextUrl.href);
     })();
   </script>
 </body>
 </html>
+
