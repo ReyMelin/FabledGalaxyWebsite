@@ -95,11 +95,14 @@
   };
 
   // ✅ 4) Auth UI
-  window.updateAuthUI = async function () {
-    const authContainer = document.getElementById("auth-container");
-    if (!authContainer) return;
+window.updateAuthUI = async function () {
+  const authContainer = document.getElementById("auth-container");
+  if (!authContainer) return;
 
-    const user = await window.getCurrentUser();
+  // Ensure session is loaded
+  await window.sb.auth.getSession();
+
+  const user = await window.getCurrentUser();
 
     if (user) {
       const username =
