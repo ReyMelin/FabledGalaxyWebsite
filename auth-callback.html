@@ -1,29 +1,30 @@
 <script>
   (async () => {
-    // Wait until window.sb exists
-    await new Promise((r) => {
-      if (window.sb) return r();
-      const t = setInterval(() => {
-        if (window.sb) {
-          clearInterval(t);
-          r();
-        }
-      }, 50);
-    });
-
-    const url = new URL(window.location.href);
-
-    // ✅ Finish OAuth login
-    if (url.searchParams.get("code")) {
-      const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
-      if (error) console.warn("exchangeCodeForSession:", error.message);
-    }
-
-    // ✅ Redirect back to the page the user logged in from
-    const next = localStorage.getItem("fg_next") || "/FabledGalaxyWebsite/gallery.html";
-    localStorage.removeItem("fg_next");
-
-    window.location.replace(next);
-  })();
-</script>
-
+      // Wait until window.sb exists
+          await new Promise((r) => {
+                if (window.sb) return r();
+                      const t = setInterval(() => {
+                              if (window.sb) {
+                                        clearInterval(t);
+                                                  r();
+                                                          }
+                                                                }, 50);
+                                                                    });
+                                                                    
+                                                                        const url = new URL(window.location.href);
+                                                                        
+                                                                            // ✅ Finish OAuth login
+                                                                                if (url.searchParams.get("code")) {
+                                                                                      const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
+                                                                                            if (error) console.warn("exchangeCodeForSession:", error.message);
+                                                                                                }
+                                                                                                
+                                                                                                    // ✅ Redirect back to the page the user logged in from
+                                                                                                        const next = localStorage.getItem("fg_next") || "/FabledGalaxyWebsite/gallery.html";
+                                                                                                            localStorage.removeItem("fg_next");
+                                                                                                            
+                                                                                                                window.location.replace(next);
+                                                                                                                  })();
+                                                                                                                  </script>
+                                                                                                                  
+                                                                                                                  >

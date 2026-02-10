@@ -11,7 +11,7 @@
       return;
     }
 
-    window.sb = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY, {
+    window.sb = window.supabase.createClient("https://uyhooadpxmausptmtsdm.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InV5aG9vYWRweG1hdXNwdG10c2RtIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzODYyNjIsImV4cCI6MjA4NTk2MjI2Mn0.JNxXmQrFIB4QOem3LoScmWJXg-wNUipgDzhWwusns9s", {
       auth: {
         persistSession: true,
         autoRefreshToken: true,
