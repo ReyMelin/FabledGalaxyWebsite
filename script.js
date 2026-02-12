@@ -130,10 +130,10 @@ function initTypewriter() {
     if (!storyText) return; // Not on homepage
     
     const lines = [
-        "In the vast expanse of imagination, countless worlds await discovery.",
-        "Each star holds a story, each planet a fable.",
-        "Here, creators weave civilizations from dreams and forge mythologies from wonder.",
-        "Your universe is waiting to be born."
+        "The Fabled Galaxy is the final galaxy at the end of time, where science and magic exist in opposite chaos.",
+        "The tears are apearing in the sky, and Faster than light travel, dead.",
+        "The Fabled Galaxy is alone; the horrors of the void are all that is beyond it.",
+        "Your planets fill the galaxy with life, worlds of rich culture, happy lives, and honor."
     ];
     
     // Create line elements with text already in place (reserves space)
