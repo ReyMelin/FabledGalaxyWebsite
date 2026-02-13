@@ -42,6 +42,52 @@ document.addEventListener('DOMContentLoaded', () => {
     const form = document.getElementById('fable-form');
     if (!form) return; // Only run on form page
 
+    // --- Local Storage Save/Restore ---
+    const LOCAL_STORAGE_KEY = 'fabled-galaxy-form';
+
+    // Restore form data if present
+    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (savedData) {
+        try {
+            const data = JSON.parse(savedData);
+            for (const [key, value] of Object.entries(data)) {
+                const field = form.elements[key];
+                if (!field) continue;
+                if (field.type === 'radio' || field.type === 'checkbox') {
+                    if (Array.isArray(value)) {
+                        // For checkboxes with multiple values
+                        value.forEach(val => {
+                            const el = form.querySelector(`[name="${key}"][value="${val}"]`);
+                            if (el) el.checked = true;
+                        });
+                    } else {
+                        const el = form.querySelector(`[name="${key}"][value="${value}"]`);
+                        if (el) el.checked = true;
+                    }
+                } else {
+                    field.value = value;
+                }
+            }
+        } catch (e) { /* ignore */ }
+    }
+
+    // Save form data on input/change
+    form.addEventListener('input', () => {
+        const data = {};
+        Array.from(form.elements).forEach(el => {
+            if (!el.name) return;
+            if (el.type === 'radio') {
+                if (el.checked) data[el.name] = el.value;
+            } else if (el.type === 'checkbox') {
+                if (!data[el.name]) data[el.name] = [];
+                if (el.checked) data[el.name].push(el.value);
+            } else if (el.type !== 'file') {
+                data[el.name] = el.value;
+            }
+        });
+        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
+    });
+
     // Elements
     const steps = document.querySelectorAll('.form-step');
     const progressSteps = document.querySelectorAll('.progress-step');
@@ -80,6 +126,8 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (!validateCurrentStep()) return;
+        // Clear saved data on submit
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
         // Collect form data
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
