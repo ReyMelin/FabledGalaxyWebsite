@@ -17,20 +17,34 @@
   <div class="starfield"></div>
 
   <div class="admin-container">
-    <div id="drag-drop-art" class="drag-drop-box">
-      <span>Drag &amp; drop art image here, or <label style="color:#7c5bf5;cursor:pointer;"><input type="file" accept="image/*" id="art-file-input">browse</label></span>
-      <div style="margin:1.5rem 0;">
-        <label style="font-weight:600;">World:
-          <select id="drag-art-world-select" style="margin-left:0.5rem;"></select>
-        </label>
+    <header class="admin-header">
+      <h1 class="admin-title">Admin Panel</h1>
+      <p class="admin-subtitle">Review and manage pending world submissions</p>
+    </header>
+
+    <main id="main-content">
+      <div class="loading">Loading...</div>
+    </main>
+
+    <section class="admin-card upload-art-section">
+      <div class="upload-art-box drag-drop-box">
+        <div class="upload-art-title">Upload Art</div>
+        <div class="upload-art-dropzone">
+          <span>Drag &amp; drop art image here, or <label class="upload-art-browse"><input type="file" accept="image/*" id="art-file-input">browse</label></span>
+        </div>
+        <div class="upload-art-controls">
+          <label class="upload-art-label">Pick a world:
+            <select id="drag-art-world-select" class="upload-art-select"></select>
+          </label>
+        </div>
+        <div class="upload-preview" id="drag-drop-preview"></div>
+        <button id="drag-art-upload-btn" class="btn upload-art-btn">Upload & Attach</button>
       </div>
-      <div class="upload-preview" id="drag-drop-preview"></div>
-      <button id="drag-art-upload-btn" class="btn" style="margin-top:1.5rem;">Upload & Attach</button>
-    </div>
+    </section>
     <script>
     // Drag-and-drop art upload logic for admin (integrated with Supabase and world select)
     let dragFile = null;
-    const dragDropBox = document.getElementById('drag-drop-art');
+    const dragDropBox = document.querySelector('.upload-art-dropzone');
     const fileInput = document.getElementById('art-file-input');
     const preview = document.getElementById('drag-drop-preview');
     const worldSelect = document.getElementById('drag-art-world-select');
