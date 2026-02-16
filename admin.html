@@ -91,16 +91,19 @@
         e.preventDefault();
         dragDropBox.classList.remove('dragover');
         const files = e.dataTransfer.files;
-        if (files && files[0]) handleFile(files[0]);
+        if (files && files[0]) setFile(files[0]);
       });
       fileInput.addEventListener('change', e => {
-        if (fileInput.files && fileInput.files[0]) handleFile(fileInput.files[0]);
+        if (fileInput.files && fileInput.files[0]) setFile(fileInput.files[0]);
       });
     }
-    function handleFile(file) {
+    function setFile(file) {
       dragFile = file;
+      showPreview(file);
+    }
+    function showPreview(file) {
       preview.innerHTML = '';
-      if (!file.type.startsWith('image/')) {
+      if (!file || !file.type.startsWith('image/')) {
         preview.textContent = 'Not an image file.';
         return;
       }
@@ -138,6 +141,8 @@
         } catch (e) {
           preview.innerHTML = `<span style='color:#f87171;'>❌ ${e?.message || 'Upload failed.'}</span>`;
         }
+        // Always show the image after upload
+        showPreview(dragFile);
       });
     }
     </script>
