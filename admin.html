@@ -1,16 +1,12 @@
+<!-- admin.html -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="robots" content="noindex, nofollow" />
-  <link rel="icon" type="image/png" sizes="32x32" href="favicon.png" />
   <title>Admin Panel | Fabled Galaxy</title>
-
   <link rel="stylesheet" href="styles.css?v=20260209" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Quicksand:wght@300;400;500;600&display=swap" rel="stylesheet" />
 </head>
 
 <body>
@@ -20,133 +16,53 @@
     <header class="admin-header">
       <h1 class="admin-title">Admin Panel</h1>
       <p class="admin-subtitle">Review and manage pending world submissions</p>
+      <div id="auth-container"></div>
     </header>
+
     <a href="index.html" class="back-link">← Back to Home</a>
 
-  <main id="main-content">
+    <main id="main-content">
       <div class="loading">Loading...</div>
-        <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="./supabaseClient.js?v=20260209"></script>
-    <script src="./admin.js?v=20260209"></script>
-     <section class="admin-card">
+
+      <section class="admin-card">
         <div class="admin-card-content">
-         <h2>Pending Worlds</h2>
-         <div id="worlds-list" class="worlds-list">
-          <!-- Worlds will be loaded here -->
-          </div>
+          <h2>Pending Worlds</h2>
+          <div id="worlds-list" class="worlds-list"></div>
         </div>
       </section>
-    </div>
 
-    <section class="admin-card upload-art-section">
-      <div class="upload-art-box drag-drop-box">
-        <div class="upload-art-title">Upload Art</div>
-        <div class="upload-art-dropzone">
-          <span>Drag &amp; drop art image here, or <label class="upload-art-browse"><input type="file" accept="image/*" id="art-file-input">browse</label></span>
-        </div>
-        <div class="upload-art-controls">
-          <label class="upload-art-label">Pick a world:
-            <select id="drag-art-world-select" class="upload-art-select"></select>
-          </label>
-        </div>
-        <div class="upload-preview" id="drag-drop-preview"></div>
-        <button id="drag-art-upload-btn" class="btn upload-art-btn">Upload & Attach</button>
-      </div>
-    </section>
-    <script>
-    // Drag-and-drop art upload logic for admin (integrated with Supabase and world select)
-    let dragFile = null;
-    const dragDropBox = document.querySelector('.upload-art-dropzone');
-    const fileInput = document.getElementById('art-file-input');
-    const preview = document.getElementById('drag-drop-preview');
-    const worldSelect = document.getElementById('drag-art-world-select');
-    const uploadBtn = document.getElementById('drag-art-upload-btn');
-    // Populate world dropdown from Supabase
-    async function loadWorldsForDragSelect() {
-      if (!window.sb) return;
-      const { data, error } = await window.sb
-        .from("worlds")
-        .select("id, planet_name")
-        .order("created_at", { ascending: false });
-      if (error) {
-        worldSelect.innerHTML = '<option value="">Could not load</option>';
-        return;
-      }
-      worldSelect.innerHTML = data
-        .map(w => `<option value="${w.id}">${w.planet_name ? w.planet_name.replace(/</g,'&lt;') : w.id}</option>`)
-        .join("");
-    }
-    document.addEventListener('DOMContentLoaded', loadWorldsForDragSelect);
-    // Drag and drop events
-    if (dragDropBox && fileInput && preview) {
-      dragDropBox.addEventListener('dragover', e => {
-        e.preventDefault();
-        dragDropBox.classList.add('dragover');
-      });
-      dragDropBox.addEventListener('dragleave', e => {
-        e.preventDefault();
-        dragDropBox.classList.remove('dragover');
-      });
-      dragDropBox.addEventListener('drop', e => {
-        e.preventDefault();
-        dragDropBox.classList.remove('dragover');
-        const files = e.dataTransfer.files;
-        if (files && files[0]) setFile(files[0]);
-      });
-      fileInput.addEventListener('change', e => {
-        if (fileInput.files && fileInput.files[0]) setFile(fileInput.files[0]);
-      });
-    }
-    function setFile(file) {
-      dragFile = file;
-      showPreview(file);
-    }
-    function showPreview(file) {
-      preview.innerHTML = '';
-      if (!file || !file.type.startsWith('image/')) {
-        preview.textContent = 'Not an image file.';
-        return;
-      }
-      const img = document.createElement('img');
-      img.src = URL.createObjectURL(file);
-      img.onload = () => URL.revokeObjectURL(img.src);
-      img.style.maxWidth = '220px';
-      img.style.maxHeight = '160px';
-      img.style.borderRadius = '10px';
-      preview.appendChild(img);
-    }
-    // Upload and attach art to selected world
-    if (uploadBtn) {
-      uploadBtn.addEventListener('click', async () => {
-        if (!dragFile) { preview.textContent = 'Select an image first.'; return; }
-        const worldId = worldSelect.value;
-        if (!worldId) { preview.textContent = 'Select a world.'; return; }
-        // Validate file type/size
-        const okTypes = ["image/png", "image/jpeg", "image/webp", "image/avif"];
-        if (!okTypes.includes(dragFile.type)) { preview.textContent = 'Invalid file type.'; return; }
-        if (dragFile.size > 10 * 1024 * 1024) { preview.textContent = 'Max file size is 10MB.'; return; }
-        // Upload to Supabase Storage
-        const safeName = dragFile.name.replace(/[^a-z0-9.\-_]/gi, "_");
-        const path = `worlds/${worldId}/${Date.now()}-${safeName}`;
-        try {
-          const { error: upErr } = await window.sb.storage.from("world-art").upload(path, dragFile, { upsert: true, contentType: dragFile.type });
-          if (upErr) throw upErr;
-          const { data: pub } = window.sb.storage.from("world-art").getPublicUrl(path);
-          const artUrl = pub?.publicUrl;
-          if (!artUrl) throw new Error("Upload succeeded, but could not get public URL.");
-          // Attach to world row
-          const { error: dbErr } = await window.sb.from("worlds").update({ art_url: artUrl }).eq("id", worldId);
-          if (dbErr) throw dbErr;
-          preview.innerHTML = `<span style='color:#4ade80;'>✅ Uploaded and attached!</span><br><a href='${artUrl}' target='_blank'>View image</a>`;
-        } catch (e) {
-          preview.innerHTML = `<span style='color:#f87171;'>❌ ${e?.message || 'Upload failed.'}</span>`;
-        }
-        // Always show the image after upload
-        showPreview(dragFile);
-      });
-    }
-    </script>
-  </main>
+      <section class="admin-card upload-art-section">
+        <div class="upload-art-box drag-drop-box">
+          <div class="upload-art-title">Upload Art</div>
 
+          <div class="upload-art-dropzone" id="upload-dropzone">
+            <span>
+              Drag &amp; drop art here, or
+              <label class="upload-art-browse">
+                <input type="file" accept="image/*" id="art-file-input">
+                browse
+              </label>
+            </span>
+          </div>
+
+          <div class="upload-art-controls">
+            <label class="upload-art-label">Pick a world:
+              <select id="art-world-select" class="upload-art-select"></select>
+            </label>
+          </div>
+
+          <div class="upload-preview" id="art-preview"></div>
+          <div class="muted" id="art-status"></div>
+
+          <button id="art-upload-btn" class="btn upload-art-btn">Upload & Attach</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Scripts at the END -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="./supabaseClient.js?v=20260209"></script>
+  <script src="./admin.js?v=20260209"></script>
 </body>
 </html>
