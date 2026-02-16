@@ -5,53 +5,49 @@
   <title>Signing you in...</title>
   <meta name="robots" content="noindex" />
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <!-- IMPORTANT: UMD build so window.supabase exists -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
   <script src="./supabaseClient.js"></script>
 </head>
+
 <body>
   <p>Signing you in…</p>
 
   <script>
-  (async () => {
-    // wait for window.sb
-    await new Promise(r => {
-      if (window.sb) return r();
-      const t = setInterval(() => (window.sb ? (clearInterval(t), r()) : null), 50);
-    });
+    (async () => {
+      // wait for window.sb
+      await new Promise(r => {
+        if (window.sb) return r();
+        const t = setInterval(() => (window.sb ? (clearInterval(t), r()) : null), 50);
+      });
 
-    // This will parse #access_token OR ?code (depending on your flow)
-    const { error } = await window.sb.auth.getSession();
-    if (error) console.warn("getSession:", error.message);
+      const url = new URL(window.location.href);
 
-    // clear the hash so tokens aren't left sitting in the URL
-    if (window.location.hash) {
-      history.replaceState(null, "", window.location.pathname + window.location.search);
-    }
-
-    // return to where you logged in from
-    const next = localStorage.getItem("fg_next") || "index.html";
-    localStorage.removeItem("fg_next");
-    window.location.replace(next);
-  })();
-  </script>
-      // 3) fallback
-      const nextFromQuery = url.searchParams.get("next");
-      const nextFromStorage = localStorage.getItem("fg_next");
-      localStorage.removeItem("fg_next");
-
-      const nextRaw = nextFromQuery || nextFromStorage || "gallery.html";
-
-      // Safety: only allow same-origin redirects
-      let nextUrl;
-      try { nextUrl = new URL(nextRaw, window.location.origin); }
-      catch { nextUrl = new URL("gallery.html", window.location.origin); }
-
-      if (nextUrl.origin !== window.location.origin) {
-        nextUrl = new URL("gallery.html", window.location.origin);
+      // If Supabase returned with ?code=..., exchange it for a session
+      if (url.searchParams.get("code")) {
+        const { error } = await window.sb.auth.exchangeCodeForSession(window.location.href);
+        if (error) console.warn("exchangeCodeForSession:", error.message);
       }
 
-      console.log("➡️ redirecting to:", nextUrl.href);
-      window.location.replace(nextUrl.href);
+      // Read session/user (optional debug)
+      const { data: sessionData, error: sessErr } = await window.sb.auth.getSession();
+      if (sessErr) console.warn("getSession:", sessErr.message);
+      else console.log("Session data:", sessionData);
+
+      const { data: { user }, error: userErr } = await window.sb.auth.getUser();
+      if (userErr) console.warn("getUser:", userErr.message);
+      else console.log("User:", user);
+
+      // clear tokens from URL (hash and code)
+      if (window.location.hash || url.searchParams.get("code")) {
+        history.replaceState(null, "", window.location.pathname);
+      }
+
+      // redirect back
+      const next = localStorage.getItem("fg_next") || "index.html";
+      localStorage.removeItem("fg_next");
+      window.location.replace(next);
     })();
   </script>
 </body>

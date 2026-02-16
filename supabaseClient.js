@@ -70,11 +70,11 @@
 
   // ✅ 3) Auth helpers
   window.loginWithDiscord = async function () {
-    // store the page we want to return to
-    localStorage.setItem("fg_next", window.location.href);
+    // store the page we want to return to (avoid hash/tokens)
+    localStorage.setItem("fg_next", window.location.pathname + window.location.search);
 
     // send OAuth back to auth-callback on the SAME origin
-    const redirectTo = new URL("auth-callback.html", window.location.href).href;
+    const redirectTo = `${window.location.origin}/FabledGalaxyWebsite/auth-callback.html`;
 
     const { error } = await window.sb.auth.signInWithOAuth({
       provider: "discord",

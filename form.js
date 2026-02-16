@@ -4,89 +4,75 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
-        // Auto-fill creator name and email if user is logged in (Discord)
-        (async function autoFillCreatorFields() {
-            if (window.sb && window.sb.auth && window.sb.auth.getUser) {
-                try {
-                    const { data: { user } } = await window.sb.auth.getUser();
-                    if (user) {
-                        // Prefer Discord global_name, then full_name, then name, then fallback
-                        const autoName =
-                            user.user_metadata?.custom_claims?.global_name ||
-                            user.user_metadata?.full_name ||
-                            user.user_metadata?.name ||
-                            "Creator";
-                        const creatorNameInput = document.getElementById("creator-name");
-                        if (creatorNameInput) {
-                            creatorNameInput.value = autoName;
-                            creatorNameInput.readOnly = true;
-                        }
-                        const emailInput = document.getElementById("creator-email");
-                        if (emailInput) {
-                            if (user.email) {
-                                emailInput.value = user.email;
-                                emailInput.required = false;
-                                // Hide the email field visually
-                                const fieldGroup = emailInput.closest(".form-group") || emailInput.closest(".field");
-                                if (fieldGroup) fieldGroup.style.display = "none";
-                            } else {
-                                emailInput.required = false;
-                            }
-                        }
-                    }
-                } catch (e) {
-                    // Fail silently if auth not available
+    // Helper: Wait for Supabase to be ready
+    async function waitForSb(timeoutMs = 5000) {
+        const start = Date.now();
+        while (!window.sb) {
+            await new Promise(r => setTimeout(r, 50));
+            if (Date.now() - start > timeoutMs) return false;
+        }
+        return true;
+    }
+
+    // Auto-fill creator name and email if user is logged in (Discord)
+    (async function autoFillCreatorFields() {
+        const ok = await waitForSb();
+        if (!ok) return;
+
+        try {
+            const { data: { user } } = await window.sb.auth.getUser();
+            if (!user) return;
+
+            const autoName =
+                user.user_metadata?.custom_claims?.global_name ||
+                user.user_metadata?.full_name ||
+                user.user_metadata?.name ||
+                "Creator";
+
+            const creatorNameInput = document.getElementById("creator-name");
+            if (creatorNameInput) {
+                creatorNameInput.value = autoName;
+                creatorNameInput.readOnly = true;
+            }
+
+            const emailInput = document.getElementById("creator-email");
+            if (emailInput) {
+                if (user.email) {
+                    emailInput.value = user.email;
+                    emailInput.required = false;
+                    const fieldGroup = emailInput.closest(".form-group") || emailInput.closest(".field");
+                    if (fieldGroup) fieldGroup.style.display = "none";
+                } else {
+                    emailInput.required = false;
                 }
             }
+        } catch {}
         })();
     const form = document.getElementById('fable-form');
     if (!form) return; // Only run on form page
 
-    // --- Local Storage Save/Restore ---
-    const LOCAL_STORAGE_KEY = 'fabled-galaxy-form';
+    // --- Session Storage Save/Restore for Drafts ---
+    const DRAFT_KEY = "fg_draft_create_world";
 
-    // Restore form data if present
-    const savedData = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (savedData) {
-        try {
-            const data = JSON.parse(savedData);
-            for (const [key, value] of Object.entries(data)) {
-                const field = form.elements[key];
-                if (!field) continue;
-                if (field.type === 'radio' || field.type === 'checkbox') {
-                    if (Array.isArray(value)) {
-                        // For checkboxes with multiple values
-                        value.forEach(val => {
-                            const el = form.querySelector(`[name="${key}"][value="${val}"]`);
-                            if (el) el.checked = true;
-                        });
-                    } else {
-                        const el = form.querySelector(`[name="${key}"][value="${value}"]`);
-                        if (el) el.checked = true;
-                    }
-                } else {
-                    field.value = value;
-                }
-            }
-        } catch (e) { /* ignore */ }
+    function saveDraft(formEl) {
+      const data = Object.fromEntries(new FormData(formEl).entries());
+      sessionStorage.setItem(DRAFT_KEY, JSON.stringify(data));
     }
 
-    // Save form data on input/change
-    form.addEventListener('input', () => {
-        const data = {};
-        Array.from(form.elements).forEach(el => {
-            if (!el.name) return;
-            if (el.type === 'radio') {
-                if (el.checked) data[el.name] = el.value;
-            } else if (el.type === 'checkbox') {
-                if (!data[el.name]) data[el.name] = [];
-                if (el.checked) data[el.name].push(el.value);
-            } else if (el.type !== 'file') {
-                data[el.name] = el.value;
-            }
-        });
-        localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(data));
-    });
+    function loadDraft(formEl) {
+      const raw = sessionStorage.getItem(DRAFT_KEY);
+      if (!raw) return;
+      const data = JSON.parse(raw);
+      for (const [k, v] of Object.entries(data)) {
+        const el = formEl.elements[k];
+        if (!el) continue;
+        if (el.type === "checkbox") el.checked = v === "on" || v === true;
+        else el.value = v;
+      }
+    }
+
+    loadDraft(form);
+    form.addEventListener("input", () => saveDraft(form));
 
     // Elements
     const steps = document.querySelectorAll('.form-step');
@@ -126,8 +112,8 @@ document.addEventListener('DOMContentLoaded', () => {
     form.addEventListener('submit', (e) => {
         e.preventDefault();
         if (!validateCurrentStep()) return;
-        // Clear saved data on submit
-        localStorage.removeItem(LOCAL_STORAGE_KEY);
+        // Clear saved draft on submit
+        sessionStorage.removeItem(DRAFT_KEY);
         // Collect form data
         const formData = new FormData(form);
         const data = Object.fromEntries(formData.entries());
