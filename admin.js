@@ -64,6 +64,138 @@
       .single();
     if (res.error) throw res.error;
   }
+async function ensureSbReady() {
+  await new Promise((r) => {
+    if (window.sb) return r();
+    const t = setInterval(() => (window.sb ? (clearInterval(t), r()) : null), 50);
+  });
+}
+
+async function loadWorldsForArtSelect() {
+  // You can decide: approved only, or pending too
+  const { data, error } = await window.sb
+    .from("worlds")
+    .select("id, planet_name")
+    .order("created_at", { ascending: false });
+
+  if (error) throw error;
+
+  const sel = document.getElementById("art-world-select");
+  sel.innerHTML = data
+    .map(w => `<option value="${w.id}">${escapeHtml(w.planet_name || w.id)}</option>`)
+    .join("");
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, (c) => ({
+    "&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"
+  }[c]));
+}
+
+function showStatus(msg) {
+  const el = document.getElementById("art-status");
+  if (el) el.textContent = msg;
+}
+
+function showPreview(file) {
+  const preview = document.getElementById("art-preview");
+  if (!preview) return;
+
+  if (!file) {
+    preview.innerHTML = "";
+    return;
+  }
+
+  const url = URL.createObjectURL(file);
+  preview.innerHTML = `
+    <div style="display:flex; gap:12px; align-items:center;">
+      <img src="${url}" alt="preview" style="width:120px;height:120px;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,.15);" />
+      <div>
+        <div><strong>${escapeHtml(file.name)}</strong></div>
+        <div class="muted">${Math.round(file.size/1024)} KB</div>
+      </div>
+    </div>
+  `;
+}
+
+async function uploadArtAndAttach(worldId, file) {
+  // Basic validation
+  const okTypes = ["image/png", "image/jpeg", "image/webp", "image/avif"];
+  if (!okTypes.includes(file.type)) throw new Error("Please upload a PNG, JPG, WEBP, or AVIF.");
+  if (file.size > 10 * 1024 * 1024) throw new Error("Max file size is 10MB.");
+
+  // Create a nice unique path
+  const safeName = file.name.replace(/[^a-z0-9.\-_]/gi, "_");
+  const path = `worlds/${worldId}/${Date.now()}-${safeName}`;
+
+  // Upload to public bucket
+  const { error: upErr } = await window.sb
+    .storage
+    .from("world-art")
+    .upload(path, file, { upsert: true, contentType: file.type });
+
+  if (upErr) throw upErr;
+
+  // Get public URL
+  const { data: pub } = window.sb
+    .storage
+    .from("world-art")
+    .getPublicUrl(path);
+
+  const artUrl = pub?.publicUrl;
+  if (!artUrl) throw new Error("Upload succeeded, but could not get public URL.");
+
+  // Attach to the world row
+  const { error: dbErr } = await window.sb
+    .from("worlds")
+    .update({ art_url: artUrl })
+    .eq("id", worldId);
+
+  if (dbErr) throw dbErr;
+
+  return artUrl;
+}
+
+document.addEventListener("DOMContentLoaded", async () => {
+  await ensureSbReady();
+
+  // Fill dropdown
+  try {
+    await loadWorldsForArtSelect();
+  } catch (e) {
+    console.error(e);
+    showStatus("Could not load worlds list.");
+  }
+
+  // Preview on file choose
+  const fileInput = document.getElementById("art-file");
+  fileInput?.addEventListener("change", () => {
+    showPreview(fileInput.files?.[0]);
+  });
+
+  // Upload button
+  document.getElementById("art-upload-btn")?.addEventListener("click", async () => {
+    const worldId = document.getElementById("art-world-select")?.value;
+    const file = document.getElementById("art-file")?.files?.[0];
+
+    if (!worldId) return showStatus("Pick a world first.");
+    if (!file) return showStatus("Choose an image first.");
+
+    showStatus("Uploading…");
+    try {
+      const url = await uploadArtAndAttach(worldId, file);
+      showStatus("✅ Attached! Art URL saved to world.");
+      // Optional: display the final URL
+      const preview = document.getElementById("art-preview");
+      if (preview) {
+        preview.innerHTML += `<div style="margin-top:10px;"><a href="${url}" target="_blank" rel="noopener">View uploaded image</a></div>`;
+      }
+    } catch (e) {
+      console.error(e);
+      showStatus("❌ " + (e?.message || "Upload failed."));
+    }
+  });
+});
 
   function formatDate(dateStr) {
     return new Date(dateStr).toLocaleDateString('en-US', {
@@ -98,6 +230,8 @@
         </div>
 
         <p class="world-description">${world.description || ''}</p>
+
+        ${world.art_url ? `<img src="${world.art_url}" alt="Art for ${escapeHtml(world.planet_name)}" class="world-art">` : ''}
 
         <details class="world-fields">
           <summary>View All Fields</summary>

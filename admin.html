@@ -33,5 +33,28 @@
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="./supabaseClient.js?v=20260209"></script>
   <script src="./admin.js?v=20260209"></script>
+  <section class="admin-card">
+    
+  <h2>Attach Approved Art</h2>
+  <p class="muted">Pick a world, upload an image, and it will be linked to that world.</p>
+
+  <div class="row">
+    <label>
+      World
+      <select id="art-world-select"></select>
+    </label>
+
+    <label>
+      Image
+      <input id="art-file" type="file" accept="image/png,image/jpeg,image/webp,image/avif" />
+    </label>
+
+    <button id="art-upload-btn" class="btn">Upload & Attach</button>
+  </div>
+
+  <div id="art-preview" style="margin-top:12px;"></div>
+  <div id="art-status" class="muted" style="margin-top:10px;"></div>
+</section>
+
 </body>
 </html>
