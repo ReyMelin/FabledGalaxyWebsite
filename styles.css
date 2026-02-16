@@ -1,3 +1,41 @@
+/* Art image for world cards in admin panel */
+.world-art {
+    display: block;
+    margin: 1.5rem auto 0 auto;
+    max-width: 320px;
+    max-height: 220px;
+    border-radius: 12px;
+    box-shadow: 0 0 24px rgba(124, 91, 245, 0.18);
+    object-fit: contain;
+    background: #18182a;
+    border: 1px solid rgba(124, 91, 245, 0.13);
+}
+
+/* Drag-and-drop image upload box for admin */
+.drag-drop-box {
+    border: 2px dashed #a78bfa;
+    background: rgba(30, 30, 50, 0.4);
+    border-radius: 14px;
+    padding: 2.5rem 1.5rem;
+    text-align: center;
+    color: #a78bfa;
+    font-size: 1.1rem;
+    margin: 2rem auto 2.5rem auto;
+    transition: background 0.2s, border-color 0.2s;
+    cursor: pointer;
+    max-width: 400px;
+}
+.drag-drop-box.dragover {
+    background: rgba(124, 91, 245, 0.08);
+    border-color: #7c5bf5;
+    color: #7c5bf5;
+}
+.drag-drop-box input[type="file"] {
+    display: none;
+}
+.drag-drop-box .upload-preview {
+    margin-top: 1.5rem;
+}
 /* ============================================
    Admin Panel Styles
    ============================================ */
