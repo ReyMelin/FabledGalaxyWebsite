@@ -56,6 +56,10 @@
   }
 
   async function setStatus(id, status) {
+    // Only allow 'approved' or 'rejected' as valid status updates from moderation
+    if (status !== 'approved' && status !== 'rejected') {
+      throw new Error("Invalid status: " + status + ". Only 'approved' or 'rejected' allowed.");
+    }
     const res = await window.sb
       .from("worlds")
       .update({ status })
