@@ -22,41 +22,9 @@
     <a href="index.html" class="back-link">← Back to Home</a>
 
     <main id="main-content">
-      <div class="loading">Loading...</div>
-
-      <section class="admin-card">
-        <div class="admin-card-content">
-          <h2>Pending Worlds</h2>
-          <div id="worlds-list" class="worlds-list"></div>
-        </div>
-      </section>
-
-      <section class="admin-card upload-art-section">
-        <div class="upload-art-box drag-drop-box">
-          <div class="upload-art-title">Upload Art</div>
-
-          <div class="upload-art-dropzone" id="upload-dropzone">
-            <span>
-              Drag &amp; drop art here, or
-              <label class="upload-art-browse">
-                <input type="file" accept="image/*" id="art-file-input">
-                browse
-              </label>
-            </span>
-          </div>
-
-          <div class="upload-art-controls">
-            <label class="upload-art-label">Pick a world:
-              <select id="art-world-select" class="upload-art-select"></select>
-            </label>
-          </div>
-
-          <div class="upload-preview" id="art-preview"></div>
-          <div class="muted" id="art-status"></div>
-
-          <button id="art-upload-btn" class="btn upload-art-btn">Upload & Attach</button>
-        </div>
-      </section>
+      <div id="loadingMessage" class="loading">Loading...</div>
+      <div id="worldsContainer"></div>
+      <div id="uploadArtContainer"></div>
     </main>
   </div>
 
