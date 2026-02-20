@@ -76,7 +76,7 @@
   window.loadApprovedWorlds = async function () {
     const res = await window.sb
       .from("worlds")
-      .select("id, planet_name, planet_type, description, locked, created_at, fields, art_url")
+      .select("id, planet_name, planet_type, description, locked, created_at, fields, art_url, map_x, map_y")
       .eq("status", "approved")
       .order("created_at", { ascending: false });
 

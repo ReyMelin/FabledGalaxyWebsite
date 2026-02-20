@@ -57,6 +57,14 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let currentView = 'map';
     let allPlanets = [];
+    let isAdminUser = false;
+    
+    // Admin planet drag state
+    let planetDragNode = null;
+    let planetDragId = null;
+    let planetDragStartX = 0;
+    let planetDragStartY = 0;
+    let planetWasDragged = false;
     
     // Map zoom/pan state
     let zoom = 1;
@@ -79,6 +87,24 @@ document.addEventListener('DOMContentLoaded', () => {
         loadPlanets();
         setupEventListeners();
         setupMapControls();
+        checkAdminStatus();
+    }
+
+    /**
+     * Check if current user is an admin and enable planet dragging
+     */
+    async function checkAdminStatus() {
+        try {
+            if (window.isAdmin) {
+                isAdminUser = await window.isAdmin();
+                if (isAdminUser) {
+                    galaxyMap.classList.add('admin-mode');
+                    setupAdminPlanetDrag();
+                }
+            }
+        } catch (e) {
+            console.warn('Admin check failed:', e);
+        }
     }
 
     /**
@@ -118,22 +144,48 @@ document.addEventListener('DOMContentLoaded', () => {
                         '#7c5bf5', '#00d9ff', '#ff6b9d', '#ffd700',
                         '#4ade80', '#f97316', '#06b6d4', '#a855f7'
                     ];
+                    // Collect already-occupied positions (normalized 0..1)
+                    const occupiedPositions = [];
+
                     // Map Supabase fields to expected format
                     allPlanets = worlds.map((w, index) => {
                         const hash = w.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
-                        // Use saved coordinates if present (normalized 0..1), else fallback to deterministic
                         const hasCoords = typeof w.map_x === 'number' && typeof w.map_y === 'number';
-                        const fallbackX = (10 + (hash % 80)) / 100;
-                        const fallbackY = (10 + ((hash * 7) % 80)) / 100;
-                        const nx = hasCoords ? w.map_x : fallbackX;
-                        const ny = hasCoords ? w.map_y : fallbackY;
-                        // Save fallback coords to Supabase if missing
-                        if (!hasCoords && window.supabase) {
-                            window.supabase
-                                ?.from('worlds')
-                                .update({ map_x: fallbackX, map_y: fallbackY })
-                                .eq('id', w.id);
+
+                        let nx, ny;
+                        if (hasCoords) {
+                            nx = w.map_x;
+                            ny = w.map_y;
+                        } else {
+                            // Generate a random position that doesn't overlap existing ones
+                            const MIN_DIST = 0.06; // minimum normalized distance between planets
+                            let attempts = 0;
+                            do {
+                                nx = 0.08 + Math.random() * 0.84; // 0.08..0.92
+                                ny = 0.08 + Math.random() * 0.84;
+                                attempts++;
+                            } while (
+                                attempts < 200 &&
+                                occupiedPositions.some(p => {
+                                    const dx = p.x - nx;
+                                    const dy = p.y - ny;
+                                    return Math.sqrt(dx * dx + dy * dy) < MIN_DIST;
+                                })
+                            );
+                            // Fire-and-forget: persist the new coords so they stay stable
+                            if (window.sb) {
+                                window.sb
+                                    .from('worlds')
+                                    .update({ map_x: nx, map_y: ny })
+                                    .eq('id', w.id)
+                                    .then(({ error }) => {
+                                        if (error) console.warn('Failed to save map coords for', w.id, error);
+                                    });
+                            }
                         }
+
+                        occupiedPositions.push({ x: nx, y: ny });
+
                         return {
                             id: w.id,
                             name: w.planet_name,
@@ -142,7 +194,7 @@ document.addEventListener('DOMContentLoaded', () => {
                             description: w.description || '',
                             collaboration: w.locked ? 'locked' : 'open',
                             createdAt: w.created_at,
-                            // Convert normalized -> percent for your existing renderer
+                            // Convert normalized 0..1 -> percent for the renderer
                             position: {
                                 x: Math.min(Math.max(nx, 0), 1) * 100,
                                 y: Math.min(Math.max(ny, 0), 1) * 100
@@ -258,6 +310,11 @@ document.addEventListener('DOMContentLoaded', () => {
         // Add collaboration indicator
         if (planet.collaboration === 'open') {
             node.classList.add('open-world');
+        }
+
+        // Admin: mark as draggable
+        if (isAdminUser) {
+            node.classList.add('admin-draggable');
         }
         
         return node;
@@ -732,6 +789,12 @@ document.addEventListener('DOMContentLoaded', () => {
         
         const node = e.target.closest('.planet-node');
         if (!node || e.target.classList.contains('planet-delete')) return;
+
+        // Admin drag: skip navigation if the planet was just repositioned
+        if (planetWasDragged) {
+            planetWasDragged = false;
+            return;
+        }
         
         window.location.href = `planet.html?id=${node.dataset.id}`;
     }
@@ -779,6 +842,134 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
 
+
+    /**
+     * Setup admin planet drag-to-reposition
+     */
+    function setupAdminPlanetDrag() {
+        // Use mousedown on the planets container (delegated)
+        planetsContainer.addEventListener('mousedown', adminPlanetDragStart);
+        document.addEventListener('mousemove', adminPlanetDragMove);
+        document.addEventListener('mouseup', adminPlanetDragEnd);
+
+        // Touch support for admin drag
+        planetsContainer.addEventListener('touchstart', adminPlanetTouchStart, { passive: false });
+        document.addEventListener('touchmove', adminPlanetTouchMove, { passive: false });
+        document.addEventListener('touchend', adminPlanetDragEnd);
+    }
+
+    function adminPlanetDragStart(e) {
+        if (!isAdminUser) return;
+        const node = e.target.closest('.planet-node');
+        if (!node) return;
+
+        e.preventDefault();
+        e.stopPropagation();
+
+        planetDragNode = node;
+        planetDragId = node.dataset.id;
+        planetDragNode.classList.add('admin-dragging');
+        planetDragNode.style.zIndex = '50';
+        planetWasDragged = false;
+
+        // Record starting mouse position
+        planetDragStartX = e.clientX;
+        planetDragStartY = e.clientY;
+    }
+
+    function adminPlanetTouchStart(e) {
+        if (!isAdminUser) return;
+        const node = e.target.closest('.planet-node');
+        if (!node || e.touches.length !== 1) return;
+
+        // Use a long-press to distinguish from scroll — or just allow immediate drag
+        e.preventDefault();
+        e.stopPropagation();
+
+        planetDragNode = node;
+        planetDragId = node.dataset.id;
+        planetDragNode.classList.add('admin-dragging');
+        planetDragNode.style.zIndex = '50';
+        planetWasDragged = false;
+
+        planetDragStartX = e.touches[0].clientX;
+        planetDragStartY = e.touches[0].clientY;
+    }
+
+    function adminPlanetDragMove(e) {
+        if (!planetDragNode) return;
+        e.preventDefault();
+
+        const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+        const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+
+        // Convert mouse position to percentage within the map viewport
+        const vpRect = mapViewport.getBoundingClientRect();
+        // Account for the CSS transform (scale + translate)
+        const pctX = ((clientX - vpRect.left) / vpRect.width) * 100;
+        const pctY = ((clientY - vpRect.top) / vpRect.height) * 100;
+
+        // Clamp to 2..98%
+        const clampedX = Math.min(Math.max(pctX, 2), 98);
+        const clampedY = Math.min(Math.max(pctY, 2), 98);
+
+        planetDragNode.style.left = `${clampedX}%`;
+        planetDragNode.style.top = `${clampedY}%`;
+        planetWasDragged = true;
+    }
+
+    function adminPlanetTouchMove(e) {
+        if (!planetDragNode) return;
+        adminPlanetDragMove(e);
+    }
+
+    function adminPlanetDragEnd(e) {
+        if (!planetDragNode) return;
+
+        const finalLeft = parseFloat(planetDragNode.style.left);
+        const finalTop = parseFloat(planetDragNode.style.top);
+
+        planetDragNode.classList.remove('admin-dragging');
+        planetDragNode.style.zIndex = '';
+
+        // Update the planet data in allPlanets
+        const planet = allPlanets.find(p => p.id === planetDragId);
+        if (planet) {
+            planet.position.x = finalLeft;
+            planet.position.y = finalTop;
+
+            // Save normalized coords (0..1) to Supabase
+            const normX = finalLeft / 100;
+            const normY = finalTop / 100;
+            if (window.sb) {
+                window.sb
+                    .from('worlds')
+                    .update({ map_x: normX, map_y: normY })
+                    .eq('id', planetDragId)
+                    .then(({ error }) => {
+                        if (error) {
+                            console.error('Failed to save planet position:', error);
+                            showDragFeedback(planetDragNode, false);
+                        } else {
+                            showDragFeedback(planetDragNode, true);
+                        }
+                    });
+            }
+        }
+
+        planetDragNode = null;
+        planetDragId = null;
+    }
+
+    /**
+     * Show brief visual feedback after dropping a planet
+     */
+    function showDragFeedback(node, success) {
+        node.classList.add(success ? 'drag-saved' : 'drag-failed');
+        setTimeout(() => {
+            node.classList.remove('drag-saved', 'drag-failed');
+        }, 800);
+    }
 
     /**
      * Utility: Truncate text
