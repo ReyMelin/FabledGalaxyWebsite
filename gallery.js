@@ -120,20 +120,32 @@ document.addEventListener('DOMContentLoaded', () => {
                     ];
                     // Map Supabase fields to expected format
                     allPlanets = worlds.map((w, index) => {
-                        // Generate deterministic position based on ID
                         const hash = w.id.split('').reduce((a, c) => a + c.charCodeAt(0), 0);
+                        // Use saved coordinates if present (normalized 0..1), else fallback to deterministic
+                        const hasCoords = typeof w.map_x === 'number' && typeof w.map_y === 'number';
+                        const fallbackX = (10 + (hash % 80)) / 100;
+                        const fallbackY = (10 + ((hash * 7) % 80)) / 100;
+                        const nx = hasCoords ? w.map_x : fallbackX;
+                        const ny = hasCoords ? w.map_y : fallbackY;
+                        // Save fallback coords to Supabase if missing
+                        if (!hasCoords && window.supabase) {
+                            window.supabase
+                                ?.from('worlds')
+                                .update({ map_x: fallbackX, map_y: fallbackY })
+                                .eq('id', w.id);
+                        }
                         return {
                             id: w.id,
                             name: w.planet_name,
                             creatorName: w.fields?.creator_name || 'Unknown',
                             type: w.planet_type,
-                            description: w.description,
+                            description: w.description || '',
                             collaboration: w.locked ? 'locked' : 'open',
                             createdAt: w.created_at,
-                            // Generate position and color for map
+                            // Convert normalized -> percent for your existing renderer
                             position: {
-                                x: 10 + (hash % 80),
-                                y: 10 + ((hash * 7) % 80)
+                                x: Math.min(Math.max(nx, 0), 1) * 100,
+                                y: Math.min(Math.max(ny, 0), 1) * 100
                             },
                             color: colors[hash % colors.length],
                             ...(w.fields || {})
@@ -477,6 +489,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function applyTransform() {
         if (!mapViewport) return;
         mapViewport.style.transform = `scale(${zoom}) translate(${panX / zoom}%, ${panY / zoom}%)`;
+        // Scale planet nodes with zoom
+        const baseSize = 22; // px, midpoint of clamp(16px, 3vmin, 28px)
+        const scaledSize = baseSize * zoom;
+        planetsContainer?.style.setProperty('--planet-size', `${scaledSize}px`);
+        planetsContainer?.style.setProperty('--planet-ring-size', `${Math.round(scaledSize * 1.7)}px`);
     }
     
     /**
