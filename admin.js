@@ -91,39 +91,40 @@
     if (error) throw error;
   }
 
-    const dropzone = document.getElementById("drag-drop-box");
-    return `
-      <div class="world-card" data-id="${world.id}">
-        <div class="world-header">
-          <div>
-            <h3 class="world-title">${escapeHtml(world.planet_name)}</h3>
-            <div class="world-meta">
-              <span>by ${escapeHtml(world.fields?.creator_name ?? "Unknown")}</span>
-              <span>${escapeHtml(formatDate(world.created_at))}</span>
-            </div>
-          </div>
-          <div class="world-header-flexgap">
-            <span class="world-type">${escapeHtml(world.planet_type || "unknown")}</span>
-            ${world.locked ? '<span class="world-locked">🔒 Locked</span>' : ""}
+// --- world card renderer ---
+function renderWorldCard(world) {
+  return `
+    <div class="world-card" data-id="${world.id}">
+      <div class="world-header">
+        <div>
+          <h3 class="world-title">${escapeHtml(world.planet_name)}</h3>
+          <div class="world-meta">
+            <span>by ${escapeHtml(world.fields?.creator_name ?? "Unknown")}</span>
+            <span>${escapeHtml(formatDate(world.created_at))}</span>
           </div>
         </div>
-
-        <p class="world-description">${escapeHtml(world.description || "")}</p>
-
-        ${world.art_url ? `<img src="${escapeHtml(world.art_url)}" alt="Art for ${escapeHtml(world.planet_name)}" class="world-art">` : ""}
-
-        <details class="world-fields">
-          <summary>View All Fields</summary>
-          <div class="world-fields-content">${renderFields(world.fields)}</div>
-        </details>
-
-        <div class="world-actions">
-          <button class="btn btn-approve" data-action="approve">✓ Approve</button>
-          <button class="btn btn-reject" data-action="reject">✕ Reject</button>
+        <div class="world-header-flexgap">
+          <span class="world-type">${escapeHtml(world.planet_type || "unknown")}</span>
+          ${world.locked ? '<span class="world-locked">🔒 Locked</span>' : ""}
         </div>
       </div>
-    `;
-  }
+
+      <p class="world-description">${escapeHtml(world.description || "")}</p>
+
+      ${world.art_url ? `<img src="${escapeHtml(world.art_url)}" alt="Art for ${escapeHtml(world.planet_name)}" class="world-art">` : ""}
+
+      <details class="world-fields">
+        <summary>View All Fields</summary>
+        <div class="world-fields-content">${renderFields(world.fields)}</div>
+      </details>
+
+      <div class="world-actions">
+        <button class="btn btn-approve" data-action="approve">✓ Approve</button>
+        <button class="btn btn-reject" data-action="reject">✕ Reject</button>
+      </div>
+    </div>
+  `;
+}
 
   async function renderPendingList() {
     try {
