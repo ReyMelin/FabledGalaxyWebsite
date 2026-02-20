@@ -164,6 +164,11 @@
           buttons.forEach(b => b.disabled = false);
         }
       }, { once: true }); // attach once
+        // Remove Loading... message if present
+        const loadingElem = document.getElementById('loadingMessage');
+        if (loadingElem) {
+            loadingElem.remove();
+        }
     } catch (err) {
       worldsList.innerHTML = `
         <div class="error-message">

@@ -1417,36 +1417,51 @@ section {
     font-size: 1rem;
 }
 
-.upload-hint {
-    color: var(--color-text-dim);
-    font-size: 0.85rem;
-}
-
-.upload-preview {
-    margin-top: 1rem;
-    display: none;
-}
-
-.upload-preview.has-image {
-    display: block;
-}
-
-.upload-preview img {
-    max-width: 200px;
-    max-height: 200px;
-    width: auto;
-    height: auto;
+/* Upload Art Section Styles */
+.upload-art-section {
+    margin: 2em 0;
+    padding: 1em;
+    background: #fff;
+    border: 2px solid #d1d5db;
     border-radius: 12px;
-    box-shadow: 0 0 20px rgba(124, 91, 245, 0.3);
-    object-fit: contain;
-    margin: 0 auto;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
-
-/* Form Navigation Buttons */
-.form-navigation {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
+.upload-art-section h2 {
+    margin-bottom: 1em;
+    font-size: 1.5em;
+    font-weight: 600;
+    color: #222;
+}
+.upload-art-section input,
+.upload-art-section textarea {
+    width: 100%;
+    margin-bottom: 1em;
+    padding: 0.7em;
+    border: 1.5px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 1em;
+    background: #f3f4f6;
+    color: #222;
+}
+.upload-art-section button {
+    background: #4f46e5;
+    color: #fff;
+    border: none;
+    padding: 0.7em 1.5em;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1em;
+    font-weight: 500;
+    box-shadow: 0 2px 8px rgba(79,70,229,0.08);
+    transition: background 0.2s, box-shadow 0.2s;
+}
+.upload-art-section button:hover {
+    background: #3730a3;
+    box-shadow: 0 4px 16px rgba(79,70,229,0.16);
+}
     margin-top: 2rem;
     padding-top: 2rem;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
