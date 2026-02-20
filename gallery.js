@@ -449,9 +449,9 @@ document.addEventListener('DOMContentLoaded', () => {
      * Setup map zoom/pan controls
      */
     function setupMapControls() {
-        // Zoom buttons
-        zoomInBtn.addEventListener('click', () => setZoom(zoom + ZOOM_STEP));
-        zoomOutBtn.addEventListener('click', () => setZoom(zoom - ZOOM_STEP));
+        // Zoom buttons — zoom toward center of the map
+        zoomInBtn.addEventListener('click', () => zoomToPoint(50, 50, zoom + ZOOM_STEP));
+        zoomOutBtn.addEventListener('click', () => zoomToPoint(50, 50, zoom - ZOOM_STEP));
         zoomResetBtn.addEventListener('click', resetView);
         
         // Mouse wheel zoom
