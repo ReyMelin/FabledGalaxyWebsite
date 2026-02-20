@@ -152,7 +152,6 @@ function renderWorldCard(world) {
         if (!id) return;
 
         const action = btn.dataset.action;
-        // Confirmation dialog removed for reject action
 
         const buttons = card.querySelectorAll("button");
         buttons.forEach(b => b.disabled = true);
@@ -166,7 +165,7 @@ function renderWorldCard(world) {
           alert(`Error ${action}ing: ${err.message}`);
           buttons.forEach(b => b.disabled = false);
         }
-      }, { once: true }); // attach once
+      });
       // Remove Loading... message if present
       const loadingElem = document.getElementById('loadingMessage');
       if (loadingElem) {
@@ -203,25 +202,26 @@ function renderWorldCard(world) {
   }
 
   const dropzone = document.getElementById("drag-drop-box");
-    // Make drag-drop-box clickable to open file dialog
-    dropzone?.addEventListener("click", (e) => {
-      // Only trigger if not clicking the preview or button
-      if (e.target === dropzone || e.target.classList.contains("upload-text") || e.target.classList.contains("browse-link")) {
-        fileInput?.click();
-      }
-    });
-    // Also allow keyboard activation
-    dropzone?.addEventListener("keydown", (e) => {
-      if (e.key === "Enter" || e.key === " ") {
-        fileInput?.click();
-        e.preventDefault();
-      }
-    });
   const fileInput = document.getElementById("art-file-input");
   const preview = document.getElementById("art-preview");
   const statusEl = document.getElementById("art-status");
   const worldSelect = document.getElementById("art-world-select");
   const uploadBtn = document.getElementById("art-upload-btn");
+
+  // Make drag-drop-box clickable to open file dialog
+  dropzone?.addEventListener("click", (e) => {
+    // Only trigger if not clicking the preview or button
+    if (e.target === dropzone || e.target.classList.contains("upload-text") || e.target.classList.contains("browse-link")) {
+      fileInput?.click();
+    }
+  });
+  // Also allow keyboard activation
+  dropzone?.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" || e.key === " ") {
+      fileInput?.click();
+      e.preventDefault();
+    }
+  });
 
   function setStatusText(msg) { if (statusEl) statusEl.textContent = msg; }
 

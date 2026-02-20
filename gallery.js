@@ -83,11 +83,11 @@ document.addEventListener('DOMContentLoaded', () => {
     // Initialize
     init();
 
-    function init() {
-        loadPlanets();
+    async function init() {
         setupEventListeners();
         setupMapControls();
-        checkAdminStatus();
+        await checkAdminStatus();
+        loadPlanets();
     }
 
     /**
@@ -172,8 +172,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                     return Math.sqrt(dx * dx + dy * dy) < MIN_DIST;
                                 })
                             );
-                            // Fire-and-forget: persist the new coords so they stay stable
-                            if (window.sb) {
+                            // Only admins persist fallback coords to lock them in
+                            if (isAdminUser && window.sb) {
                                 window.sb
                                     .from('worlds')
                                     .update({ map_x: nx, map_y: ny })

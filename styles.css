@@ -1484,11 +1484,11 @@ section {
 /* Upload Art Section Styles */
 .upload-art-section {
     margin: 2em 0;
-    padding: 1em;
-    background: #fff;
-    border: 2px solid #d1d5db;
+    padding: 1.5em;
+    background: linear-gradient(135deg, rgba(18, 18, 26, 0.95), rgba(10, 10, 15, 0.98));
+    border: 1px solid rgba(124, 91, 245, 0.3);
     border-radius: 12px;
-    box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+    box-shadow: 0 0 30px rgba(124, 91, 245, 0.15);
     max-width: 600px;
     margin-left: auto;
     margin-right: auto;
@@ -1497,34 +1497,76 @@ section {
     margin-bottom: 1em;
     font-size: 1.5em;
     font-weight: 600;
-    color: #222;
+    font-family: var(--font-display);
+    color: var(--color-primary-light);
+}
+.upload-art-section select {
+    width: 100%;
+    margin-bottom: 1em;
+    padding: 0.75em 1em;
+    border: 1px solid rgba(124, 91, 245, 0.4);
+    border-radius: 8px;
+    font-size: 1em;
+    font-family: var(--font-body);
+    background: rgba(124, 91, 245, 0.1);
+    color: var(--color-text);
+    cursor: pointer;
+    transition: border-color 0.2s ease, background 0.2s ease;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%239d85f7' fill='none' stroke-width='2'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 1em center;
+}
+.upload-art-section select:hover,
+.upload-art-section select:focus {
+    border-color: var(--color-primary);
+    background: rgba(124, 91, 245, 0.15);
+    outline: none;
+}
+.upload-art-section select option {
+    background: var(--color-bg-medium);
+    color: var(--color-text);
 }
 .upload-art-section input,
 .upload-art-section textarea {
     width: 100%;
     margin-bottom: 1em;
-    padding: 0.7em;
-    border: 1.5px solid #d1d5db;
+    padding: 0.75em 1em;
+    border: 1px solid rgba(124, 91, 245, 0.4);
     border-radius: 8px;
     font-size: 1em;
-    background: #f3f4f6;
-    color: #222;
+    font-family: var(--font-body);
+    background: rgba(124, 91, 245, 0.1);
+    color: var(--color-text);
+    transition: border-color 0.2s ease;
+}
+.upload-art-section input:focus,
+.upload-art-section textarea:focus {
+    border-color: var(--color-primary);
+    outline: none;
 }
 .upload-art-section button {
-    background: #4f46e5;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-light));
     color: #fff;
     border: none;
-    padding: 0.7em 1.5em;
+    padding: 0.75em 1.75em;
     border-radius: 8px;
     cursor: pointer;
     font-size: 1em;
-    font-weight: 500;
-    box-shadow: 0 2px 8px rgba(79,70,229,0.08);
-    transition: background 0.2s, box-shadow 0.2s;
+    font-weight: 600;
+    font-family: var(--font-body);
+    box-shadow: 0 0 15px rgba(124, 91, 245, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
 .upload-art-section button:hover {
-    background: #3730a3;
-    box-shadow: 0 4px 16px rgba(79,70,229,0.16);
+    transform: translateY(-2px);
+    box-shadow: 0 0 25px rgba(124, 91, 245, 0.5);
+}
+#art-status {
+    margin-top: 0.75em;
+    font-size: 0.95em;
+    color: var(--color-text-dim);
 }
 
 
