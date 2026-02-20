@@ -1,3 +1,47 @@
+/* Admin Panel Header and Titles */
+.admin-header {
+    padding-bottom: 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    margin-bottom: 2rem;
+}
+.admin-title {
+    font-family: var(--font-display);
+    font-size: 2.2rem;
+    color: var(--color-primary-light);
+    margin-bottom: 0.25em;
+}
+.admin-subtitle {
+    color: var(--color-text-dim);
+    font-size: 1.1rem;
+    margin-bottom: 0.5em;
+}
+.back-link {
+    display: inline-block;
+    margin: 1.5rem 0 1rem 0;
+    color: var(--color-primary-light);
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.2s;
+}
+.back-link:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+}
+.upload-dropzone {
+    margin-top: 2.5rem;
+}
+.main-content {
+    width: 100%;
+    min-height: 400px;
+}
+.worlds-list {
+    margin-bottom: 2.5rem;
+}
+#loadingMessage {
+    text-align: center;
+    color: var(--color-text-dim);
+    padding: 2rem 0;
+}
 /* Admin Art Upload Preview Classes */
 .preview-flex {
     display: flex;
@@ -97,15 +141,11 @@
     background: #404eed;
     box-shadow: 0 4px 16px rgba(88,101,242,0.16);
 }
-    margin-bottom: 2.5rem;
-    transition: all 0.3s ease;
 .planet-content {
     padding: 2rem 0 4rem 0;
 }
-}
-.world-card:hover {
-    /* border-color and box-shadow removed to eliminate red line on hover */
-}
+
+/* .world-card:hover { border-color and box-shadow removed to eliminate red line on hover } */
 .world-header {
     display: flex;
     justify-content: space-between;
@@ -1487,10 +1527,7 @@ section {
     background: #3730a3;
     box-shadow: 0 4px 16px rgba(79,70,229,0.16);
 }
-    margin-top: 2rem;
-    padding-top: 2rem;
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-}
+
 
 .btn-nav {
     min-width: 140px;
