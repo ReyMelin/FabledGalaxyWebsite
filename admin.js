@@ -191,8 +191,8 @@ function renderWorldCard(world) {
       <div class="upload-art-section">
         <h2>Upload World Art</h2>
         <select id="art-world-select"></select>
-        <div class="drag-drop-box" id="drag-drop-box">
-          <span class="upload-text">Drag & drop an image here or click to select</span>
+        <div class="drag-drop-box" id="drag-drop-box" tabindex="0">
+          <span class="upload-text">Drag & drop an image here or <span class="browse-link">browse</span></span>
           <input type="file" id="art-file-input" accept="image/*" />
           <div class="upload-preview" id="art-preview"></div>
         </div>
@@ -203,6 +203,20 @@ function renderWorldCard(world) {
   }
 
   const dropzone = document.getElementById("drag-drop-box");
+    // Make drag-drop-box clickable to open file dialog
+    dropzone?.addEventListener("click", (e) => {
+      // Only trigger if not clicking the preview or button
+      if (e.target === dropzone || e.target.classList.contains("upload-text") || e.target.classList.contains("browse-link")) {
+        fileInput?.click();
+      }
+    });
+    // Also allow keyboard activation
+    dropzone?.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        fileInput?.click();
+        e.preventDefault();
+      }
+    });
   const fileInput = document.getElementById("art-file-input");
   const preview = document.getElementById("art-preview");
   const statusEl = document.getElementById("art-status");
