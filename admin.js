@@ -32,6 +32,7 @@
 
   const mainContent = document.getElementById("main-content");
   const worldsList = document.getElementById("worlds-list");
+  const uploadDropzone = document.getElementById("upload-dropzone");
 
   // Require admin via RPC
   async function requireAdmin() {
@@ -126,6 +127,7 @@
 
   async function renderPendingList() {
     try {
+      if (!worldsList) return;
       const worlds = await loadPending();
       if (worlds.length === 0) {
         worldsList.innerHTML = `
@@ -164,23 +166,39 @@
           buttons.forEach(b => b.disabled = false);
         }
       }, { once: true }); // attach once
-        // Remove Loading... message if present
-        const loadingElem = document.getElementById('loadingMessage');
-        if (loadingElem) {
-            loadingElem.remove();
-        }
+      // Remove Loading... message if present
+      const loadingElem = document.getElementById('loadingMessage');
+      if (loadingElem) {
+        loadingElem.remove();
+      }
     } catch (err) {
-      worldsList.innerHTML = `
-        <div class="error-message">
-          <strong>Error loading pending worlds:</strong><br>
-          ${escapeHtml(err.message)}
-        </div>
-      `;
+      if (worldsList) {
+        worldsList.innerHTML = `
+          <div class="error-message">
+            <strong>Error loading pending worlds:</strong><br>
+            ${escapeHtml(err.message)}
+          </div>
+        `;
+      }
     }
   }
 
   // --- art upload ---
-  const dropzone = document.getElementById("upload-dropzone");
+  // Render upload art UI
+  if (uploadDropzone) {
+    uploadDropzone.innerHTML = `
+      <div class="upload-art-section">
+        <h2>Upload World Art</h2>
+        <select id="art-world-select"></select>
+        <input type="file" id="art-file-input" accept="image/*" />
+        <button id="art-upload-btn">Upload Art</button>
+        <div id="art-status"></div>
+        <div id="art-preview"></div>
+      </div>
+    `;
+  }
+
+  const dropzone = uploadDropzone;
   const fileInput = document.getElementById("art-file-input");
   const preview = document.getElementById("art-preview");
   const statusEl = document.getElementById("art-status");
