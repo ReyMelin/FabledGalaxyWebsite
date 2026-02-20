@@ -149,10 +149,7 @@
         if (!id) return;
 
         const action = btn.dataset.action;
-        if (action === "reject") {
-          const ok = confirm("Are you sure you want to reject this submission?");
-          if (!ok) return;
-        }
+        // Confirmation dialog removed for reject action
 
         const buttons = card.querySelectorAll("button");
         buttons.forEach(b => b.disabled = true);
