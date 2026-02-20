@@ -82,12 +82,12 @@
     if (status !== "approved" && status !== "rejected") {
       throw new Error("Invalid status: " + status);
     }
-    const res = await window.sb
+    const { error } = await window.sb
       .from("worlds")
       .update({ status })
       .eq("id", id);
 
-    if (res.error) throw res.error;
+    if (error) throw error;
   }
 
   function renderWorldCard(world) {
