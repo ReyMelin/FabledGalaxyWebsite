@@ -1,3 +1,19 @@
+/* Admin Art Upload Preview Classes */
+.preview-flex {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+.preview-img {
+    width: 140px;
+    height: 140px;
+    object-fit: cover;
+    border-radius: 12px;
+    border: 1px solid rgba(255,255,255,.15);
+}
+.preview-link {
+    margin-top: 10px;
+}
 /* Art image for world cards in admin panel */
 .world-art {
     display: block;

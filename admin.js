@@ -231,8 +231,8 @@ function renderWorldCard(world) {
 
     const url = URL.createObjectURL(file);
     preview.innerHTML = `
-      <div style="display:flex; gap:12px; align-items:center;">
-        <img src="${url}" alt="preview" style="width:140px;height:140px;object-fit:cover;border-radius:12px;border:1px solid rgba(255,255,255,.15);" />
+      <div class="preview-flex">
+        <img src="${url}" alt="preview" class="preview-img" />
         <div>
           <div><strong>${escapeHtml(file.name)}</strong></div>
           <div class="muted">${Math.round(file.size / 1024)} KB</div>
@@ -318,7 +318,7 @@ function renderWorldCard(world) {
     try {
       const url = await uploadArtAndAttach(worldId, currentFile);
       setStatusText("✅ Attached! Art URL saved.");
-      preview.innerHTML += `<div style="margin-top:10px;"><a href="${escapeHtml(url)}" target="_blank" rel="noopener">View uploaded image</a></div>`;
+      preview.innerHTML += `<div class="preview-link"><a href="${escapeHtml(url)}" target="_blank" rel="noopener">View uploaded image</a></div>`;
     } catch (e) {
       setStatusText("❌ " + (e?.message || "Upload failed."));
     }
