@@ -191,15 +191,18 @@ function renderWorldCard(world) {
       <div class="upload-art-section">
         <h2>Upload World Art</h2>
         <select id="art-world-select"></select>
-        <input type="file" id="art-file-input" accept="image/*" />
+        <div class="drag-drop-box" id="drag-drop-box">
+          <span class="upload-text">Drag & drop an image here or click to select</span>
+          <input type="file" id="art-file-input" accept="image/*" />
+          <div class="upload-preview" id="art-preview"></div>
+        </div>
         <button id="art-upload-btn">Upload Art</button>
         <div id="art-status"></div>
-        <div id="art-preview"></div>
       </div>
     `;
   }
 
-  const dropzone = uploadDropzone;
+  const dropzone = document.getElementById("drag-drop-box");
   const fileInput = document.getElementById("art-file-input");
   const preview = document.getElementById("art-preview");
   const statusEl = document.getElementById("art-status");
