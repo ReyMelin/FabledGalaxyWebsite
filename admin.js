@@ -91,7 +91,7 @@
     if (error) throw error;
   }
 
-  function renderWorldCard(world) {
+    const dropzone = document.getElementById("drag-drop-box");
     return `
       <div class="world-card" data-id="${world.id}">
         <div class="world-header">
