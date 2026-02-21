@@ -1,27 +1,28 @@
-function getPlanetTypeInfo(type) {
-    const types = {
-        terrestrial: { emoji: '🌍', label: 'Terrestrial World' },
-        ocean: { emoji: '🌊', label: 'Ocean World' },
-        desert: { emoji: '🏜️', label: 'Desert World' },
-        ice: { emoji: '❄️', label: 'Ice World' },
-        volcanic: { emoji: '🌋', label: 'Volcanic World' },
-        forest: { emoji: '🌲', label: 'Forest World' },
-        sky: { emoji: '☁️', label: 'Sky World' },
-        crystal: { emoji: '💎', label: 'Crystal World' },
-        dark: { emoji: '🌑', label: 'Dark World' },
-        arcane: { emoji: '🔮', label: 'Arcane World' },
-        city: { emoji: '🏙️', label: 'City World' },
-        other: { emoji: '✦', label: 'Unique World' },
-        unknown: { emoji: '❓', label: 'Unknown World' }
-    };
-    return types[type] || types.unknown;
-}
 /**
  * Fabled Galaxy - Galaxy Gallery
  * Handles the interactive galaxy map, filtering, and planet display
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+    function getPlanetTypeInfo(type) {
+        const types = {
+            terrestrial: { emoji: '🌍', label: 'Terrestrial World' },
+            ocean: { emoji: '🌊', label: 'Ocean World' },
+            desert: { emoji: '🏜️', label: 'Desert World' },
+            ice: { emoji: '❄️', label: 'Ice World' },
+            volcanic: { emoji: '🌋', label: 'Volcanic World' },
+            forest: { emoji: '🌲', label: 'Forest World' },
+            sky: { emoji: '☁️', label: 'Sky World' },
+            crystal: { emoji: '💎', label: 'Crystal World' },
+            dark: { emoji: '🌑', label: 'Dark World' },
+            arcane: { emoji: '🔮', label: 'Arcane World' },
+            city: { emoji: '🏙️', label: 'City World' },
+            other: { emoji: '✦', label: 'Unique World' },
+            unknown: { emoji: '❓', label: 'Unknown World' }
+        };
+        return types[type] || types.unknown;
+    }
+
     // Elements
     const planetsContainer = document.getElementById('planets-container');
     const planetGrid = document.getElementById('planet-grid');
