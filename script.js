@@ -182,8 +182,8 @@ function initPlanetNodes() {
         // Assign and persist random coordinates for worlds that don't have them
         for (const world of worlds) {
             if (world.map_x == null || world.map_y == null) {
-                world.map_x = Math.round((Math.random() * 80 + 10) * 100) / 100; // 10-90%
-                world.map_y = Math.round((Math.random() * 80 + 10) * 100) / 100;
+                world.map_x = Math.round((Math.random() * 0.8 + 0.1) * 100) / 100; // 0.10-0.90
+                world.map_y = Math.round((Math.random() * 0.8 + 0.1) * 100) / 100;
                 // Save to DB so they stay fixed
                 if (window.setWorldCoords) {
                     window.setWorldCoords(world.id, world.map_x, world.map_y).catch(err =>
@@ -202,8 +202,8 @@ function initPlanetNodes() {
             const creatorName = world.fields?.creator_name || 'Unknown';
             const node = document.createElement('div');
             node.className = 'planet-node';
-            node.style.top = `${world.map_y}%`;
-            node.style.left = `${world.map_x}%`;
+            node.style.top = `${world.map_y * 100}%`;
+            node.style.left = `${world.map_x * 100}%`;
             node.style.setProperty('--planet-color', color);
             node.dataset.id = world.id;
             node.dataset.name = world.planet_name;

@@ -89,8 +89,8 @@
     // to the worlds table, so this must happen here.
     const updatePayload = { status };
     if (status === "approved") {
-      updatePayload.map_x = Math.round((Math.random() * 80 + 10) * 100) / 100; // 10-90%
-      updatePayload.map_y = Math.round((Math.random() * 80 + 10) * 100) / 100;
+      updatePayload.map_x = Math.round((Math.random() * 0.8 + 0.1) * 100) / 100; // 0.10-0.90
+      updatePayload.map_y = Math.round((Math.random() * 0.8 + 0.1) * 100) / 100;
     }
 
     const { error } = await window.sb
@@ -346,8 +346,8 @@ function renderWorldCard(world) {
     if (!data || data.length === 0) return;
 
     for (const w of data) {
-      const mx = Math.round((Math.random() * 80 + 10) * 100) / 100;
-      const my = Math.round((Math.random() * 80 + 10) * 100) / 100;
+      const mx = Math.round((Math.random() * 0.6 + 0.1) * 100) / 100;
+      const my = Math.round((Math.random() * 0.8 + 0.1) * 100) / 100;
       const { error: ue } = await window.sb
         .from("worlds")
         .update({ map_x: mx, map_y: my })
