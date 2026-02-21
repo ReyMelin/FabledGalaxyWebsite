@@ -176,20 +176,34 @@ function initPlanetNodes() {
     
     // Load planets from Supabase
     (async () => {
-        const worlds = typeof FabledGalaxyData !== 'undefined' ? await FabledGalaxyData.getAllPlanets() : [];
+        const worlds = window.loadApprovedWorlds ? await window.loadApprovedWorlds() : [];
         galaxyOverlay.innerHTML = '';
+
+        // Assign and persist random coordinates for worlds that don't have them
+        for (const world of worlds) {
+            if (world.map_x == null || world.map_y == null) {
+                world.map_x = Math.round((Math.random() * 80 + 10) * 100) / 100; // 10-90%
+                world.map_y = Math.round((Math.random() * 80 + 10) * 100) / 100;
+                // Save to DB so they stay fixed
+                if (window.setWorldCoords) {
+                    window.setWorldCoords(world.id, world.map_x, world.map_y).catch(err =>
+                        console.warn('Could not save coords for', world.planet_name, err.message)
+                    );
+                }
+            }
+        }
+
         worlds.forEach(world => {
             // Supabase schema: planet_name, planet_type, fields, etc.
             const typeInfo = typeof FabledGalaxyData !== 'undefined'
                 ? FabledGalaxyData.getPlanetTypeInfo(world.planet_type)
                 : { emoji: '🌍', label: 'World' };
-            const position = world.fields?.position || { x: 10, y: 10 };
             const color = world.fields?.color || '#ffd700';
             const creatorName = world.fields?.creator_name || 'Unknown';
             const node = document.createElement('div');
             node.className = 'planet-node';
-            node.style.top = `${position.y}%`;
-            node.style.left = `${position.x}%`;
+            node.style.top = `${world.map_y}%`;
+            node.style.left = `${world.map_x}%`;
             node.style.setProperty('--planet-color', color);
             node.dataset.id = world.id;
             node.dataset.name = world.planet_name;

@@ -159,6 +159,16 @@
     return true;
   };
 
+  window.setWorldCoords = async function (worldId, map_x, map_y) {
+    const res = await window.sb
+      .from("worlds")
+      .update({ map_x, map_y })
+      .eq("id", worldId);
+
+    if (res.error) throw res.error;
+    return true;
+  };
+
   window.setWorldArtUrl = async function (worldId, art_url) {
     // allow clearing art_url by passing null/empty
     const normalized = art_url && String(art_url).trim() ? String(art_url).trim() : null;
