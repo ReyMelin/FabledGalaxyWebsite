@@ -83,9 +83,19 @@
     if (status !== "approved" && status !== "rejected") {
       throw new Error("Invalid status: " + status);
     }
+
+    // When approving, assign random map coordinates so the planet has a
+    // fixed position on the galaxy map.  Non-admin visitors cannot write
+    // to the worlds table, so this must happen here.
+    const updatePayload = { status };
+    if (status === "approved") {
+      updatePayload.map_x = Math.round((Math.random() * 80 + 10) * 100) / 100; // 10-90%
+      updatePayload.map_y = Math.round((Math.random() * 80 + 10) * 100) / 100;
+    }
+
     const { error } = await window.sb
       .from("worlds")
-      .update({ status })
+      .update(updatePayload)
       .eq("id", id);
 
     if (error) throw error;
@@ -324,7 +334,31 @@ function renderWorldCard(world) {
     }
   });
 
+  // --- backfill coords for already-approved worlds that are missing them ---
+  async function backfillCoords() {
+    const { data, error } = await window.sb
+      .from("worlds")
+      .select("id")
+      .eq("status", "approved")
+      .is("map_x", null);
+
+    if (error) { console.warn("backfillCoords query error:", error.message); return; }
+    if (!data || data.length === 0) return;
+
+    for (const w of data) {
+      const mx = Math.round((Math.random() * 80 + 10) * 100) / 100;
+      const my = Math.round((Math.random() * 80 + 10) * 100) / 100;
+      const { error: ue } = await window.sb
+        .from("worlds")
+        .update({ map_x: mx, map_y: my })
+        .eq("id", w.id);
+      if (ue) console.warn("backfill error for", w.id, ue.message);
+    }
+    console.log(`Backfilled coords for ${data.length} world(s).`);
+  }
+
   // --- start ---
   await renderPendingList();
   await loadWorldsForArtSelect();
+  await backfillCoords();
 })();
